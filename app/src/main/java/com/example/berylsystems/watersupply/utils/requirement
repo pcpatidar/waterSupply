@@ -1,0 +1,111 @@
+
+requirement 1: time difference
+requirement 2: date difference
+requirement 3: distance calculation
+requirement 3: database code
+
+
+SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a");
+
+Date date1 = df.parse("2012-01-24 12:30:00 PM");
+Date date2 = df.parse("2012-01-24 02:30:00 PM");
+
+long differenceInHours = Math.abs(date1.getTime() - date2.getTime()) / 1000 / 60 / 60);
+
+
+
+DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+
+Date d1 = df.parse("2012-01-24 12:30:00 PM");
+Date d2 = df.parse("2012-01-24 02:30:00 PM");
+
+int hoursDifference = (int)((d2.getTime() - d1.getTime()) / 3600000L);
+System.out.println("Difference in hours: " + hoursDifference);
+
+
+String format="HH:mm:ss.SSS";   // whatever you wish
+boolean padWithZeros=true; // whatever you wish
+TimeZone timezone=null; // whatever you wish
+long timeA = a.getTime();
+long timeB = b.getTime();
+
+String period = DurationFormatUtils.formatPeriod(timeB, timeA, format, padWithZeros, timezone)
+
+
+
+
+public class Time {
+
+    int seconds;
+    int minutes;
+    int hours;
+
+    public Time(int hours, int minutes, int seconds) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+    }
+
+    public static void main(String[] args) {
+        Time start = new Time(12, 34, 55),
+                stop = new Time(8, 12, 15),
+                diff;
+
+        diff = difference(start, stop);
+
+        System.out.printf("TIME DIFFERENCE: %d:%d:%d - ", start.hours, start.minutes, start.seconds);
+        System.out.printf("%d:%d:%d ", stop.hours, stop.minutes, stop.seconds);
+        System.out.printf("= %d:%d:%d\n", diff.hours, diff.minutes, diff.seconds);
+    }
+
+    public static Time difference(Time start, Time stop)
+    {
+        Time diff = new Time(0, 0, 0);
+
+        if(stop.seconds > start.seconds){
+            --start.minutes;
+            start.seconds += 60;
+        }
+
+        diff.seconds = start.seconds - stop.seconds;
+        if(stop.minutes > start.minutes){
+            --start.hours;
+            start.minutes += 60;
+        }
+
+        diff.minutes = start.minutes - stop.minutes;
+        diff.hours = start.hours - stop.hours;
+
+        return(diff);
+    }
+}
+
+
+
+
+
+
+
+DateFormat format = new SimpleDateFormat("HH:mma");
+// the a means am/pm marker
+Date date = format.parse("14:30pm");
+long difference = date.getTime() - System.currentTimeMillis();
+  
+// use Calendar
+Calendar cal = Calendar.getInstance();
+int year = cal.get(Calendar.YEAR);
+int day = cal.get(Calendar.DAY_OF_YEAR);
+cal.setTime(date);
+// reset the date
+cal.set(Calendar.YEAR, year);
+cal.set(Calendar.DAY_OF_YEAR, day);
+
+
+tickLayout
+
+LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                    holder.tickLayoutDecline.getLayoutParams();
+            params.weight = .8f;
+            holder.tickLayoutDecline.setLayoutParams(params);
+
+

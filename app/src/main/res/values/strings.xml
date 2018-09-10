@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">JalSewa</string>
+    <string name="msg_perms_needed">Turn on your Location</string>
+    <string name="btn_quit">Quit</string>
+    <string name="btn_accept">Accept</string>
+
+    <string name="notification_error_ssl_cert_invalid">notification_error_ssl_cert_invalid</string>
+    <string name="supplierSignUp">You need to get the supplier code. You may send a mail to this "shadabazam.it@gmail.com" or leave a text message with  text 'GetSupplier' to "9506228028". We will get back to you soon. \n Thank you</string>
+
+    <string-array name="deliverTime">
+        <item>Deliver with in</item>
+        <item>1 hour</item>
+        <item>2 hour</item>
+        <item>3 hour</item>
+        <item>4 hour</item>
+        <item>5 hour</item>
+    </string-array>
+</resources>
