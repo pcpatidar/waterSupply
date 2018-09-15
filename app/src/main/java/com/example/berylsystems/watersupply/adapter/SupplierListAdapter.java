@@ -1,5 +1,7 @@
 package com.example.berylsystems.watersupply.adapter;
 
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -34,17 +36,11 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
     private List<UserBean> data;
     private Context context;
-    AppUser appUser;
-    Animation blink ;
 
     public SupplierListAdapter(Context context, List<UserBean> data) {
         this.data = data;
         this.context = context;
-        appUser = LocalRepositories.getAppUser(context);
-        Calendar calendar = Calendar.getInstance();
-        Date today = calendar.getTime();
-        blink = AnimationUtils.loadAnimation(context,
-                R.anim.blink);
+
     }
 
 
@@ -62,7 +58,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
             viewHolder.status.setText("Booking Closed");
         }
 
-        viewHolder.status.startAnimation(blink);
+        viewHolder.bind(data.get(position).getDeliveryTime());
         String s=data.get(position).getOpenBooking() + " - " + data.get(position).getCloseBooking()+" (Deliver Up to " + data.get(position).getDeliveryTime()+")";
         SpannableStringBuilder str = new SpannableStringBuilder(s);
         str.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), s.indexOf("("), s.indexOf(")"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -74,6 +70,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
         viewHolder.main_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AppUser appUser= LocalRepositories.getAppUser(context);
                 appUser.supplier = data.get(position);
                 LocalRepositories.saveAppUser(context, appUser);
                 context.startActivity(new Intent(context, OrderActivity.class));
@@ -108,11 +105,18 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 //        @Bind(R.id.delivery_with_in)
 //        TextView delivery_with_in;
 
-
+        private ObjectAnimator anim;
+        @SuppressLint("WrongConstant")
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
-
+            anim = ObjectAnimator.ofFloat(status, "alpha", 0.2f, 1f);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setRepeatCount(Animation.INFINITE);
+            anim.setDuration(800);
+        }
+        public void bind(String dataObject){
+            anim.start();
         }
     }
 

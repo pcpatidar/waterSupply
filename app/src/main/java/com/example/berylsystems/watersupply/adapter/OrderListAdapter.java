@@ -1,5 +1,7 @@
 package com.example.berylsystems.watersupply.adapter;
 
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -57,7 +59,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         } else {
             viewHolder.status.setText("Pending");
         }
-       viewHolder.bind();
+       viewHolder.bind(data.get(position).isStatus());
 
         viewHolder.amount.setText("\u20B9" + data.get(position).getAmount());
         viewHolder.orderId.setText(data.get(position).getOrderId().toUpperCase());
@@ -124,16 +126,19 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         @Bind(R.id.amount)
         TextView amount;
 
-        Animation blink;
 
+        private ObjectAnimator anim;
+        @SuppressLint("WrongConstant")
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
-            blink = AnimationUtils.loadAnimation(context,
-                    R.anim.blink);
+            anim = ObjectAnimator.ofFloat(status, "alpha", 0.2f, 1f);
+            anim.setRepeatMode(Animation.REVERSE);
+            anim.setRepeatCount(Animation.INFINITE);
+            anim.setDuration(800);
         }
-        public void bind(){
-            status.startAnimation(blink);
+        public void bind(Boolean dataObject){
+            anim.start();
         }
     }
 }
