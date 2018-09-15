@@ -107,6 +107,11 @@ public class OrderListFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         };
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        progressDialog.dismiss();
     }
 }

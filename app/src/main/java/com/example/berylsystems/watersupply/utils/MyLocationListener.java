@@ -83,7 +83,7 @@ public class MyLocationListener implements
                 on=false;
                 Toast.makeText(context, "location Found", Toast.LENGTH_SHORT).show();
             }
-//            LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient, this);
+            LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient, this);
         }
     }
 

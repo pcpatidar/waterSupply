@@ -75,7 +75,10 @@ public class SupplierHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_supplier);
         ButterKnife.bind(this);
 
-
+        Helper.initActionbar(this, getSupportActionBar(), "Home Page", false);
+        appUser = LocalRepositories.getAppUser(this);
+        setupViewPager(mHeaderViewPager);
+        mTabLayout.setupWithViewPager(mHeaderViewPager);
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -145,10 +148,7 @@ public class SupplierHomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        buildAlertMessageNoGps();
-        Helper.initActionbar(this, getSupportActionBar(), "Home Page", false);
-        appUser = LocalRepositories.getAppUser(this);
-        setupViewPager(mHeaderViewPager);
-        mTabLayout.setupWithViewPager(mHeaderViewPager);
+
         mHeaderViewPager.setCurrentItem(1, true);
 
         if (!Helper.isNetworkAvailable(getApplicationContext())) {

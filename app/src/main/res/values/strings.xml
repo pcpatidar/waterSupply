@@ -5,7 +5,7 @@
     <string name="btn_accept">Accept</string>
 
     <string name="notification_error_ssl_cert_invalid">notification_error_ssl_cert_invalid</string>
-    <string name="supplierSignUp">You need to get the supplier code. You may send a mail to this "shadabazam.it@gmail.com" or leave a text message with  text 'GetSupplier' to "9506228028". We will get back to you soon. \n Thank you</string>
+    <string name="supplierSignUp">You need to get the supplier code. You may send a mail to this "'support@jalsewa.com'" or leave a text message with  text "'GetSupplier'" to "'0123456789'". We will get back to you soon. \nThank you</string>
 
     <string-array name="deliverTime">
         <item>Deliver with in</item>

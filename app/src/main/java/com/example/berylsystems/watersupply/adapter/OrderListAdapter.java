@@ -26,13 +26,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     private Activity context;
 
     View mConvertView;
-    Animation blink ;
+
 
     public OrderListAdapter(Activity context, List<OrderBean> data) {
         this.data = data;
         this.context = context;
-        blink = AnimationUtils.loadAnimation(context,
-                R.anim.blink);
     }
 
 
@@ -54,13 +52,14 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         viewHolder.supplierName.setText(data.get(position).getSupplier().getName());
         viewHolder.supplierMobile.setText(data.get(position).getSupplier().getMobile());
         viewHolder.address.setText(data.get(position).getAddress());
-        if (data.get(position).isStatus()){
+        if (data.get(position).isStatus()) {
             viewHolder.status.setText("Delivered");
-        }else {
+        } else {
             viewHolder.status.setText("Pending");
         }
-        viewHolder.status.startAnimation(blink);
-        viewHolder.amount.setText("\u20B9"+data.get(position).getAmount());
+       viewHolder.bind();
+
+        viewHolder.amount.setText("\u20B9" + data.get(position).getAmount());
         viewHolder.orderId.setText(data.get(position).getOrderId().toUpperCase());
         if (data.get(position).getComment().trim().isEmpty()) {
             viewHolder.comment.setVisibility(View.GONE);
@@ -125,10 +124,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         @Bind(R.id.amount)
         TextView amount;
 
+        Animation blink;
+
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
-
+            blink = AnimationUtils.loadAnimation(context,
+                    R.anim.blink);
+        }
+        public void bind(){
+            status.startAnimation(blink);
         }
     }
 }

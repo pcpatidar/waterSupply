@@ -108,4 +108,9 @@ public class SupplierListFragment extends Fragment {
         mAdapter = new SupplierListAdapter(getActivity(), userBeanList);
         mRecyclerView.setAdapter(mAdapter);
     }
+    @Override
+    public void onStop() {
+        super.onStop();
+        progressDialog.dismiss();
+    }
 }

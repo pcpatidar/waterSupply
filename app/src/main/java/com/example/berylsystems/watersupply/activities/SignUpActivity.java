@@ -192,6 +192,12 @@ public class SignUpActivity extends AppCompatActivity {
         mVerifyCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (!Helper.isNetworkAvailable(SignUpActivity.this)) {
+                    Snackbar.make(view, "Please check your network connection", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    return;
+                }
                 if (mCode.getText().toString().isEmpty()) {
                     Snackbar.make(mainLayout, "Enter Supplier Code", Snackbar.LENGTH_LONG).show();
                     return;
