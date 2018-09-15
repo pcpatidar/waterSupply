@@ -111,16 +111,21 @@ public class SignUp3Activity extends AppCompatActivity {
     DatabaseReference databaseReference;
     Dialog dialog;
     AppUser appUser;
+    List<String> spinnerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up3);
         ButterKnife.bind(this);
+        spinnerList=new ArrayList<>();
+        spinnerList.add("Delivery with in");
         Helper.initActionbar(this, getSupportActionBar(), "Sign Up", true);
 
-
-
+        ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,spinnerList);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        deliveryTime.setAdapter(aa);
 
         mTimePicker.setIs24HourView(true);
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -156,13 +161,6 @@ public class SignUp3Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 openCloseBooking(closeBooking);
-                List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(),closeBooking.getText().toString())));
-
-                ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
-                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                //Setting the ArrayAdapter data on the Spinner
-                deliveryTime.setAdapter(aa);
-
             }
         });
         closeBookingIcon.setOnClickListener(new View.OnClickListener() {
@@ -288,6 +286,7 @@ public class SignUp3Activity extends AppCompatActivity {
                         textView.setText(strHrsToShow + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
                         try {
                             List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(),closeBooking.getText().toString())));
+                            list.add(0,"Delivery with in");
                             ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
                             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             //Setting the ArrayAdapter data on the Spinner
