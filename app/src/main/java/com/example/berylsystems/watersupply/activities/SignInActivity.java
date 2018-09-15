@@ -67,7 +67,8 @@ public class SignInActivity extends AppCompatActivity {
 //        progressDialog.setCancelable(false);
         appUser = LocalRepositories.getAppUser(getApplicationContext());
         database = FirebaseDatabase.getInstance();
-
+        mMobile.setText("9794763878");
+        mPassword.setText("aaaaaa");
         mClickHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

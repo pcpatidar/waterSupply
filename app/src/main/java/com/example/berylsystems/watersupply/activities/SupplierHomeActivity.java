@@ -1,9 +1,11 @@
 package com.example.berylsystems.watersupply.activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -22,15 +24,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.fragment.CustomerOrderListFragment;
-import com.example.berylsystems.watersupply.fragment.SupplierApproveFragment;
-import com.example.berylsystems.watersupply.fragment.SupplierListFragment;
-import com.example.berylsystems.watersupply.fragment.SupplierPenddingFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
+import com.example.berylsystems.watersupply.notification.service.Config;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
@@ -39,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,17 +67,47 @@ public class SupplierHomeActivity extends AppCompatActivity {
     AppUser appUser;
     public static boolean bool;
 
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_supplier);
         ButterKnife.bind(this);
+
+
+
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+//                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+//                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+//                    displayFirebaseRegId();
+//                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+//                    String message = intent.getStringExtra("message");
+//                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+//                }
+            }
+        };
+
+//        displayFirebaseRegId();
+
+    }
+
+    private void displayFirebaseRegId() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        String regId = pref.getString("regId", null);
+        if (!TextUtils.isEmpty(regId))
+            Toast.makeText(this, "Firebase Reg Id: "+regId, Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(this, "Firebase Reg Id: "+regId, Toast.LENGTH_SHORT).show();
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SupplierPenddingFragment(), "Pending Order");
-        adapter.addFragment(new SupplierApproveFragment(), "Approved Order");
+        adapter.addFragment(new PendingOrderFragment(), "Pending Order");
+        adapter.addFragment(new DeliveredOrderFragment(), "Delivered Order");
         viewPager.setAdapter(adapter);
     }
 

@@ -25,14 +25,14 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.ViewHolder> {
+public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderListAdapter.ViewHolder> {
 
     private List<OrderBean> data;
     private Activity context;
     View mConvertView;
     ProgressDialog mProgressDialog;
 
-    public PendingListAdapter(Activity context, List<OrderBean> data) {
+    public PendingOrderListAdapter(Activity context, List<OrderBean> data) {
         this.data = data;
         this.context = context;
        
@@ -41,13 +41,13 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
 
     @Override
-    public PendingListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public PendingOrderListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_pending_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(PendingListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(PendingOrderListAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.shopName.setText(data.get(position).getSupplier().getShopName());
         viewHolder.bookingTime.setText(data.get(position).getBookingDate());
@@ -85,8 +85,8 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
                                 Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-
                             mProgressDialog=new ProgressDialog(context);
+                            mProgressDialog.setMessage("Please wait...");
                             mProgressDialog.show();
                             DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                             OrderBean orderBean=data.get(position);

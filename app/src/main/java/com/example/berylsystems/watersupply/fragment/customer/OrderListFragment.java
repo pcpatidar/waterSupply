@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.fragment;
+package com.example.berylsystems.watersupply.fragment.customer;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -31,7 +31,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CustomerOrderListFragment extends Fragment {
+public class OrderListFragment extends Fragment {
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)

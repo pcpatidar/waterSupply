@@ -129,7 +129,7 @@ public class OrderActivity extends AppCompatActivity {
         mToday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Integer.valueOf(hms[0]) > endTime) {
+                if (!checkDate()) {
                     Snackbar.make(coordinatorLayout, "Booking Closed", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -276,9 +276,9 @@ public class OrderActivity extends AppCompatActivity {
         orderBean.setWaterTypeQuantity(list);
         orderBean.setAmount(total.getText().toString());
         orderBean.setAddress(mAddress.getText().toString());
-        orderBean.setOrderId(databaseReference.push().getKey());
-
-        databaseReference.child(databaseReference.push().getKey()).setValue(orderBean, new DatabaseReference.CompletionListener() {
+        String key=databaseReference.push().getKey();
+        orderBean.setOrderId(key);
+        databaseReference.child(key).setValue(orderBean, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 progressDialog.dismiss();

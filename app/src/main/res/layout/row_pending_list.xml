@@ -269,33 +269,53 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center">
+        android:background="@color/white"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_height="50dp">
+        <LinearLayout
+            android:id="@+id/deliver_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/deliver_button">
 
-       <LinearLayout
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/tickLayoutAccepted"
+                android:layout_weight="1"
+                android:gravity="end">
 
-           android:layout_width="match_parent"
-           android:layout_marginRight="30dp"
-           android:layout_marginLeft="30dp"
-           android:layout_marginTop="5dp"
-           android:gravity="center"
-           android:background="@drawable/button_approve"
-           android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/tick"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/tick_mark" />
+            </LinearLayout>
 
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text="Delivered"
-               android:gravity="center"
-               android:textStyle="italic"
-               android:textColor="@color/colorPrimary"
-               android:textSize="16dp" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="Delivered"
+                android:textStyle="bold"
+                android:id="@+id/accept_btn"
+                android:textAlignment="textStart"
+                android:textColor="@color/white" />
 
-
-       </LinearLayout>
-
+        </LinearLayout>
 
     </LinearLayout>
+
+
+
 
     <View
         android:layout_width="match_parent"

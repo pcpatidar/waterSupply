@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,14 +24,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
     private List<OrderBean> data;
     private Activity context;
-    AppUser appUser;
+
     View mConvertView;
+    Animation blink ;
 
     public OrderListAdapter(Activity context, List<OrderBean> data) {
         this.data = data;
         this.context = context;
-        appUser = LocalRepositories.getAppUser(context);
-
+        blink = AnimationUtils.loadAnimation(context,
+                R.anim.blink);
     }
 
 
@@ -51,7 +54,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         viewHolder.supplierName.setText(data.get(position).getSupplier().getName());
         viewHolder.supplierMobile.setText(data.get(position).getSupplier().getMobile());
         viewHolder.address.setText(data.get(position).getAddress());
-        viewHolder.total.setText(data.get(position).getAmount());
+        if (data.get(position).isStatus()){
+            viewHolder.status.setText("Delivered");
+        }else {
+            viewHolder.status.setText("Pending");
+        }
+        viewHolder.status.startAnimation(blink);
+        viewHolder.amount.setText("\u20B9"+data.get(position).getAmount());
         viewHolder.orderId.setText(data.get(position).getOrderId().toUpperCase());
         if (data.get(position).getComment().trim().isEmpty()) {
             viewHolder.comment.setVisibility(View.GONE);
@@ -60,9 +69,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             viewHolder.comment.setText(data.get(position).getComment());
         }
         removeAllViews(viewHolder);
-        for (int i=0;i<data.get(position).getWaterTypeQuantity().size();i++){
-            String[] orderDetail=data.get(position).getWaterTypeQuantity().get(i).split(",");
-            addView(orderDetail[0],orderDetail[2],orderDetail[1],viewHolder);
+        for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
+            String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
+            addView(orderDetail[0], orderDetail[2], orderDetail[1], viewHolder);
         }
     }
 
@@ -72,16 +81,17 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         return data.size();
     }
 
-    void addView(String name,String qty,String rate,ViewHolder viewHolder) {
+    void addView(String name, String qty, String rate, ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         TextView orderName = ((TextView) mConvertView.findViewById(R.id.orderName));
         TextView orderQty = ((TextView) mConvertView.findViewById(R.id.orderQty));
         TextView orderRate = ((TextView) mConvertView.findViewById(R.id.orderRate));
         orderName.setText(name/*+" (\u20B9"+rate+")"*/);
         orderQty.setText(qty);
-        orderRate.setText(""+Double.valueOf(qty)*Double.valueOf(rate));
+        orderRate.setText("" + Double.valueOf(qty) * Double.valueOf(rate));
         ((ViewGroup) viewHolder.parentLayout).addView(mConvertView);
     }
+
     void removeAllViews(ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         ((ViewGroup) viewHolder.parentLayout).removeAllViews();
@@ -104,14 +114,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         TextView supplierMobile;
         @Bind(R.id.address)
         TextView address;
-        @Bind(R.id.total)
-        TextView total;
+        @Bind(R.id.status)
+        TextView status;
         @Bind(R.id.comment)
         TextView comment;
         @Bind(R.id.orderId)
         TextView orderId;
         @Bind(R.id.parentLayout)
         LinearLayout parentLayout;
+        @Bind(R.id.amount)
+        TextView amount;
 
         public ViewHolder(View view) {
             super(view);

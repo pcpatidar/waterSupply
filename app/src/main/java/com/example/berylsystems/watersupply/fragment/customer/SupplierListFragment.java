@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.fragment;
+package com.example.berylsystems.watersupply.fragment.customer;
 
 import android.app.ProgressDialog;
 import android.location.Location;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.adapter.SupplierAdaper;
+import com.example.berylsystems.watersupply.adapter.SupplierListAdapter;
 import com.example.berylsystems.watersupply.bean.UserBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
@@ -39,7 +39,7 @@ public class SupplierListFragment extends Fragment {
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
-    SupplierAdaper mAdapter;
+    SupplierListAdapter mAdapter;
     public static List<UserBean> userBeanList;
     ValueEventListener valueEventListener;
     AppUser appUser;
@@ -79,15 +79,15 @@ public class SupplierListFragment extends Fragment {
                         DataSnapshot snapshot = iterator.next();
                         final UserBean userBean = (UserBean) snapshot.getValue(UserBean.class);
                         Location lStart = new Location(LocationManager.NETWORK_PROVIDER);
-//                        lStart.setLatitude(Double.parseDouble(appUser.user.getLatitude()));
-//                        lStart.setLongitude(Double.parseDouble(appUser.user.getLongitude()));
+                        lStart.setLatitude(Double.parseDouble(appUser.user.getLatitude()));
+                        lStart.setLongitude(Double.parseDouble(appUser.user.getLongitude()));
 
-//                        Location lEnd = new Location(LocationManager.NETWORK_PROVIDER);
-//                        lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
-//                        lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
-//                        if (lStart.distanceTo(lEnd) - lEnd.getAccuracy() >= 0/*Double.valueOf(userBean.getDeliveryDistance().trim().split("")[0])*/) {
+                        Location lEnd = new Location(LocationManager.NETWORK_PROVIDER);
+                        lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
+                        lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
+                        if (lStart.distanceTo(lEnd) <= Double.valueOf(userBean.getDeliveryDistance().trim().split(" ")[0])*1000) {
                             userBeanList.add(userBean);
-//                        }
+                        }
                     }
                     if (i == count) {
                         setAdapter();
@@ -105,7 +105,7 @@ public class SupplierListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mAdapter = new SupplierAdaper(getActivity(), userBeanList);
+        mAdapter = new SupplierListAdapter(getActivity(), userBeanList);
         mRecyclerView.setAdapter(mAdapter);
     }
 }

@@ -98,7 +98,7 @@ public class Helper {
                 diff=hours+"."+(-mins);
             }
             else if (hours==0&&mins<0){
-                diff="="+hours+"."+(-mins);
+                diff=hours+"."+(-mins);
             }
             else {
                 diff = hours + "." + mins;

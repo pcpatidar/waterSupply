@@ -176,6 +176,9 @@ public class SignUpActivity extends AppCompatActivity {
                         Snackbar.make(mainLayout, "Invalid Mobile Number", Snackbar.LENGTH_LONG).show();
                         return;
                     }
+                    if (ParameterConstants.location==null){
+                        Snackbar.make(mainLayout, "Location not found", Snackbar.LENGTH_LONG).show();
+                    }
                 } else {
                     if (mCode.getText().toString().isEmpty()) {
                         Snackbar.make(mainLayout, "Enter Provide Code", Snackbar.LENGTH_LONG).show();
@@ -234,6 +237,8 @@ public class SignUpActivity extends AppCompatActivity {
                             Toast.makeText(SignUpActivity.this, "Verification done", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = task.getResult().getUser();
                             userBean.setUserType(ParameterConstants.KEY);
+                            userBean.setLatitude(""+ParameterConstants.location.getLatitude());
+                            userBean.setLongitude(""+ParameterConstants.location.getLongitude());
                             databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -308,6 +313,8 @@ public class SignUpActivity extends AppCompatActivity {
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(SignUpActivity.this, "verification done", Toast.LENGTH_LONG).show();
                 userBean.setUserType(ParameterConstants.KEY);
+                userBean.setLatitude(""+ParameterConstants.location.getLatitude());
+                userBean.setLongitude(""+ParameterConstants.location.getLongitude());
                 databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -408,7 +415,6 @@ public class SignUpActivity extends AppCompatActivity {
             alert.show();
             return;
         }
-
     }
     @Override
     public void onBackPressed() {

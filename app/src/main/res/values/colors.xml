@@ -18,8 +18,9 @@
     <color name="purple">#912CEE</color>
     <color name="orange">#ff5a00</color>
     <color name="premiumcolor">#ff9800</color>
-    <color name="left_panel_text_color">#323232</color>
-    <color name="green_bg_leftPanel">#7BB738</color>
+    <color name="left_panel_text_color">#ff9800</color>
+    <!--<color name="green_bg_leftPanel">#4CAE4C</color>-->
+    <color name="green_bg_leftPanel">#4CAE4C</color>
     <color name="splashBgDarkGreen">#13b796</color>
     <color name="splashBgLightGreen">#64edd2</color>
     <color name="splashText1">#0f967b</color>

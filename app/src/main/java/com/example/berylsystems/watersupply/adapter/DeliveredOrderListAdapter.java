@@ -25,14 +25,14 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DeliveredListAdapter extends RecyclerView.Adapter<DeliveredListAdapter.ViewHolder> {
+public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrderListAdapter.ViewHolder> {
 
     private List<OrderBean> data;
     private Activity context;
     View mConvertView;
     ProgressDialog mProgressDialog;
 
-    public DeliveredListAdapter(Activity context, List<OrderBean> data) {
+    public DeliveredOrderListAdapter(Activity context, List<OrderBean> data) {
         this.data = data;
         this.context = context;
 
@@ -40,13 +40,13 @@ public class DeliveredListAdapter extends RecyclerView.Adapter<DeliveredListAdap
 
 
     @Override
-    public DeliveredListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public DeliveredOrderListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_delivered_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DeliveredListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(DeliveredOrderListAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.shopName.setText(data.get(position).getSupplier().getShopName());
         viewHolder.bookingTime.setText(data.get(position).getBookingDate());

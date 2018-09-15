@@ -28,8 +28,8 @@ import android.widget.Toast;
 
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.fragment.CustomerOrderListFragment;
-import com.example.berylsystems.watersupply.fragment.SupplierListFragment;
+import com.example.berylsystems.watersupply.fragment.customer.OrderListFragment;
+import com.example.berylsystems.watersupply.fragment.customer.SupplierListFragment;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
@@ -71,7 +71,7 @@ public class CustomerHomeActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CustomerOrderListFragment(), "Order");
+        adapter.addFragment(new OrderListFragment(), "Order");
         adapter.addFragment(new SupplierListFragment(), "Supplier");
         viewPager.setAdapter(adapter);
     }

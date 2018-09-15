@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.fragment;
+package com.example.berylsystems.watersupply.fragment.supplier;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.adapter.OrderListAdapter;
-import com.example.berylsystems.watersupply.adapter.PendingListAdapter;
+import com.example.berylsystems.watersupply.adapter.PendingOrderListAdapter;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
@@ -32,7 +31,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SupplierPenddingFragment extends Fragment {
+public class PendingOrderFragment extends Fragment {
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
@@ -42,7 +41,7 @@ public class SupplierPenddingFragment extends Fragment {
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
-    public static PendingListAdapter mAdapter;
+    public static PendingOrderListAdapter mAdapter;
     public static List<OrderBean> orderBeanList;
     ValueEventListener firstValueListener;
     AppUser appUser;
@@ -72,7 +71,7 @@ public class SupplierPenddingFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new PendingListAdapter(getActivity(), orderBeanList);
+        mAdapter = new PendingOrderListAdapter(getActivity(), orderBeanList);
         mRecyclerView.setAdapter(mAdapter);
     }
 

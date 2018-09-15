@@ -11,10 +11,19 @@ public class OrderBean {
     boolean cashOnDelivery;
     String address;
     String orderId;
+    boolean status=false;
 
     UserBean user;
     UserBean supplier;
 
+
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
     public String getOrderId() {
         return orderId;
