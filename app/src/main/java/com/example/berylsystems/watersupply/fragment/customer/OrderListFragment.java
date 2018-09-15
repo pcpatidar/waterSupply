@@ -51,7 +51,6 @@ public class OrderListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.customer_order_list_fragment, container, false);
         ButterKnife.bind(this, view);
-        ButterKnife.bind(getActivity());
         appUser = LocalRepositories.getAppUser(getActivity());
         mobileNumber=appUser.user.getMobile();
         orderBeanList = new ArrayList<>();
