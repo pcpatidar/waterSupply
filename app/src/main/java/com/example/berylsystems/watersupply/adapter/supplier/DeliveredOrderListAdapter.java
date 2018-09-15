@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.adapter;
+package com.example.berylsystems.watersupply.adapter.supplier;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

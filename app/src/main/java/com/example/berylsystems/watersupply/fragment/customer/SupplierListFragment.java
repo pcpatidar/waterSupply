@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.adapter.SupplierListAdapter;
+import com.example.berylsystems.watersupply.adapter.customer.SupplierListAdapter;
 import com.example.berylsystems.watersupply.bean.UserBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;

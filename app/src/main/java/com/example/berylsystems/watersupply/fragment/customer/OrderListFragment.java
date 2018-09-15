@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.adapter.OrderListAdapter;
+import com.example.berylsystems.watersupply.adapter.customer.OrderListAdapter;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;

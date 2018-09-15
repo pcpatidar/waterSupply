@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.adapter;
+package com.example.berylsystems.watersupply.adapter.customer;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +24,6 @@ import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;

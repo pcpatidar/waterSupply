@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.adapter;
+package com.example.berylsystems.watersupply.adapter.customer;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -8,14 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.bean.OrderBean;
-import com.example.berylsystems.watersupply.utils.AppUser;
-import com.example.berylsystems.watersupply.utils.LocalRepositories;
 
 import java.util.List;
 
@@ -70,9 +67,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             viewHolder.comment.setText(data.get(position).getComment());
         }
         removeAllViews(viewHolder);
-        for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
-            String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
-            addView(orderDetail[0], orderDetail[2], orderDetail[1], viewHolder);
+        try {
+            for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
+                String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
+                addView(orderDetail[0], orderDetail[2], orderDetail[1], viewHolder);
+            }
+        }catch (Exception e){
+
         }
     }
 
