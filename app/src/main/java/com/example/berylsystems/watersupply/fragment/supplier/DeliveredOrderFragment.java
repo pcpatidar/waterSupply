@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.adapter.ApproveListAdapter;
-import com.example.berylsystems.watersupply.adapter.OrderListAdapter;
+import com.example.berylsystems.watersupply.adapter.DeliveredListAdapter;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
@@ -32,7 +31,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SupplierApproveFragment extends Fragment {
+public class SupplierDeliveredFragment extends Fragment {
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
@@ -42,8 +41,8 @@ public class SupplierApproveFragment extends Fragment {
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
-    ApproveListAdapter mAdapter;
-    List<OrderBean> orderBeanList;
+    public static DeliveredListAdapter mAdapter;
+    public static List<OrderBean> orderBeanList;
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
@@ -63,7 +62,7 @@ public class SupplierApproveFragment extends Fragment {
             progressDialog.show();
         }
         getAllRecord(ParameterConstants.ORDER);
-        databaseReference.addValueEventListener(firstValueListener);
+        databaseReference.addListenerForSingleValueEvent(firstValueListener);
         return view;
     }
 
@@ -72,7 +71,7 @@ public class SupplierApproveFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new ApproveListAdapter(getActivity(), orderBeanList);
+        mAdapter = new DeliveredListAdapter(getActivity(), orderBeanList);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -86,6 +85,7 @@ public class SupplierApproveFragment extends Fragment {
                 int i=0;
                 orderBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
+
                     Iterable<DataSnapshot> snapshotIterator = dataSnapshot.getChildren();
                     long count = dataSnapshot.getChildrenCount();
                     Iterator<DataSnapshot> iterator = snapshotIterator.iterator();
@@ -93,8 +93,10 @@ public class SupplierApproveFragment extends Fragment {
                         i++;
                         DataSnapshot snapshot = iterator.next();
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
-                        if (orderBean.getUser().getMobile().equals(mobileNumber)){
-                            orderBeanList.add(orderBean);
+                        if (orderBean.getSupplier().getMobile().equals(mobileNumber)){
+                            if (orderBean.isStatus()){
+                                orderBeanList.add(orderBean);
+                            }
                         }
                         if (i == count) {
                             setAdapter();

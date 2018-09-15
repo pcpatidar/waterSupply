@@ -42,8 +42,8 @@ public class SupplierPenddingFragment extends Fragment {
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
-    PendingListAdapter mAdapter;
-    List<OrderBean> orderBeanList;
+    public static PendingListAdapter mAdapter;
+    public static List<OrderBean> orderBeanList;
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
@@ -63,7 +63,7 @@ public class SupplierPenddingFragment extends Fragment {
             progressDialog.show();
         }
         getAllRecord(ParameterConstants.ORDER);
-        databaseReference.addValueEventListener(firstValueListener);
+        databaseReference.addListenerForSingleValueEvent(firstValueListener);
         return view;
     }
 
@@ -93,8 +93,11 @@ public class SupplierPenddingFragment extends Fragment {
                         i++;
                         DataSnapshot snapshot = iterator.next();
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
-                        if (orderBean.getUser().getMobile().equals(mobileNumber)){
-                            orderBeanList.add(orderBean);
+                        if (orderBean.getSupplier().getMobile().equals(mobileNumber)){
+                            if (!orderBean.isStatus()){
+                                orderBeanList.add(orderBean);
+                            }
+
                         }
                         if (i == count) {
                             setAdapter();

@@ -1,46 +1,52 @@
 package com.example.berylsystems.watersupply.adapter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.bean.OrderBean;
-import com.example.berylsystems.watersupply.utils.AppUser;
-import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
+import com.example.berylsystems.watersupply.utils.Helper;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ApproveListAdapter extends RecyclerView.Adapter<ApproveListAdapter.ViewHolder> {
+public class DeliveredListAdapter extends RecyclerView.Adapter<DeliveredListAdapter.ViewHolder> {
 
     private List<OrderBean> data;
     private Activity context;
-    AppUser appUser;
     View mConvertView;
+    ProgressDialog mProgressDialog;
 
-    public ApproveListAdapter(Activity context, List<OrderBean> data) {
+    public DeliveredListAdapter(Activity context, List<OrderBean> data) {
         this.data = data;
         this.context = context;
-        appUser = LocalRepositories.getAppUser(context);
 
     }
 
 
     @Override
-    public ApproveListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_approve_list, viewGroup, false);
+    public DeliveredListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_delivered_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ApproveListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(DeliveredListAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.shopName.setText(data.get(position).getSupplier().getShopName());
         viewHolder.bookingTime.setText(data.get(position).getBookingDate());
@@ -64,6 +70,49 @@ public class ApproveListAdapter extends RecyclerView.Adapter<ApproveListAdapter.
             String[] orderDetail=data.get(position).getWaterTypeQuantity().get(i).split(",");
             addView(orderDetail[0],orderDetail[2],orderDetail[1],viewHolder);
         }
+        viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                new AlertDialog.Builder(context)
+                        .setTitle("Cancel Confirmation")
+                        .setMessage("Do you want to cancel ?")
+                        .setPositiveButton("Yes", (dialogInterface, i) -> {
+                            if (!Helper.isNetworkAvailable(context)) {
+                                Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            mProgressDialog=new ProgressDialog(context);
+                            mProgressDialog.setMessage("Please wait...");
+                            mProgressDialog.show();
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
+                            OrderBean orderBean=data.get(position);
+                            orderBean.setStatus(false);
+                            database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError == null) {
+                                        mProgressDialog.dismiss();
+                                        DeliveredOrderFragment.orderBeanList.remove(orderBean);
+                                        PendingOrderFragment.orderBeanList.add(orderBean);
+                                        PendingOrderFragment.mAdapter.notifyDataSetChanged();
+                                        DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
+                                    } else {
+                                        mProgressDialog.dismiss();
+                                    }
+                                }
+                            });
+
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+
+
+
+
+            }
+        });
     }
 
 
@@ -112,6 +161,8 @@ public class ApproveListAdapter extends RecyclerView.Adapter<ApproveListAdapter.
         TextView orderId;
         @Bind(R.id.parentLayout)
         LinearLayout parentLayout;
+        @Bind(R.id.deliver_layout)
+        LinearLayout deliver_layout;
 
         public ViewHolder(View view) {
             super(view);

@@ -1,17 +1,24 @@
 package com.example.berylsystems.watersupply.adapter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.bean.OrderBean;
-import com.example.berylsystems.watersupply.utils.AppUser;
-import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
+import com.example.berylsystems.watersupply.utils.Helper;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -22,13 +29,13 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
 
     private List<OrderBean> data;
     private Activity context;
-    AppUser appUser;
     View mConvertView;
+    ProgressDialog mProgressDialog;
 
     public PendingListAdapter(Activity context, List<OrderBean> data) {
         this.data = data;
         this.context = context;
-        appUser = LocalRepositories.getAppUser(context);
+       
 
     }
 
@@ -60,10 +67,58 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
             viewHolder.comment.setText(data.get(position).getComment());
         }
         removeAllViews(viewHolder);
-        for (int i=0;i<data.get(position).getWaterTypeQuantity().size();i++){
-            String[] orderDetail=data.get(position).getWaterTypeQuantity().get(i).split(",");
-            addView(orderDetail[0],orderDetail[2],orderDetail[1],viewHolder);
+        for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
+            String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
+            addView(orderDetail[0], orderDetail[2], orderDetail[1], viewHolder);
         }
+        viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                new AlertDialog.Builder(context)
+                        .setTitle("Delivery Confirmation")
+                        .setMessage("Are you sure you have delivered this order ?")
+                        .setPositiveButton("Yes", (dialogInterface, i) -> {
+
+                            if (!Helper.isNetworkAvailable(context)) {
+                                Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            mProgressDialog=new ProgressDialog(context);
+                            mProgressDialog.show();
+                            DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
+                            OrderBean orderBean=data.get(position);
+                            orderBean.setStatus(true);
+                            database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError == null) {
+                                        mProgressDialog.dismiss();
+                                        PendingOrderFragment.orderBeanList.remove(orderBean);
+                                        DeliveredOrderFragment.orderBeanList.add(orderBean);
+                                        PendingOrderFragment.mAdapter.notifyDataSetChanged();
+                                        DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
+                                    } else {
+                                        mProgressDialog.dismiss();
+                                    }
+                                }
+                            });
+
+
+
+
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+
+
+
+
+
+            }
+        });
     }
 
 
@@ -72,16 +127,17 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
         return data.size();
     }
 
-    void addView(String name,String qty,String rate,ViewHolder viewHolder) {
+    void addView(String name, String qty, String rate, ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         TextView orderName = ((TextView) mConvertView.findViewById(R.id.orderName));
         TextView orderQty = ((TextView) mConvertView.findViewById(R.id.orderQty));
         TextView orderRate = ((TextView) mConvertView.findViewById(R.id.orderRate));
         orderName.setText(name/*+" (\u20B9"+rate+")"*/);
         orderQty.setText(qty);
-        orderRate.setText(""+Double.valueOf(qty)*Double.valueOf(rate));
+        orderRate.setText("" + Double.valueOf(qty) * Double.valueOf(rate));
         ((ViewGroup) viewHolder.parentLayout).addView(mConvertView);
     }
+
     void removeAllViews(ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         ((ViewGroup) viewHolder.parentLayout).removeAllViews();
@@ -112,6 +168,8 @@ public class PendingListAdapter extends RecyclerView.Adapter<PendingListAdapter.
         TextView orderId;
         @Bind(R.id.parentLayout)
         LinearLayout parentLayout;
+        @Bind(R.id.deliver_layout)
+        LinearLayout deliver_layout;
 
         public ViewHolder(View view) {
             super(view);
