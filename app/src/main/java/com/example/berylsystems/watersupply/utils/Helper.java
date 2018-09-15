@@ -19,6 +19,7 @@ import com.example.berylsystems.watersupply.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -86,7 +87,7 @@ public class Helper {
 
 
     public static String getTimeDifferent(String start, String end) {
-        String diff = "";
+        String diff = "0.0";
         try {
             SimpleDateFormat format = new SimpleDateFormat("hh:mm aa");
             Date date1 = format.parse(end);
@@ -115,6 +116,24 @@ public class Helper {
         if (new SimpleDateFormat("hh:mm aa").parse(date).before(new Date())) {
 
         }
+    }
+
+    public static List<String> deliverTimeList(double d){
+        String min = ":30 min";
+        String hour = ":00 hour";
+        List<String> list = new ArrayList<>();
+        list.add("30 min");
+        list.add("1"+hour);
+        int k = 1;
+        for (int i=2;i<2*d;i++){
+            if (i%2!=0){
+                list.add((i-k)+hour);
+                k++;
+            }else {
+                list.add(i/2+min);
+            }
+        }
+        return list;
     }
 
 }
