@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -154,6 +156,13 @@ public class SignUp3Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 openCloseBooking(closeBooking);
+                List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(),closeBooking.getText().toString())));
+
+                ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                //Setting the ArrayAdapter data on the Spinner
+                deliveryTime.setAdapter(aa);
+
             }
         });
         closeBookingIcon.setOnClickListener(new View.OnClickListener() {
@@ -277,6 +286,15 @@ public class SignUp3Activity extends AppCompatActivity {
                             am_pm = "PM";
                         String strHrsToShow = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
                         textView.setText(strHrsToShow + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
+                        try {
+                            List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(),closeBooking.getText().toString())));
+                            ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+                            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            //Setting the ArrayAdapter data on the Spinner
+                            deliveryTime.setAdapter(aa);
+                        }catch (Exception e){
+                        }
+
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
