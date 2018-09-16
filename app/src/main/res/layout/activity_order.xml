@@ -49,11 +49,11 @@
                     android:textSize="16dp" />
 
                 <LinearLayout
+                    android:id="@+id/open_calender"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:id="@+id/open_calender"
                     android:layout_weight=".4">
 
                     <ImageView
@@ -79,70 +79,105 @@
                 android:text="date time" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:id="@+id/recycler_view"/>
+                android:layout_marginTop="10dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:background="?android:attr/listDivider" />
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
-               <CheckBox
-                   android:id="@+id/checkbox_address"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:buttonTint="@color/colorPrimary"
-                   android:checked="true"
-                   android:text="Deliver on my home address" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                   <TextView
-                       android:layout_width="match_parent"
-                       android:layout_height="match_parent"
-                       android:text="0.0"
-                       android:hint="Total amount"
-                       android:layout_gravity="center"
-                       android:gravity="center"
-                       android:id="@+id/total"
-                       android:background="@color/colorPrimary"
-                       android:textColor="@color/white"
-                       android:layout_marginLeft="60dp"
-                       android:layout_marginTop="5dp"
-                       android:layout_marginRight="5dp"/>
+                <CheckBox
+                    android:id="@+id/empty_bottle_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/colorPrimary"
+                    android:checked="false"
+                    android:text="Don't have empty bottle" />
+
+                <TextView
+                    android:id="@+id/empty_bottle_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:textAlignment="textEnd"
+                    android:hint="Total amount"
+                    android:text="240"
+                    android:textColor="@color/colorPrimary" />
 
 
-           </LinearLayout>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/checkbox_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/colorPrimary"
+                    android:checked="true"
+                    android:text="Deliver on my home address" />
+
+
+                <TextView
+                    android:id="@+id/total"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-5dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textAlignment="textEnd"
+                    android:hint="Total amount"
+                    android:text="0.0"
+                    android:textColor="@color/colorPrimary" />
+            </LinearLayout>
+
+
+
+
+
 
             <EditText
                 android:id="@+id/address"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:layout_width="match_parent"
-                android:padding="12dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@android:color/white"
                 android:gravity="left"
-                android:textSize="14dp"
-                android:layout_height="wrap_content"
-                android:hint="Enter Complete Address" />
+                android:hint="Enter Complete Address"
+                android:padding="12dp"
+                android:textSize="14dp" />
 
             <EditText
                 android:id="@+id/comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minLines="3"
-                android:hint="You may add a comment..."
-                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_marginLeft="@dimen/activity_vertical_margin"
                 android:layout_marginRight="@dimen/activity_vertical_margin"
-                android:padding="12dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:background="@android:color/white"
                 android:gravity="left"
-                android:textSize="14dp"/>
+                android:hint="You may add a comment..."
+                android:minLines="3"
+                android:padding="12dp"
+                android:textSize="14dp" />
 
 
             <CheckBox
@@ -158,12 +193,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="10dp"
-                android:text="Place Order"
                 android:onClick="submit"
-                android:layout_marginBottom="10dp"
+                android:text="Place Order"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />
 

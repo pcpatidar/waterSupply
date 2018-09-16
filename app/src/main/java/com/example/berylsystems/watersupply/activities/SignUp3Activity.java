@@ -95,9 +95,15 @@ public class SignUp3Activity extends AppCompatActivity {
     CheckBox friday;
     @Bind(R.id.saturday)
     CheckBox saturday;
+    @Bind(R.id.emptyBottle)
+    EditText emptyBottle;
 
     @Bind(R.id.time_picker)
     TimePicker mTimePicker;
+//    @Bind(R.id.empty_bottle_checkbox)
+//    CheckBox empty_bottle_checkbox;
+//    @Bind(R.id.empty_bottle_rate)
+//    TextView empty_bottle_rate;
 
     List<String> typeRateList;
     View mConvertView;
@@ -118,11 +124,11 @@ public class SignUp3Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up3);
         ButterKnife.bind(this);
-        spinnerList=new ArrayList<>();
+        spinnerList = new ArrayList<>();
         spinnerList.add("Delivery with in");
         Helper.initActionbar(this, getSupportActionBar(), "Sign Up", true);
 
-        ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,spinnerList);
+        ArrayAdapter aa = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerList);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         deliveryTime.setAdapter(aa);
@@ -134,6 +140,8 @@ public class SignUp3Activity extends AppCompatActivity {
             }
 
         });
+
+
 
         mAuth = FirebaseAuth.getInstance();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -208,6 +216,10 @@ public class SignUp3Activity extends AppCompatActivity {
                     Snackbar.make(mainLayout, "Select Delivery Time", Snackbar.LENGTH_LONG).show();
                     return;
                 }
+                if (emptyBottle.getText().toString().isEmpty()) {
+                    Snackbar.make(mainLayout, "Enter Emplty Bottle Rate", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 if (ParameterConstants.location == null) {
                     Snackbar.make(mainLayout, "Location not found", Snackbar.LENGTH_LONG).show();
                     return;
@@ -234,6 +246,7 @@ public class SignUp3Activity extends AppCompatActivity {
                 userBean.setCloseBooking(closeBooking.getText().toString());
                 userBean.setDeliveryDistance(deliveryDistance.getText().toString());
                 userBean.setDeliveryTime(deliveryTime.getSelectedItem().toString());
+                userBean.setEmptyBottleRate(emptyBottle.getText().toString());
                 userBean.setTypeRate(list);
                 retrieveKey(userBean.getMobile());
             }
@@ -285,13 +298,13 @@ public class SignUp3Activity extends AppCompatActivity {
                         String strHrsToShow = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
                         textView.setText(strHrsToShow + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
                         try {
-                            List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(),closeBooking.getText().toString())));
-                            list.add(0,"Delivery with in");
-                            ArrayAdapter aa = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+                            List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(), closeBooking.getText().toString())));
+                            list.add(0, "Delivery with in");
+                            ArrayAdapter aa = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, list);
                             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             //Setting the ArrayAdapter data on the Spinner
                             deliveryTime.setAdapter(aa);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                         }
 
                     }
@@ -460,30 +473,30 @@ public class SignUp3Activity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void checkbox(CheckBox checkBox){
+    void checkbox(CheckBox checkBox) {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Toast.makeText(SignUp3Activity.this, ""+checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
-                if (checkBox.getText().toString().equals("Sunday")){
+                Toast.makeText(SignUp3Activity.this, "" + checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
+                if (checkBox.getText().toString().equals("Sunday")) {
                     userBean.setSaturday(b);
                 }
-                if (checkBox.getText().toString().equals("Monday")){
+                if (checkBox.getText().toString().equals("Monday")) {
                     userBean.setMonday(b);
                 }
-                if (checkBox.getText().toString().equals("Tuesday")){
+                if (checkBox.getText().toString().equals("Tuesday")) {
                     userBean.setTuesday(b);
                 }
-                if (checkBox.getText().toString().equals("Wednesday")){
+                if (checkBox.getText().toString().equals("Wednesday")) {
                     userBean.setWednesday(b);
                 }
-                if (checkBox.getText().toString().equals("Thursday")){
+                if (checkBox.getText().toString().equals("Thursday")) {
                     userBean.setThursday(b);
                 }
-                if (checkBox.getText().toString().equals("Friday")){
+                if (checkBox.getText().toString().equals("Friday")) {
                     userBean.setFriday(b);
                 }
-                if (checkBox.getText().toString().equals("Saturday")){
+                if (checkBox.getText().toString().equals("Saturday")) {
                     userBean.setSaturday(b);
                 }
 

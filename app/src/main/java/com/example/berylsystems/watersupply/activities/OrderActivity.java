@@ -63,7 +63,10 @@ public class OrderActivity extends AppCompatActivity {
     LinearLayout coordinatorLayout;
     @Bind(R.id.total)
     TextView total;
-
+    @Bind(R.id.empty_bottle_checkbox)
+    CheckBox empty_bottle_checkbox;
+    @Bind(R.id.empty_bottle_rate)
+    TextView empty_bottle_rate;
 
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -111,6 +114,17 @@ public class OrderActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mCheckboxDelivery.setChecked(true);
                 Snackbar.make(coordinatorLayout, "Online payment is under development", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
+        empty_bottle_rate.setVisibility(View.GONE);
+        empty_bottle_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b)
+                    empty_bottle_rate.setVisibility(View.VISIBLE);
+                else
+                    empty_bottle_rate.setVisibility(View.GONE);
             }
         });
 
