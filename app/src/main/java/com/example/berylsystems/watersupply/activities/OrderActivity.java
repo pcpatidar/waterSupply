@@ -35,6 +35,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -260,8 +262,9 @@ public class OrderActivity extends AppCompatActivity {
             Snackbar.make(coordinatorLayout, "Please Select an Bottle quantity", Snackbar.LENGTH_SHORT).show();
             return;
         }
-        for (int i = 0; i < WaterDetailAdapter.map.size(); i++) {
-            list.add(WaterDetailAdapter.map.get(i));
+        Set<Integer> set=WaterDetailAdapter.map.keySet();
+        for (Integer key:set){
+            list.add(WaterDetailAdapter.map.get(key));
         }
         progressDialog.show();
         orderBean.setUser(appUser.user);

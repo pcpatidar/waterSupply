@@ -15,19 +15,25 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
@@ -54,7 +60,7 @@ import butterknife.ButterKnife;
  * Created by Shadab Azam Farooqui on 6/25/2018.
  */
 
-public class SupplierHomeActivity extends AppCompatActivity {
+public class SupplierHomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     @Bind(R.id.viewpager)
     ViewPager mHeaderViewPager;
     @Bind(R.id.coordinatorLayout)
@@ -66,45 +72,58 @@ public class SupplierHomeActivity extends AppCompatActivity {
     boolean isExit;
     AppUser appUser;
     public static boolean bool;
+    DrawerLayout drawer;
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_supplier);
+        setContentView(R.layout.navigation_view_supplier);
         ButterKnife.bind(this);
-
-        Helper.initActionbar(this, getSupportActionBar(), "Home Page", false);
         appUser = LocalRepositories.getAppUser(this);
         setupViewPager(mHeaderViewPager);
         mTabLayout.setupWithViewPager(mHeaderViewPager);
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-//                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-//                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-//                    displayFirebaseRegId();
-//                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-//                    String message = intent.getStringExtra("message");
-//                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
-//                }
-            }
-        };
-
-//        displayFirebaseRegId();
-
+        mHeaderViewPager.setCurrentItem(1, true);
+        navigation();
     }
+
+    void navigation() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void myAccount(View view) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+    }
+    public void history(View view){
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
+    }
+    public boolean onNavigationItemSelected(MenuItem item) {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
 
     private void displayFirebaseRegId() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
         String regId = pref.getString("regId", null);
         if (!TextUtils.isEmpty(regId))
-            Toast.makeText(this, "Firebase Reg Id: "+regId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Firebase Reg Id: " + regId, Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(this, "Firebase Reg Id: "+regId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Firebase Reg Id: " + regId, Toast.LENGTH_SHORT).show();
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -144,13 +163,12 @@ public class SupplierHomeActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
 //        buildAlertMessageNoGps();
-
-        mHeaderViewPager.setCurrentItem(1, true);
-
+        Helper.initActionbar(this, getSupportActionBar(), "Home Page", false);
         if (!Helper.isNetworkAvailable(getApplicationContext())) {
             Snackbar.make(coordinatorLayout, "Please check your network connection", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
@@ -163,6 +181,7 @@ public class SupplierHomeActivity extends AppCompatActivity {
         }
         versionCheck();
     }
+
 
     void versionCheck() {
         database = FirebaseDatabase.getInstance();
@@ -259,6 +278,24 @@ public class SupplierHomeActivity extends AppCompatActivity {
             return;
         }
 
+    }
+
+
+    void notification(){
+//        should be call in onCreate
+                mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+                    displayFirebaseRegId();
+                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    String message = intent.getStringExtra("message");
+                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+        displayFirebaseRegId();
     }
 
 }

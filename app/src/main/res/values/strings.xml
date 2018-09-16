@@ -7,6 +7,11 @@
     <string name="notification_error_ssl_cert_invalid">notification_error_ssl_cert_invalid</string>
     <string name="supplierSignUp">You need to get the supplier code. You may send a mail to this "'support@jalsewa.com'" or leave a text message with  text "'GetSupplier'" to "'0123456789'". We will get back to you soon. \nThank you</string>
 
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
     <string-array name="deliverTime">
         <item>Deliver with in</item>
         <item>1 hour</item>

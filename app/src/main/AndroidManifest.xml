@@ -30,8 +30,14 @@
             android:name=".activities.SignUpActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.SignInActivity" />
-        <activity android:name=".activities.CustomerHomeActivity" />
-        <activity android:name=".activities.SupplierHomeActivity" />
+        <activity
+            android:name=".activities.CustomerHomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SupplierHomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.OrderActivity"
             android:screenOrientation="portrait" />
@@ -39,22 +45,20 @@
             android:name=".activities.PayMentGateWay"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.SignUp2Activity" />
-        <activity android:name=".activities.SignUp3Activity"></activity>
-
+        <activity android:name=".activities.SignUp3Activity" />
 
         <service android:name=".notification.service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service android:name=".notification.service.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-
+        <activity android:name=".activities.HistoryActivity"></activity>
     </application>
 
 </manifest>
