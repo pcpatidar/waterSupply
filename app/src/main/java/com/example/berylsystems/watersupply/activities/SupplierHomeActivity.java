@@ -34,6 +34,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
@@ -98,6 +100,10 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        ImageView company_logo = (ImageView) header.findViewById(R.id.imageView);
+        TextView name = (TextView) header.findViewById(R.id.name);
+        name.setText(appUser.user.getName());
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -108,7 +114,14 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     public void history(View view){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                HistoryActivity.userType="Supplier";
+                startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
+            }
+        },400);
+
     }
     public boolean onNavigationItemSelected(MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

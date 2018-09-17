@@ -1,15 +1,27 @@
 package com.example.berylsystems.watersupply.activities;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.adapter.customer.OrderListAdapter;
@@ -24,10 +36,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,15 +63,19 @@ public class HistoryActivity extends AppCompatActivity {
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
+    public static String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         ButterKnife.bind(this);
-        Helper.initActionbar(this,getSupportActionBar(),"HISTORY",true);
+        Helper.initActionbar(this, getSupportActionBar(), "HISTORY", true);
         appUser = LocalRepositories.getAppUser(this);
-        mobileNumber=appUser.user.getMobile();
+        mobileNumber = appUser.user.getMobile();
+
+        dateFormatter = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+
         orderBeanList = new ArrayList<>();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
@@ -83,7 +103,7 @@ public class HistoryActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 progressDialog.dismiss();
-                int i=0;
+                int i = 0;
                 orderBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
                     Iterable<DataSnapshot> snapshotIterator = dataSnapshot.getChildren();
@@ -93,9 +113,16 @@ public class HistoryActivity extends AppCompatActivity {
                         i++;
                         DataSnapshot snapshot = iterator.next();
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
-                        if (orderBean.getUser().getMobile().equals(mobileNumber)){
-                            orderBeanList.add(orderBean);
+                        if (userType.equals("Customer")) {
+                            if (orderBean.getUser().getMobile().equals(mobileNumber)) {
+                                orderBeanList.add(orderBean);
+                            }
+                        } else {
+                            if (orderBean.getSupplier().getMobile().equals(mobileNumber)) {
+                                orderBeanList.add(orderBean);
+                            }
                         }
+
                         if (i == count) {
                             setAdapter();
                         }
@@ -117,8 +144,125 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_history, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
+
+        int id = item.getItemId();
+        if (id == R.id.sorting) {
+            showpopup();
+        } else {
+            finish();
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    public Dialog dialog;
+    private SimpleDateFormat dateFormatter;
+    String startdate;
+    String enddate;
+    DatePickerDialog datePickerDialog;
+    Date dateObject1, dateObject2;
+    String dateString;
+
+    public void showpopup() {
+        dialog = new Dialog(HistoryActivity.this);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.date_pick_dialog);
+        dialog.setCancelable(false);
+        // set the custom dialog components - text, image and button
+        TextView date1 = (TextView) dialog.findViewById(R.id.date1);
+        TextView date2 = (TextView) dialog.findViewById(R.id.date2);
+        ImageView date1Icon = (ImageView) dialog.findViewById(R.id.date1_icon);
+        ImageView date2Icon = (ImageView) dialog.findViewById(R.id.date2_icon);
+
+
+        long date = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = sdf.format(date);
+        date1.setText(dateString);
+        date2.setText(dateString);
+
+
+
+        Button submit = (Button) dialog.findViewById(R.id.dialogSubmit);
+        LinearLayout close = (LinearLayout) dialog.findViewById(R.id.close);
+        datePopup(date1,date1);
+        datePopup(date1Icon,date1);
+        datePopup(date2,date2);
+        datePopup(date2Icon,date2);
+
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    dateObject1 = dateFormatter.parse(date1.getText().toString());
+                    dateObject2 = dateFormatter.parse(date2.getText().toString());
+                    if (dateObject2.compareTo(dateObject1)==-1){
+                        Toast.makeText(getApplicationContext(), "Please select valid date range", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (Exception e) {
+                    try {
+                        dateObject1 = dateFormatter.parse(date1.getText().toString());
+                        dateObject2 = dateFormatter.parse(date2.getText().toString());
+                        if (dateObject2.compareTo(dateObject1)==-1){
+                            Toast.makeText(getApplicationContext(), "Please select valid date range", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    } catch (Exception e2) {
+                        e.printStackTrace();
+                    }
+                }
+
+                if(!date1.getText().toString().equals("")&&!date2.getText().toString().equals("")){
+
+                }
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+
+    void datePopup(View view,TextView textView){
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar myCalendar = Calendar.getInstance();
+                datePickerDialog = new DatePickerDialog(HistoryActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        // TODO Auto-generated method stub
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        String myFormat = "yyyy-MM-dd";
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+                        startdate = sdf.format(myCalendar.getTime());
+                        enddate = sdf.format(myCalendar.getTime());
+                        textView.setText(startdate);
+                    }
+
+                }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+
+        });
     }
 }

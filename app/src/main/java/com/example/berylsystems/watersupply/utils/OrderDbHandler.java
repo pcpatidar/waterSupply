@@ -9,21 +9,50 @@ import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.bean.UserBean;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by abc on 4/11/2018.
  */
 
-public class DatabaseHandler extends SQLiteOpenHelper {
+public class OrderDbHandler extends SQLiteOpenHelper {
     //Table Name
-    public static final String TABLE_NAME = "mytable";
-    //Column Name
-    private static final String ID = "id";
-    public static final String DATE = "date";
-    private String BOOKING_DATE;
+    public static final String TABLE_NAME = "order";
+    String id="id";
+    String bookingDate="bookingDate";
+    String deliveryDate="deliveryDate";
+    String amount="amount";
+    String comment="comment";
+    String cashOnDelivery="cashOnDelivery";
+    String address="address";
+    String orderId="orderId";
+    String status="status";
 
 
-    public DatabaseHandler(Context context) {
+    String name;
+    String email;
+    String password;
+    String mobile;
+    String userType;
+    String latitude;
+    String longitude;
+    String shopName;
+    List<String> typeRate;
+    String openBooking;
+    String closeBooking;
+    String deliveryTime;
+    String deliveryDistance;
+    String supplierId;
+    boolean sunday=true;
+    boolean monday=true;
+    boolean tuesday=true;
+    boolean wednesday=true;
+    boolean thursday=true;
+    boolean friday=true;
+    boolean saturday=true;
+
+
+    public OrderDbHandler(Context context) {
         super(context, "my_db", null, 1);
         createTable(this.getWritableDatabase());
     }
@@ -43,8 +72,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db = this.getWritableDatabase();
         }
         String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "("
-                + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + DATE + " TEXT" + ")";
+                + id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + bookingDate + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -57,7 +86,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public long insertData(OrderBean model) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DATE, model.getBookingDate());
+        values.put(bookingDate, model.getBookingDate());
         return db.insert(TABLE_NAME, null, values);
     }
 
@@ -65,15 +94,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
 
-        values.put(DATE, model.getBookingDate());
+        values.put(bookingDate, model.getBookingDate());
 
-        long result = db.update(TABLE_NAME, values, ID + " = '" + id + "' ", null);
+        long result = db.update(TABLE_NAME, values, bookingDate + " = '" + id + "' ", null);
         return result;
     }
 
     public long deleteVoucher(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE_NAME, ID + " = '" + id + "'", null);
+        long result = db.delete(TABLE_NAME, bookingDate + " = '" + id + "'", null);
         db.close();
         return result;
     }
@@ -84,14 +113,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        String selectQuery = "SELECT  * FROM " + TABLE_NAME;
         String selectQuery2 =
                 "SELECT * FROM " + TABLE_NAME +
-                        " WHERE " + DATE + " BETWEEN '" + startdate + "' AND '" + enddate + "' ORDER BY Date ASC";
+                        " WHERE " + bookingDate + " BETWEEN '" + startdate + "' AND '" + enddate + "' ORDER BY Date ASC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery2, null);
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 OrderBean orderBean = new OrderBean();
-                orderBean.setBookingDate(cursor.getString(cursor.getColumnIndex(ID)));
+                orderBean.setBookingDate(cursor.getString(cursor.getColumnIndex(id)));
 
                 dataList.add(orderBean);
             } while (cursor.moveToNext());
@@ -103,7 +132,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public OrderBean getLast(String enddate, String company_id) {
         String query =
                 "SELECT * FROM " + TABLE_NAME +
-                        " WHERE " + DATE + "='" + enddate + "' ";
+                        " WHERE " + bookingDate + "='" + enddate + "' ";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor2 = db.rawQuery(query, null);
@@ -111,7 +140,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor2.moveToFirst()) {
             model = new OrderBean();
-            model.setBookingDate(cursor2.getString(cursor2.getColumnIndex(DATE)));
+            model.setBookingDate(cursor2.getString(cursor2.getColumnIndex(bookingDate)));
 
         }
         return model;
@@ -119,18 +148,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public long deletePayment(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE_NAME, ID + " = '" + id + "'", null);
+        long result = db.delete(TABLE_NAME, id + " = '" + id + "'", null);
         db.close();
         return result;
     }
 
     public OrderBean getRecord(String id) {
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID + " = " + " '" + id + "' ";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + id + " = " + " '" + id + "' ";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         OrderBean model = new OrderBean();
-        model.setBookingDate(cursor.getString(cursor.getColumnIndex(DATE)));
+        model.setBookingDate(cursor.getString(cursor.getColumnIndex(bookingDate)));
         return model;
     }
 

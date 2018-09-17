@@ -30,6 +30,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -92,6 +94,10 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        ImageView company_logo = (ImageView) header.findViewById(R.id.imageView);
+        TextView name = (TextView) header.findViewById(R.id.name);
+        name.setText(appUser.user.getName());
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -103,7 +109,13 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     public void history(View view){
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
+       new Handler().postDelayed(new Runnable() {
+           @Override
+           public void run() {
+               HistoryActivity.userType="Customer";
+               startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
+           }
+       },400);
     }
     public boolean onNavigationItemSelected(MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
