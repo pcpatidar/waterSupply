@@ -48,8 +48,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         viewHolder.day.setText(dateAr[0]);
         viewHolder.month.setText(dateAr[1]);
         viewHolder.year.setText(dateAr[2]);
-        viewHolder.supplierName.setText(data.get(position).getSupplier().getName());
-        viewHolder.supplierMobile.setText(data.get(position).getSupplier().getMobile());
+        viewHolder.supplierName.setText(data.get(position).getUser().getName());
+        viewHolder.supplierMobile.setText(data.get(position).getUser().getMobile());
         viewHolder.address.setText(data.get(position).getAddress());
         if (data.get(position).isStatus()) {
             viewHolder.status.setText("Delivered");

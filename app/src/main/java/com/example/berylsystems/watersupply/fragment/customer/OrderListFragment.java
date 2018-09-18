@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,6 +47,8 @@ public class OrderListFragment extends Fragment {
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
+    String format="dd MMM yyyy";
+    String today;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +56,9 @@ public class OrderListFragment extends Fragment {
         ButterKnife.bind(this, view);
         appUser = LocalRepositories.getAppUser(getActivity());
         mobileNumber=appUser.user.getMobile();
+        long date = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        today = sdf.format(date);
         orderBeanList = new ArrayList<>();
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Please wait...");
@@ -92,7 +98,12 @@ public class OrderListFragment extends Fragment {
                         DataSnapshot snapshot = iterator.next();
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
                         if (orderBean.getUser().getMobile().equals(mobileNumber)){
-                            orderBeanList.add(orderBean);
+//                            String dateAr[]=orderBean.getBookingDate().split(" ");
+//                            String s=new SimpleDateFormat("dd MMM yyyy").format(orderBean.getBookingDate());
+//                            String date=dateAr[0]+" "+dateAr[1]+" "+dateAr[2];
+                            if (orderBean.getDeliveryDate().trim().equals(today)){
+                                orderBeanList.add(orderBean);
+                            }
                         }
                         if (i == count) {
                             setAdapter();

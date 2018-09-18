@@ -337,7 +337,6 @@ public class OrderActivity extends AppCompatActivity {
         String startDate = sdf.format(date);
         String endDate=appUser.supplier.getCloseBooking();
         String diff=Helper.getTimeDifferent(startDate,endDate);
-        Toast.makeText(this, ""+diff, Toast.LENGTH_SHORT).show();
         if (Double.valueOf(diff)>=Double.valueOf(appUser.supplier.getDeliveryTime().split(" ")[0])){
             return true;
         }else {

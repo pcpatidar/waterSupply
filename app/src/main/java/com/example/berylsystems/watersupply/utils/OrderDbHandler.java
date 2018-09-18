@@ -27,29 +27,8 @@ public class OrderDbHandler extends SQLiteOpenHelper {
     String address="address";
     String orderId="orderId";
     String status="status";
-
-
-    String name;
-    String email;
-    String password;
-    String mobile;
-    String userType;
-    String latitude;
-    String longitude;
-    String shopName;
     List<String> typeRate;
-    String openBooking;
-    String closeBooking;
-    String deliveryTime;
-    String deliveryDistance;
-    String supplierId;
-    boolean sunday=true;
-    boolean monday=true;
-    boolean tuesday=true;
-    boolean wednesday=true;
-    boolean thursday=true;
-    boolean friday=true;
-    boolean saturday=true;
+
 
 
     public OrderDbHandler(Context context) {
@@ -73,7 +52,14 @@ public class OrderDbHandler extends SQLiteOpenHelper {
         }
         String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "("
                 + id + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + bookingDate + " TEXT" + ")";
+                + orderId + " TEXT,"
+                + bookingDate + " TEXT,"
+                + deliveryDate + " TEXT,"
+                + amount + " TEXT,"
+                + comment + " TEXT,"
+                + cashOnDelivery + " TEXT,"
+                + address + " TEXT,"
+                + status + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -86,26 +72,40 @@ public class OrderDbHandler extends SQLiteOpenHelper {
     public long insertData(OrderBean model) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(orderId, model.getOrderId());
         values.put(bookingDate, model.getBookingDate());
+        values.put(deliveryDate, model.getBookingDate());
+        values.put(amount, model.getBookingDate());
+        values.put(comment, model.getBookingDate());
+        values.put(cashOnDelivery, model.getBookingDate());
+        values.put(address, model.getBookingDate());
+        values.put(status, model.getBookingDate());
         return db.insert(TABLE_NAME, null, values);
     }
 
-    public long updateData(OrderBean model, String id) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
+//    public long updateData(OrderBean model, String id) {
+//        SQLiteDatabase db = getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//
+//        values.put(orderId, model.getOrderId());
+//        values.put(bookingDate, model.getBookingDate());
+//        values.put(deliveryDate, model.getBookingDate());
+//        values.put(amount, model.getBookingDate());
+//        values.put(comment, model.getBookingDate());
+//        values.put(cashOnDelivery, model.getBookingDate());
+//        values.put(address, model.getBookingDate());
+//        values.put(status, model.getBookingDate());
+//
+//        long result = db.update(TABLE_NAME, values, orderId + " = '" + id + "' ", null);
+//        return result;
+//    }
 
-        values.put(bookingDate, model.getBookingDate());
-
-        long result = db.update(TABLE_NAME, values, bookingDate + " = '" + id + "' ", null);
-        return result;
-    }
-
-    public long deleteVoucher(String id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        long result = db.delete(TABLE_NAME, bookingDate + " = '" + id + "'", null);
-        db.close();
-        return result;
-    }
+//    public long deleteVoucher(String id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        long result = db.delete(TABLE_NAME, bookingDate + " = '" + id + "'", null);
+//        db.close();
+//        return result;
+//    }
 
     public ArrayList<OrderBean> getAllDataList(String startdate, String enddate, String company_id) {
         // Select All Query
@@ -120,7 +120,15 @@ public class OrderDbHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 OrderBean orderBean = new OrderBean();
-                orderBean.setBookingDate(cursor.getString(cursor.getColumnIndex(id)));
+
+                orderBean.setBookingDate(cursor.getString(cursor.getColumnIndex(bookingDate)));
+                orderBean.setDeliveryDate(cursor.getString(cursor.getColumnIndex(deliveryDate)));
+                orderBean.setAmount(cursor.getString(cursor.getColumnIndex(amount)));
+                orderBean.setComment(cursor.getString(cursor.getColumnIndex(comment)));
+                orderBean.setCashOnDelivery(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(cashOnDelivery))));
+                orderBean.setAddress(cursor.getString(cursor.getColumnIndex(address)));
+                orderBean.setOrderId(cursor.getString(cursor.getColumnIndex(orderId)));
+                orderBean.setStatus(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(status))));
 
                 dataList.add(orderBean);
             } while (cursor.moveToNext());

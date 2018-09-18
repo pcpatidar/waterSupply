@@ -13,12 +13,53 @@
         android:layout_marginRight="5dp"
         android:background="@color/white">
 
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="30"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sup.Mob. : "
+                    android:textColor="@color/black"
+                    android:textStyle="italic"
+                    android:textAlignment="textStart"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/number"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="9506228028"
+                    android:textColor="@color/black"
+                    android:textStyle="italic"
+                    android:textAlignment="textStart"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="italic"
+                    android:textAlignment="textEnd"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+
+
+
 
 
             <LinearLayout
@@ -90,10 +131,11 @@
                        android:layout_gravity="right"
                        android:gravity="right">
                        <TextView
-                           android:id="@+id/status"
+
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="Status"
+                           android:visibility="invisible"
                            android:textColor="@color/colorPrimary"
                            android:textStyle="italic"
                            android:textAlignment="textEnd"
@@ -187,7 +229,6 @@
                            android:layout_height="wrap_content"
                            android:layout_marginBottom="5dp"
                            android:paddingLeft="10dp"
-                           android:autoLink="phone"
                            android:text="mobile"
                            android:textColor="#292929"
                            android:textSize="12dp" />

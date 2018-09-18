@@ -74,7 +74,7 @@ public class HistoryActivity extends AppCompatActivity {
         appUser = LocalRepositories.getAppUser(this);
         mobileNumber = appUser.user.getMobile();
 
-        dateFormatter = new SimpleDateFormat("dd MMM yyyy", Locale.US);
+        dateFormatter = new SimpleDateFormat(format, Locale.US);
 
         orderBeanList = new ArrayList<>();
         progressDialog = new ProgressDialog(this);
@@ -169,7 +169,7 @@ public class HistoryActivity extends AppCompatActivity {
     String enddate;
     DatePickerDialog datePickerDialog;
     Date dateObject1, dateObject2;
-    String dateString;
+    String format="dd MMM yyyy";
 
     public void showpopup() {
         dialog = new Dialog(HistoryActivity.this);
@@ -182,9 +182,8 @@ public class HistoryActivity extends AppCompatActivity {
         ImageView date1Icon = (ImageView) dialog.findViewById(R.id.date1_icon);
         ImageView date2Icon = (ImageView) dialog.findViewById(R.id.date2_icon);
 
-
         long date = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         String dateString = sdf.format(date);
         date1.setText(dateString);
         date2.setText(dateString);
@@ -252,8 +251,7 @@ public class HistoryActivity extends AppCompatActivity {
                         myCalendar.set(Calendar.YEAR, year);
                         myCalendar.set(Calendar.MONTH, monthOfYear);
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        String myFormat = "yyyy-MM-dd";
-                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+                        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
                         startdate = sdf.format(myCalendar.getTime());
                         enddate = sdf.format(myCalendar.getTime());
                         textView.setText(startdate);

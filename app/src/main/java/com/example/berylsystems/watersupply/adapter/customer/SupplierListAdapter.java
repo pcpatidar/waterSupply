@@ -124,7 +124,6 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
         String startDate = sdf.format(date);
         String endDate=end;
         String diff= Helper.getTimeDifferent(startDate,endDate);
-        Toast.makeText(context, ""+diff, Toast.LENGTH_SHORT).show();
         if (Double.valueOf(diff)>=Double.valueOf(start.split(" ")[0])){
             return true;
         }else {
