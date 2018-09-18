@@ -87,12 +87,12 @@ public class HistoryActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(firstValueListener);
     }
 
-    void setAdapter() {
+    void setAdapter(Boolean b) {
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new OrderListAdapter(this, orderBeanList);
+        mAdapter = new OrderListAdapter(this, orderBeanList,b);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -124,7 +124,11 @@ public class HistoryActivity extends AppCompatActivity {
                         }
 
                         if (i == count) {
-                            setAdapter();
+                            if (userType.equals("Customer")){
+                                setAdapter(false);
+                            }else {
+                                setAdapter(true);
+                            }
                         }
                     }
 

@@ -55,7 +55,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         viewHolder.month.setText(dateAr[1]);
         viewHolder.year.setText(dateAr[2]);
         viewHolder.supplierName.setText(data.get(position).getSupplier().getName());
-        viewHolder.supplierMobile.setText(data.get(position).getSupplier().getMobile());
+        viewHolder.supplierMobile.setText(data.get(position).getUser().getMobile());
         viewHolder.address.setText(data.get(position).getAddress());
         viewHolder.total.setText(data.get(position).getAmount());
         viewHolder.orderId.setText(data.get(position).getOrderId().toUpperCase());

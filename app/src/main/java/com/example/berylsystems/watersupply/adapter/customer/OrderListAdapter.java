@@ -23,19 +23,25 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
     private List<OrderBean> data;
     private Activity context;
-
     View mConvertView;
+    Boolean aBoolean;
 
 
-    public OrderListAdapter(Activity context, List<OrderBean> data) {
+    public OrderListAdapter(Activity context, List<OrderBean> data,Boolean b) {
         this.data = data;
         this.context = context;
+        aBoolean=b;
     }
 
 
     @Override
     public OrderListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_order_list, viewGroup, false);
+        View view=null;
+        if (aBoolean){
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_order_list2, viewGroup, false);
+        }else {
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_order_list, viewGroup, false);
+        }
         return new ViewHolder(view);
     }
 
@@ -49,14 +55,15 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         viewHolder.month.setText(dateAr[1]);
         viewHolder.year.setText(dateAr[2]);
         viewHolder.supplierName.setText(data.get(position).getUser().getName());
-        viewHolder.supplierMobile.setText(data.get(position).getUser().getMobile());
+        viewHolder.supplierMobile.setText(data.get(position).getSupplier().getMobile());
+        viewHolder.userMobile.setText(data.get(position).getUser().getMobile());
         viewHolder.address.setText(data.get(position).getAddress());
         if (data.get(position).isStatus()) {
             viewHolder.status.setText("Delivered");
         } else {
             viewHolder.status.setText("Pending");
         }
-       viewHolder.bind(data.get(position).isStatus());
+        viewHolder.bind(data.get(position).isStatus());
 
         viewHolder.amount.setText("\u20B9" + data.get(position).getAmount());
         viewHolder.orderId.setText(data.get(position).getOrderId().toUpperCase());
@@ -72,8 +79,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                 String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
                 addView(orderDetail[0], orderDetail[2], orderDetail[1], viewHolder);
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
 
@@ -114,6 +120,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         TextView supplierName;
         @Bind(R.id.supplierMobile)
         TextView supplierMobile;
+        @Bind(R.id.userMobile)
+        TextView userMobile;
         @Bind(R.id.address)
         TextView address;
         @Bind(R.id.status)
@@ -129,6 +137,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
 
         private ObjectAnimator anim;
+
         @SuppressLint("WrongConstant")
         public ViewHolder(View view) {
             super(view);
@@ -138,7 +147,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             anim.setRepeatCount(Animation.INFINITE);
             anim.setDuration(800);
         }
-        public void bind(Boolean dataObject){
+
+        public void bind(Boolean dataObject) {
             anim.start();
         }
     }

@@ -13,6 +13,7 @@
         android:layout_marginRight="5dp"
         android:background="@color/white">
 
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="0dp"
                     android:gravity="center">
 
                     <LinearLayout
@@ -90,19 +91,11 @@
                         android:layout_gravity="right"
                         android:gravity="right">
                         <TextView
+                            android:id="@+id/status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="\u20B9"
+                            android:text="Status"
                             android:textColor="@color/colorPrimary"
-                            android:textStyle="italic"
-                            android:textAlignment="textEnd"
-                            android:textSize="12dp" />
-                        <TextView
-                            android:id="@+id/total"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rate"
-                            android:textColor="@color/black"
                             android:textStyle="italic"
                             android:textAlignment="textEnd"
                             android:textSize="12dp" />
@@ -112,10 +105,23 @@
                         android:id="@+id/shopName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="-5dp"
                         android:gravity="start"
-                        android:textStyle="bold"
                         android:paddingLeft="10dp"
                         android:text="Yoga"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+
+                    <TextView
+                        android:id="@+id/supplierMobile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-5dp"
+                        android:gravity="start"
+                        android:paddingLeft="10dp"
+                        android:text="Yoga"
+                        android:visibility="gone"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16dp" />
 
@@ -124,96 +130,129 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp">
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp">
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/key"/>
+
+                        <TextView
+                            android:id="@+id/orderId"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:text="ORD1598"
+                            android:textColor="#292929"
+                            android:textSize="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        >
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/name_icon"/>
+
+                        <TextView
+                            android:id="@+id/supplierName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:text="name"
+                            android:textColor="#292929"
+                            android:textSize="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp">
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/mobile_icon"/>
+
+                        <TextView
+                            android:id="@+id/userMobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:paddingLeft="10dp"
+                            android:autoLink="phone"
+                            android:text="mobile"
+                            android:textColor="#292929"
+                            android:textSize="12dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp">
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/time_icon"/>
+
+                        <TextView
+                            android:id="@+id/bookingTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="10dp"
+                            android:text="time_interval"
+                            android:textColor="#292929"
+                            android:textSize="12dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight=".3"
                     android:layout_gravity="center"
-                    android:src="@drawable/key"/>
+                    android:gravity="center"
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/orderId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:text="ORD1598"
-                    android:textColor="#292929"
-                    android:textSize="12dp" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:text="30"
+                        android:textStyle="italic"
+                        android:textColor="@color/black"
+                        android:id="@+id/amount"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:background="@drawable/circle"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                >
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/name_icon"/>
-
-                <TextView
-                    android:id="@+id/supplierName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:text="name"
-                    android:textColor="#292929"
-                    android:textSize="12dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/mobile_icon"/>
-
-                <TextView
-                    android:id="@+id/supplierMobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:autoLink="phone"
-                    android:text="mobile"
-                    android:textColor="#292929"
-                    android:textSize="12dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/time_icon"/>
-
-                <TextView
-                    android:id="@+id/bookingTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="10dp"
-                    android:text="time_interval"
-                    android:textColor="#292929"
-                    android:textSize="12dp" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -238,13 +277,14 @@
                     android:text="address"
                     android:textColor="#292929"
                     android:textSize="12dp" />
+
             </LinearLayout>
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/border_color"
+                android:background="#c6cbd3"
                 android:paddingTop="5dp"
                 android:id="@+id/parentLayout"
                 android:layout_marginLeft="-10dp"/>
@@ -267,57 +307,6 @@
         android:textAlignment="textStart"
         android:textColor="#949494"
         android:textStyle="italic" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_marginLeft="5dp"
-        android:visibility="visible"
-        android:layout_marginRight="5dp"
-        android:layout_height="50dp">
-        <LinearLayout
-            android:id="@+id/deliver_layout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/deliver_button">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:id="@+id/tickLayoutAccepted"
-                android:layout_weight="1"
-                android:gravity="end">
-
-                <ImageView
-                    android:id="@+id/tick"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/icon_cancel" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1.1"
-                android:gravity="center"
-                android:text="Cancel"
-                android:textStyle="bold"
-                android:id="@+id/accept_btn"
-                android:textAlignment="textStart"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-
 
     <View
         android:layout_width="match_parent"

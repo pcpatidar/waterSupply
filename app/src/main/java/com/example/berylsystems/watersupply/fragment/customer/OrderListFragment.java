@@ -76,7 +76,7 @@ public class OrderListFragment extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new OrderListAdapter(getActivity(), orderBeanList);
+        mAdapter = new OrderListAdapter(getActivity(), orderBeanList,false);
         mRecyclerView.setAdapter(mAdapter);
     }
 
