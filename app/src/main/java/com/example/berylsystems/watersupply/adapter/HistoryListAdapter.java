@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.adapter.customer;
+package com.example.berylsystems.watersupply.adapter;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
@@ -19,7 +19,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.ViewHolder> {
+public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.ViewHolder> {
 
     private List<OrderBean> data;
     private Activity context;
@@ -27,7 +27,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     Boolean aBoolean;
 
 
-    public OrderListAdapter(Activity context, List<OrderBean> data,Boolean b) {
+    public HistoryListAdapter(Activity context, List<OrderBean> data, Boolean b) {
         this.data = data;
         this.context = context;
         aBoolean=b;
@@ -35,13 +35,18 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
 
     @Override
-    public OrderListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_order_list, viewGroup, false);
+    public HistoryListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view=null;
+        if (aBoolean){
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_history_supplier, viewGroup, false);
+        }else {
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_history_customer, viewGroup, false);
+        }
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(OrderListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(HistoryListAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.shopName.setText(data.get(position).getSupplier().getShopName());
         viewHolder.bookingTime.setText(data.get(position).getBookingDate());

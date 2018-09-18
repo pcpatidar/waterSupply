@@ -320,7 +320,7 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
                 }
             }
         };
-        displayFirebaseRegId();
+//        displayFirebaseRegId();
     }
 
 }

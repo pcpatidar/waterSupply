@@ -24,6 +24,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
+import com.example.berylsystems.watersupply.adapter.HistoryListAdapter;
 import com.example.berylsystems.watersupply.adapter.customer.OrderListAdapter;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
@@ -58,7 +59,7 @@ public class HistoryActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
-    OrderListAdapter mAdapter;
+    HistoryListAdapter mAdapter;
     List<OrderBean> orderBeanList;
     ValueEventListener firstValueListener;
     AppUser appUser;
@@ -92,7 +93,7 @@ public class HistoryActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new OrderListAdapter(this, orderBeanList,b);
+        mAdapter = new HistoryListAdapter(this, orderBeanList,b);
         mRecyclerView.setAdapter(mAdapter);
     }
 
