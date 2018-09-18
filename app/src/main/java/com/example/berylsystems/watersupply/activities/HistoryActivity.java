@@ -132,7 +132,6 @@ public class HistoryActivity extends AppCompatActivity {
                         if (i == count) {
                             setAdapter();
                             insertDataCheck = true;
-                          //  offlineDataInsert(offlinneOrderList);
                         }
                         offlineDataInsert(orderBean);
                     }

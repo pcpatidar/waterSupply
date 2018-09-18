@@ -3,6 +3,7 @@ package com.example.berylsystems.watersupply.bean;
 import java.util.List;
 
 public class OrderBean {
+    String id;
     String bookingDate;
     String deliveryDate;
     List<String> waterTypeQuantity;
@@ -103,5 +104,13 @@ public class OrderBean {
 
     public void setSupplier(UserBean supplier) {
         this.supplier = supplier;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -130,8 +130,8 @@ public class OrderListDBHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
 
-               // ClientDetailsModel model = new ClientDetailsModel();
-              //  model.setId(cursor.getString(cursor.getColumnIndex(AUTO_INCREMENT_ID)));
+                OrderBean model = new OrderBean();
+                model.setId(cursor.getString(cursor.getColumnIndex(AUTO_INCREMENT_ID)));
 
               //  dataList.add(model);
             } while (cursor.moveToNext());
