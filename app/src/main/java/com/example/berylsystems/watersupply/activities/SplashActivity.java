@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
+import com.example.berylsystems.watersupply.database.OrderListDBHandler;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
 import com.example.berylsystems.watersupply.utils.MyLocationListener;
@@ -50,6 +51,7 @@ public class SplashActivity extends AppCompatActivity {
             appUser = new AppUser();
             LocalRepositories.saveAppUser(this, appUser);
         }
+        new OrderListDBHandler(getApplicationContext());
 //        if (!Helper.isNetworkAvailable(getApplicationContext())) {
 //            Snackbar.make(mainLayout, "Please check your network connection", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();

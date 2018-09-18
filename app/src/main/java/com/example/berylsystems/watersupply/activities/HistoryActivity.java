@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.adapter.customer.OrderListAdapter;
 import com.example.berylsystems.watersupply.bean.OrderBean;
+import com.example.berylsystems.watersupply.database.OrderListDBHandler;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
@@ -64,6 +66,8 @@ public class HistoryActivity extends AppCompatActivity {
     AppUser appUser;
     String mobileNumber;
     public static String userType;
+    OrderListDBHandler db;
+    Boolean insertDataCheck = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +113,9 @@ public class HistoryActivity extends AppCompatActivity {
                     Iterable<DataSnapshot> snapshotIterator = dataSnapshot.getChildren();
                     long count = dataSnapshot.getChildrenCount();
                     Iterator<DataSnapshot> iterator = snapshotIterator.iterator();
+                    db = new OrderListDBHandler(getApplicationContext());
+                    db.deleteTable();
+                    new OrderListDBHandler(getApplicationContext());
                     while (iterator.hasNext()) {
                         i++;
                         DataSnapshot snapshot = iterator.next();
@@ -122,10 +129,12 @@ public class HistoryActivity extends AppCompatActivity {
                                 orderBeanList.add(orderBean);
                             }
                         }
-
                         if (i == count) {
                             setAdapter();
+                            insertDataCheck = true;
+                          //  offlineDataInsert(offlinneOrderList);
                         }
+                        offlineDataInsert(orderBean);
                     }
 
                 }
@@ -262,5 +271,17 @@ public class HistoryActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    void offlineDataInsert(OrderBean OrderBean){
+        long result = db.insertData(OrderBean);
+        if(insertDataCheck){
+            if (result!=-1){
+                Snackbar.make(mainLayout, "Data Inserted!", Snackbar.LENGTH_LONG).show();
+            }else {
+                Snackbar.make(mainLayout, "Data Not Inserted!", Snackbar.LENGTH_LONG).show();
+            }
+        }
+
     }
 }

@@ -43,6 +43,7 @@ public class DeliveredOrderFragment extends Fragment {
     LinearLayoutManager linearLayoutManager;
     public static DeliveredOrderListAdapter mAdapter;
     public static List<OrderBean> orderBeanList;
+    public List<OrderBean> offlinneOrderList;
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
@@ -55,6 +56,7 @@ public class DeliveredOrderFragment extends Fragment {
         appUser = LocalRepositories.getAppUser(getActivity());
         mobileNumber=appUser.user.getMobile();
         orderBeanList = new ArrayList<>();
+        offlinneOrderList = new ArrayList<>();
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Please wait...");
 //        progressDialog.setCancelable(false);
