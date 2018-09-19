@@ -25,6 +25,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
+import com.example.berylsystems.watersupply.adapter.HistoryListAdapter;
 import com.example.berylsystems.watersupply.adapter.customer.OrderListAdapter;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.database.OrderListDBHandler;
@@ -60,7 +61,7 @@ public class HistoryActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
-    OrderListAdapter mAdapter;
+    HistoryListAdapter mAdapter;
     List<OrderBean> orderBeanList;
     ValueEventListener firstValueListener;
     AppUser appUser;
@@ -91,12 +92,12 @@ public class HistoryActivity extends AppCompatActivity {
         databaseReference.addValueEventListener(firstValueListener);
     }
 
-    void setAdapter() {
+    void setAdapter(Boolean b) {
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new OrderListAdapter(this, orderBeanList);
+        mAdapter = new HistoryListAdapter(this, orderBeanList, b);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -130,8 +131,13 @@ public class HistoryActivity extends AppCompatActivity {
                             }
                         }
                         if (i == count) {
-                            setAdapter();
                             insertDataCheck = true;
+                            if (userType.equals("Customer")) {
+                                setAdapter(false);
+                            } else {
+                                setAdapter(true);
+                            }
+
                         }
                         offlineDataInsert(orderBean);
                     }
@@ -177,7 +183,7 @@ public class HistoryActivity extends AppCompatActivity {
     String enddate;
     DatePickerDialog datePickerDialog;
     Date dateObject1, dateObject2;
-    String format="dd MMM yyyy";
+    String format = "dd MMM yyyy";
 
     public void showpopup() {
         dialog = new Dialog(HistoryActivity.this);
@@ -197,13 +203,12 @@ public class HistoryActivity extends AppCompatActivity {
         date2.setText(dateString);
 
 
-
         Button submit = (Button) dialog.findViewById(R.id.dialogSubmit);
         LinearLayout close = (LinearLayout) dialog.findViewById(R.id.close);
-        datePopup(date1,date1);
-        datePopup(date1Icon,date1);
-        datePopup(date2,date2);
-        datePopup(date2Icon,date2);
+        datePopup(date1, date1);
+        datePopup(date1Icon, date1);
+        datePopup(date2, date2);
+        datePopup(date2Icon, date2);
 
 
         close.setOnClickListener(new View.OnClickListener() {
@@ -219,7 +224,7 @@ public class HistoryActivity extends AppCompatActivity {
                 try {
                     dateObject1 = dateFormatter.parse(date1.getText().toString());
                     dateObject2 = dateFormatter.parse(date2.getText().toString());
-                    if (dateObject2.compareTo(dateObject1)==-1){
+                    if (dateObject2.compareTo(dateObject1) == -1) {
                         Toast.makeText(getApplicationContext(), "Please select valid date range", Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -227,7 +232,7 @@ public class HistoryActivity extends AppCompatActivity {
                     try {
                         dateObject1 = dateFormatter.parse(date1.getText().toString());
                         dateObject2 = dateFormatter.parse(date2.getText().toString());
-                        if (dateObject2.compareTo(dateObject1)==-1){
+                        if (dateObject2.compareTo(dateObject1) == -1) {
                             Toast.makeText(getApplicationContext(), "Please select valid date range", Toast.LENGTH_SHORT).show();
                             return;
                         }
@@ -236,7 +241,7 @@ public class HistoryActivity extends AppCompatActivity {
                     }
                 }
 
-                if(!date1.getText().toString().equals("")&&!date2.getText().toString().equals("")){
+                if (!date1.getText().toString().equals("") && !date2.getText().toString().equals("")) {
 
                 }
                 dialog.dismiss();
@@ -247,7 +252,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
 
-    void datePopup(View view,TextView textView){
+    void datePopup(View view, TextView textView) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,12 +277,12 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    void offlineDataInsert(OrderBean OrderBean){
+    void offlineDataInsert(OrderBean OrderBean) {
         long result = db.insertData(OrderBean);
-        if(insertDataCheck){
-            if (result!=-1){
+        if (insertDataCheck) {
+            if (result != -1) {
                 Snackbar.make(mainLayout, "Data Inserted!", Snackbar.LENGTH_LONG).show();
-            }else {
+            } else {
                 Snackbar.make(mainLayout, "Data Not Inserted!", Snackbar.LENGTH_LONG).show();
             }
         }

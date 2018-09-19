@@ -242,6 +242,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:gravity="center"
+                        android:onClick="share"
                         android:orientation="horizontal"
                         android:weightSum="1">
 
@@ -249,6 +250,7 @@
                             android:layout_width="0dp"
                             android:layout_height="30dp"
                             android:layout_weight="0.1"
+                            android:onClick="share"
                             android:src="@drawable/share" />
 
 
@@ -259,6 +261,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_weight="0.9"
                             android:clickable="true"
+                            android:onClick="share"
                             android:gravity="center_vertical"
                             android:text="Share"
                             android:textColor="#cc000000"
