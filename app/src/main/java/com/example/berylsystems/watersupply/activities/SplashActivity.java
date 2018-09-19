@@ -51,7 +51,7 @@ public class SplashActivity extends AppCompatActivity {
             appUser = new AppUser();
             LocalRepositories.saveAppUser(this, appUser);
         }
-        new OrderListDBHandler(getApplicationContext());
+        new OrderListDBHandler(getApplicationContext()).createTable(null);
 //        if (!Helper.isNetworkAvailable(getApplicationContext())) {
 //            Snackbar.make(mainLayout, "Please check your network connection", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();

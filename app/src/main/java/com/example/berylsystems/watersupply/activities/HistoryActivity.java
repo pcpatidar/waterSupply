@@ -80,7 +80,7 @@ public class HistoryActivity extends AppCompatActivity {
         mobileNumber = appUser.user.getMobile();
 
         dateFormatter = new SimpleDateFormat(format, Locale.US);
-
+        db = new OrderListDBHandler(getApplicationContext());
         orderBeanList = new ArrayList<>();
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
@@ -114,9 +114,7 @@ public class HistoryActivity extends AppCompatActivity {
                     Iterable<DataSnapshot> snapshotIterator = dataSnapshot.getChildren();
                     long count = dataSnapshot.getChildrenCount();
                     Iterator<DataSnapshot> iterator = snapshotIterator.iterator();
-                    db = new OrderListDBHandler(getApplicationContext());
                     db.deleteTable();
-                    new OrderListDBHandler(getApplicationContext());
                     while (iterator.hasNext()) {
                         i++;
                         DataSnapshot snapshot = iterator.next();
@@ -124,10 +122,12 @@ public class HistoryActivity extends AppCompatActivity {
                         if (userType.equals("Customer")) {
                             if (orderBean.getUser().getMobile().equals(mobileNumber)) {
                                 orderBeanList.add(orderBean);
+                                offlineDataInsert(orderBean,mobileNumber);
                             }
                         } else {
                             if (orderBean.getSupplier().getMobile().equals(mobileNumber)) {
                                 orderBeanList.add(orderBean);
+                                offlineDataInsert(orderBean,mobileNumber);
                             }
                         }
                         if (i == count) {
@@ -139,7 +139,6 @@ public class HistoryActivity extends AppCompatActivity {
                             }
 
                         }
-                        offlineDataInsert(orderBean);
                     }
 
                 }
@@ -242,7 +241,13 @@ public class HistoryActivity extends AppCompatActivity {
                 }
 
                 if (!date1.getText().toString().equals("") && !date2.getText().toString().equals("")) {
-
+                    orderBeanList.clear();
+                    orderBeanList = db.getAllDataList();
+                    if (userType.equals("Customer")) {
+                        setAdapter(false);
+                    } else {
+                        setAdapter(true);
+                    }
                 }
                 dialog.dismiss();
             }
@@ -277,8 +282,8 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
-    void offlineDataInsert(OrderBean OrderBean) {
-        long result = db.insertData(OrderBean);
+    void offlineDataInsert(OrderBean OrderBean, String mobileNumber) {
+        long result = db.insertData(OrderBean, mobileNumber);
         if (insertDataCheck) {
             if (result != -1) {
                 Snackbar.make(mainLayout, "Data Inserted!", Snackbar.LENGTH_LONG).show();
@@ -286,6 +291,5 @@ public class HistoryActivity extends AppCompatActivity {
                 Snackbar.make(mainLayout, "Data Not Inserted!", Snackbar.LENGTH_LONG).show();
             }
         }
-
     }
 }

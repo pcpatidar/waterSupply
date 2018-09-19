@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.berylsystems.watersupply.activities.HistoryActivity;
 import com.example.berylsystems.watersupply.bean.OrderBean;
+import com.example.berylsystems.watersupply.bean.UserBean;
+
 import java.util.ArrayList;
 
 public class OrderListDBHandler extends SQLiteOpenHelper {
@@ -26,14 +30,14 @@ public class OrderListDBHandler extends SQLiteOpenHelper {
     public static final String CASH_ON_DELIVERY = "cashOnDelivery";
     public static final String ADDRESS = "address";
     public static final String STATUS = "status";
-    public static final String MOBILE = "mobile";
+    public static final String USER_MOBILE = "user_mobile";
+    public static final String SUPPLIER_MOBILE = "supplier_mobile";
     public static final String SHOP_NAME = "shopName";
-
 
 
     public OrderListDBHandler(Context context) {
         super(context, DATABASE_NAME, null, 1);
-       // OrderListDBHandler db = new OrderListDBHandler(context);
+        // OrderListDBHandler db = new OrderListDBHandler(context);
         createTable(this.getWritableDatabase());
     }
 
@@ -63,7 +67,8 @@ public class OrderListDBHandler extends SQLiteOpenHelper {
                 + CASH_ON_DELIVERY + " TEXT,"
                 + ADDRESS + " TEXT,"
                 + STATUS + " TEXT,"
-                + MOBILE + " TEXT,"
+                + USER_MOBILE + " TEXT,"
+                + SUPPLIER_MOBILE + " TEXT,"
                 + SHOP_NAME + " TEXT" + ")";
         db.execSQL(CREATE_TABLE);
     }
@@ -73,31 +78,31 @@ public class OrderListDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         createTable(db);
     }
-
-
-    public long insertData(OrderBean model) {
+    
+    public long insertData(OrderBean orderBean, String mobileNumber) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ORDER_ID, model.getOrderId());
-        values.put(USER_TYPE, model.getUser().getUserType());
-        values.put(NAME, model.getUser().getName());
-        values.put(BOOKING_DATE, model.getBookingDate());
-        values.put(DELIVER_DATE, model.getDeliveryDate());
-        values.put(AMOUNT, model.getAmount());
-        values.put(COMMENT, model.getComment());
-        if (model.isCashOnDelivery()){
+        values.put(SHOP_NAME, orderBean.getSupplier().getShopName());
+        values.put(ORDER_ID, orderBean.getOrderId());
+        values.put(USER_TYPE, orderBean.getUser().getUserType());
+        values.put(NAME, orderBean.getUser().getName());
+        values.put(BOOKING_DATE, orderBean.getBookingDate());
+        values.put(DELIVER_DATE, orderBean.getDeliveryDate());
+        values.put(AMOUNT, orderBean.getAmount());
+        values.put(COMMENT, orderBean.getComment());
+        if (orderBean.isCashOnDelivery()) {
             values.put(CASH_ON_DELIVERY, "true");
-        }else {
+        } else {
             values.put(CASH_ON_DELIVERY, "false");
         }
-        values.put(ADDRESS, model.getAddress());
-        if (model.isStatus()){
-            values.put(STATUS,"true");
-        }else {
-            values.put(STATUS,"false");
+        values.put(ADDRESS, orderBean.getAddress());
+        if (orderBean.isStatus()) {
+            values.put(STATUS, "true");
+        } else {
+            values.put(STATUS, "false");
         }
-        values.put(MOBILE, model.getUser().getMobile());
-        values.put(SHOP_NAME, model.getUser().getShopName());
+        values.put(USER_MOBILE, orderBean.getUser().getMobile());
+        values.put(SUPPLIER_MOBILE, orderBean.getSupplier().getMobile());
         long result = db.insert(TABLE_NAME, null, values);
         return result;
     }
@@ -106,7 +111,7 @@ public class OrderListDBHandler extends SQLiteOpenHelper {
     public long updateData(OrderBean model, String id) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-       // values.put(C_NAME, model.getC_name());
+        // values.put(C_NAME, model.getC_name());
 
         long result = db.update(TABLE_NAME, values, AUTO_INCREMENT_ID + " = '" + id + "' ", null);
         return result;
@@ -127,13 +132,39 @@ public class OrderListDBHandler extends SQLiteOpenHelper {
                 "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery2, null);
+        UserBean user;
+        UserBean supplier;
         if (cursor.moveToFirst()) {
             do {
 
-                OrderBean model = new OrderBean();
-                model.setId(cursor.getString(cursor.getColumnIndex(AUTO_INCREMENT_ID)));
-
-              //  dataList.add(model);
+                OrderBean orderBean = new OrderBean();
+                orderBean.setId(cursor.getString(cursor.getColumnIndex(AUTO_INCREMENT_ID)));
+                orderBean.setOrderId(cursor.getString(cursor.getColumnIndex(ORDER_ID)));
+                user = new UserBean();
+                supplier = new UserBean();
+                user.setUserType(cursor.getString(cursor.getColumnIndex(USER_TYPE)));
+                user.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+                orderBean.setBookingDate(cursor.getString(cursor.getColumnIndex(BOOKING_DATE)));
+                orderBean.setDeliveryDate(cursor.getString(cursor.getColumnIndex(DELIVER_DATE)));
+                orderBean.setAmount(cursor.getString(cursor.getColumnIndex(AMOUNT)));
+                orderBean.setComment(cursor.getString(cursor.getColumnIndex(COMMENT)));
+                if (cursor.getString(cursor.getColumnIndex(CASH_ON_DELIVERY)).equals("true")) {
+                    orderBean.setCashOnDelivery(true);
+                } else {
+                    orderBean.setCashOnDelivery(false);
+                }
+                orderBean.setAddress(cursor.getString(cursor.getColumnIndex(ADDRESS)));
+                if (cursor.getString(cursor.getColumnIndex(STATUS)).equals("true")) {
+                    orderBean.setStatus(true);
+                } else {
+                    orderBean.setStatus(false);
+                }
+                user.setMobile(cursor.getString(cursor.getColumnIndex(USER_MOBILE)));
+                supplier.setMobile(cursor.getString(cursor.getColumnIndex(SUPPLIER_MOBILE)));
+                supplier.setShopName(cursor.getString(cursor.getColumnIndex(SHOP_NAME)));
+                orderBean.setUser(user);
+                orderBean.setSupplier(supplier);
+                dataList.add(orderBean);
             } while (cursor.moveToNext());
         }
         return dataList;
