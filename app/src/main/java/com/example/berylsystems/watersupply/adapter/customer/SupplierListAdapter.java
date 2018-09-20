@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -33,10 +34,12 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
     private List<UserBean> data;
     private Context context;
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    public SupplierListAdapter(Context context, List<UserBean> data) {
+    public SupplierListAdapter(Context context, SwipeRefreshLayout swipeRefreshLayout, List<UserBean> data) {
         this.data = data;
         this.context = context;
+        this.swipeRefreshLayout=swipeRefreshLayout;
 
     }
 
@@ -67,6 +70,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
         viewHolder.main_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                swipeRefreshLayout.setRefreshing(false);
                 AppUser appUser= LocalRepositories.getAppUser(context);
                 appUser.supplier = data.get(position);
                 LocalRepositories.saveAppUser(context, appUser);

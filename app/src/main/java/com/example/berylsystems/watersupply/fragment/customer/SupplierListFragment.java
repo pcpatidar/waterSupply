@@ -1,10 +1,11 @@
 package com.example.berylsystems.watersupply.fragment.customer;
 
-import android.app.ProgressDialog;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.example.berylsystems.watersupply.bean.UserBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,13 +33,14 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SupplierListFragment extends Fragment {
+public class SupplierListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @Bind(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     DatabaseReference databaseReference;
-    ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
     SupplierListAdapter mAdapter;
     public static List<UserBean> userBeanList;
@@ -49,13 +52,11 @@ public class SupplierListFragment extends Fragment {
         View view = inflater.inflate(R.layout.supplier_list_fragment, container, false);
         ButterKnife.bind(this, view);
         ButterKnife.bind(getActivity());
+        swipeRefreshLayout.setOnRefreshListener(this);
         appUser = LocalRepositories.getAppUser(getActivity());
         userBeanList = new ArrayList<>();
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Please wait...");
-//        progressDialog.setCancelable(false);
         if (Helper.isNetworkAvailable(getActivity())) {
-            progressDialog.show();
+            swipeRefreshLayout.setRefreshing(true);
         }
         getAllRecord("Supplier");
         databaseReference.addValueEventListener(valueEventListener);
@@ -67,7 +68,7 @@ public class SupplierListFragment extends Fragment {
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
+                swipeRefreshLayout.setRefreshing(false);
                 userBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
                     int i=0;
@@ -105,12 +106,22 @@ public class SupplierListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mAdapter = new SupplierListAdapter(getActivity(), userBeanList);
+        mAdapter = new SupplierListAdapter(getActivity(),swipeRefreshLayout, userBeanList);
         mRecyclerView.setAdapter(mAdapter);
     }
     @Override
     public void onStop() {
         super.onStop();
-        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onRefresh() {
+        if (!Helper.isNetworkAvailable(getActivity())) {
+            swipeRefreshLayout.setRefreshing(false);
+            Snackbar.make(mainLayout,"Please check your internet connection!",Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        getAllRecord("Supplier");
+        databaseReference.addValueEventListener(valueEventListener);
     }
 }

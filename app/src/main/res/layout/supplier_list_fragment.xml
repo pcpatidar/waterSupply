@@ -9,12 +9,19 @@
     tools:context="com.example.berylsystems.watersupply.activities.SplashActivity">
 
 
-   <android.support.v7.widget.RecyclerView
+   <android.support.v4.widget.SwipeRefreshLayout
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/recycler_view"></android.support.v7.widget.RecyclerView>
+       android:id="@+id/swipeRefreshLayout"
+       android:layout_height="wrap_content">
+
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/recycler_view"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+
+   </android.support.v4.widget.SwipeRefreshLayout>
    <View
        android:layout_width="match_parent"
        android:layout_height="5dp"
-       android:background="?android:attr/listDivider"/>
+       android:background="?android:attr/listDivider" />
 </LinearLayout>

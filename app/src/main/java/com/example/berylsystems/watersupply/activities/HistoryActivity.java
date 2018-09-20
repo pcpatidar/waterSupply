@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,15 +51,16 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @Bind(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     FirebaseDatabase database;
     DatabaseReference databaseReference;
-    ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
     HistoryListAdapter mAdapter;
     List<OrderBean> orderBeanList;
@@ -72,23 +75,23 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
         ButterKnife.bind(this);
         Helper.initActionbar(this, getSupportActionBar(), "HISTORY", true);
+        swipeRefreshLayout.setOnRefreshListener(this);
         appUser = LocalRepositories.getAppUser(this);
         mobileNumber = appUser.user.getMobile();
 
         dateFormatter = new SimpleDateFormat(format, Locale.US);
 
         orderBeanList = new ArrayList<>();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Please wait...");
-//        progressDialog.setCancelable(false);
+
         if (Helper.isNetworkAvailable(this)) {
-            progressDialog.show();
+            swipeRefreshLayout.setRefreshing(true);
         }
         getAllRecord(ParameterConstants.ORDER);
         databaseReference.addValueEventListener(firstValueListener);
     }
 
     void setAdapter(Boolean b) {
+        swipeRefreshLayout.setRefreshing(false);
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -103,7 +106,7 @@ public class HistoryActivity extends AppCompatActivity {
         firstValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
+                swipeRefreshLayout.setRefreshing(false);
                 int i = 0;
                 orderBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
@@ -145,7 +148,6 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        progressDialog.dismiss();
     }
 
     @Override
@@ -267,5 +269,17 @@ public class HistoryActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+
+    @Override
+    public void onRefresh() {
+        if (!Helper.isNetworkAvailable(this)) {
+            swipeRefreshLayout.setRefreshing(false);
+            Snackbar.make(mainLayout,"Please check your internet connection!",Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        getAllRecord(ParameterConstants.ORDER);
+        databaseReference.addValueEventListener(firstValueListener);
     }
 }

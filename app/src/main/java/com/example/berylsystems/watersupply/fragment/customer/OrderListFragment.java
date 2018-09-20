@@ -2,7 +2,9 @@ package com.example.berylsystems.watersupply.fragment.customer;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,15 +34,16 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class OrderListFragment extends Fragment {
+public class OrderListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
     RecyclerView mRecyclerView;
+    @Bind(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     boolean isExit;
     FirebaseDatabase database;
     DatabaseReference databaseReference;
-    ProgressDialog progressDialog;
     LinearLayoutManager linearLayoutManager;
     OrderListAdapter mAdapter;
     List<OrderBean> orderBeanList;
@@ -54,17 +57,15 @@ public class OrderListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.customer_order_list_fragment, container, false);
         ButterKnife.bind(this, view);
+        swipeRefreshLayout.setOnRefreshListener(this);
         appUser = LocalRepositories.getAppUser(getActivity());
         mobileNumber=appUser.user.getMobile();
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         today = sdf.format(date);
         orderBeanList = new ArrayList<>();
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Please wait...");
-//        progressDialog.setCancelable(false);
         if (Helper.isNetworkAvailable(getActivity())) {
-            progressDialog.show();
+            swipeRefreshLayout.setRefreshing(true);
         }
         getAllRecord(ParameterConstants.ORDER);
         databaseReference.addValueEventListener(firstValueListener);
@@ -86,10 +87,11 @@ public class OrderListFragment extends Fragment {
         firstValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                progressDialog.dismiss();
+                swipeRefreshLayout.setRefreshing(false);
                 int i=0;
                 orderBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
+
                     Iterable<DataSnapshot> snapshotIterator = dataSnapshot.getChildren();
                     long count = dataSnapshot.getChildrenCount();
                     Iterator<DataSnapshot> iterator = snapshotIterator.iterator();
@@ -122,6 +124,16 @@ public class OrderListFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onRefresh() {
+        if (!Helper.isNetworkAvailable(getActivity())) {
+            swipeRefreshLayout.setRefreshing(false);
+            Snackbar.make(mainLayout,"Please check your internet connection!",Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+        getAllRecord(ParameterConstants.ORDER);
+        databaseReference.addValueEventListener(firstValueListener);
     }
 }

@@ -125,7 +125,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Sent from JalSewa app");
-        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Share the m-Billing App with your friends to spread goodness-Get the app-https://play.google.com/store/apps/details?id=com.lkintechnology.mBilling");
+        shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Share this App with your friends to spread goodness");
         startActivity(Intent.createChooser(shareIntent, "Share via"));
 
     }
