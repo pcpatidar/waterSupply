@@ -73,7 +73,7 @@ public class PendingOrderFragment extends Fragment implements SwipeRefreshLayout
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new PendingOrderListAdapter(getActivity(), orderBeanList);
+        mAdapter = new PendingOrderListAdapter(getActivity(), orderBeanList,swipeRefreshLayout);
         mRecyclerView.setAdapter(mAdapter);
     }
 

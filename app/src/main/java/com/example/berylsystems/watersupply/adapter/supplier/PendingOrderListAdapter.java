@@ -2,6 +2,7 @@ package com.example.berylsystems.watersupply.adapter.supplier;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,11 +32,12 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
     private Activity context;
     View mConvertView;
     ProgressDialog mProgressDialog;
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    public PendingOrderListAdapter(Activity context, List<OrderBean> data) {
+    public PendingOrderListAdapter(Activity context, List<OrderBean> data,SwipeRefreshLayout swipeRefreshLayout) {
         this.data = data;
         this.context = context;
-       
+       this.swipeRefreshLayout=swipeRefreshLayout;
 
     }
 
@@ -87,7 +89,8 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
                             }
                             mProgressDialog=new ProgressDialog(context);
                             mProgressDialog.setMessage("Please wait...");
-                            mProgressDialog.show();
+//                            mProgressDialog.show();
+                            swipeRefreshLayout.setRefreshing(true);
                             DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                             OrderBean orderBean=data.get(position);
                             orderBean.setStatus(true);
@@ -95,6 +98,7 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError == null) {
+                                        swipeRefreshLayout.setRefreshing(false);
                                         mProgressDialog.dismiss();
                                         PendingOrderFragment.orderBeanList.remove(orderBean);
                                         DeliveredOrderFragment.orderBeanList.add(orderBean);

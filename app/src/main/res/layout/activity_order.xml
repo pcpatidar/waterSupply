@@ -110,7 +110,7 @@
                     android:gravity="center"
                     android:textAlignment="textEnd"
                     android:hint="Total amount"
-                    android:text="240"
+                    android:text="0.0"
                     android:textColor="@color/colorPrimary" />
 
 

@@ -305,7 +305,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1.5"
                 android:gravity="center"
-                android:text="Delivered"
+                android:text="Deliver"
                 android:textStyle="bold"
                 android:id="@+id/accept_btn"
                 android:textAlignment="textStart"

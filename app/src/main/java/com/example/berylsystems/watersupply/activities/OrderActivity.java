@@ -1,19 +1,29 @@
 package com.example.berylsystems.watersupply.activities;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +38,11 @@ import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,10 +89,12 @@ public class OrderActivity extends AppCompatActivity {
     WaterDetailAdapter mAdapter;
     DatabaseReference databaseReference;
     ProgressDialog progressDialog;
+    Dialog dialog;
 
     AppUser appUser;
     int endTime = 15;
     public static OrderActivity context;
+    boolean isKeyPadOpen;
 
 
     @Override
@@ -121,10 +138,20 @@ public class OrderActivity extends AppCompatActivity {
         empty_bottle_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b)
+                if (b) {
+                    showPopup(empty_bottle_rate, total);
                     empty_bottle_rate.setVisibility(View.VISIBLE);
-                else
-                    empty_bottle_rate.setVisibility(View.GONE);
+                } else {
+                    try {
+                        String rate[]=empty_bottle_rate.getText().toString().split("=");
+                        total.setText("" + (Double.valueOf(total.getText().toString()) - Double.valueOf(rate[1])));
+                        empty_bottle_rate.setVisibility(View.GONE);
+                    }catch (Exception e){
+
+                    }
+                    empty_bottle_rate.setText("0.0");
+
+                }
             }
         });
 
@@ -167,6 +194,13 @@ public class OrderActivity extends AppCompatActivity {
 
         dateDialog(mOpen_calender, mDate_time);
         setAdapter();
+
+        KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
+            @Override
+            public void onVisibilityChanged(boolean isOpen) {
+                isKeyPadOpen = isOpen;
+            }
+        });
 
     }
 
@@ -276,8 +310,8 @@ public class OrderActivity extends AppCompatActivity {
             Snackbar.make(coordinatorLayout, "Please Select an Bottle quantity", Snackbar.LENGTH_SHORT).show();
             return;
         }
-        Set<Integer> set=WaterDetailAdapter.map.keySet();
-        for (Integer key:set){
+        Set<Integer> set = WaterDetailAdapter.map.keySet();
+        for (Integer key : set) {
             list.add(WaterDetailAdapter.map.get(key));
         }
         progressDialog.show();
@@ -293,7 +327,7 @@ public class OrderActivity extends AppCompatActivity {
         orderBean.setWaterTypeQuantity(list);
         orderBean.setAmount(total.getText().toString());
         orderBean.setAddress(mAddress.getText().toString());
-        String key=databaseReference.push().getKey();
+        String key = databaseReference.push().getKey();
         orderBean.setOrderId(key);
         databaseReference.child(key).setValue(orderBean, new DatabaseReference.CompletionListener() {
             @Override
@@ -331,16 +365,84 @@ public class OrderActivity extends AppCompatActivity {
 
     }
 
-    boolean checkDate(){
+    boolean checkDate() {
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
         String startDate = sdf.format(date);
-        String endDate=appUser.supplier.getCloseBooking();
-        String diff=Helper.getTimeDifferent(startDate,endDate);
-        if (Double.valueOf(diff)>=Double.valueOf(appUser.supplier.getDeliveryTime().split(" ")[0])){
+        String endDate = appUser.supplier.getCloseBooking();
+        String diff = Helper.getTimeDifferent(startDate, endDate);
+        if (Double.valueOf(diff) >= Double.valueOf(appUser.supplier.getDeliveryTime().split(" ")[0])) {
             return true;
-        }else {
+        } else {
             return false;
         }
+    }
+
+
+    void showPopup(TextView emptyBottle, TextView total) {
+        dialog = new Dialog(OrderActivity.this);
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.empty_bottle_rate_dialog);
+        dialog.setCancelable(false);
+        EditText quantity = (EditText) dialog.findViewById(R.id.quantity);
+        TextView rate = (TextView) dialog.findViewById(R.id.rate);
+        appUser.supplier.setEmptyBottleRate("150");
+        LocalRepositories.saveAppUser(getApplicationContext(), appUser);
+        appUser = LocalRepositories.getAppUser(getApplicationContext());
+        rate.setText(appUser.supplier.getEmptyBottleRate());
+        quantity.setText("1");
+
+        Button submit = (Button) dialog.findViewById(R.id.dialogSubmit);
+        LinearLayout close = (LinearLayout) dialog.findViewById(R.id.close);
+
+        quantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!quantity.getText().toString().isEmpty()) {
+                    if (Integer.valueOf(quantity.getText().toString()) == 0) {
+                        quantity.setText("1");
+                    }
+                    rate.setText("" + (Integer.valueOf(appUser.supplier.getEmptyBottleRate()) * Integer.valueOf(quantity.getText().toString())));
+                } else {
+                    rate.setText(appUser.supplier.getEmptyBottleRate());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                empty_bottle_checkbox.setChecked(false);
+                dialog.dismiss();
+            }
+        });
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity.getText().toString().isEmpty()) {
+                    Toast.makeText(OrderActivity.this, "Enter Quantity", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                dialog.dismiss();
+                emptyBottle.setText(quantity.getText().toString()+"×"+appUser.supplier.getEmptyBottleRate()+"="+rate.getText().toString());
+                total.setText("" + (Double.valueOf(total.getText().toString()) + Double.valueOf(rate.getText().toString())));
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Helper.closeKeyPad(OrderActivity.this, isKeyPadOpen);
+            }
+        });
+        dialog.show();
     }
 }

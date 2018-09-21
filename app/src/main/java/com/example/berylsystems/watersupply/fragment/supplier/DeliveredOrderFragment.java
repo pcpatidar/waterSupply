@@ -72,7 +72,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new DeliveredOrderListAdapter(getActivity(), orderBeanList);
+        mAdapter = new DeliveredOrderListAdapter(getActivity(), orderBeanList,swipeRefreshLayout);
         mRecyclerView.setAdapter(mAdapter);
     }
 

@@ -80,12 +80,12 @@ public class SupplierListFragment extends Fragment implements SwipeRefreshLayout
                         DataSnapshot snapshot = iterator.next();
                         final UserBean userBean = (UserBean) snapshot.getValue(UserBean.class);
                         Location lStart = new Location(LocationManager.NETWORK_PROVIDER);
-                        lStart.setLatitude(Double.parseDouble(appUser.user.getLatitude()));
-                        lStart.setLongitude(Double.parseDouble(appUser.user.getLongitude()));
+                     //   lStart.setLatitude(Double.parseDouble(appUser.user.getLatitude()));
+                    //    lStart.setLongitude(Double.parseDouble(appUser.user.getLongitude()));
 
                         Location lEnd = new Location(LocationManager.NETWORK_PROVIDER);
-                        lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
-                        lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
+                     //   lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
+                    //    lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
                         if (lStart.distanceTo(lEnd) <= Double.valueOf(userBean.getDeliveryDistance().trim().split(" ")[0])*1000) {
                             userBeanList.add(userBean);
                         }
