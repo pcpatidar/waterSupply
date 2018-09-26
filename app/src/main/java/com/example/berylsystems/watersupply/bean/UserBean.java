@@ -29,7 +29,7 @@ public class UserBean {
     boolean thursday=true;
     boolean friday=true;
     boolean saturday=true;
-    String emptyBottleRate;
+
 
 
     public String getSupplierId() {
@@ -209,11 +209,5 @@ public class UserBean {
         this.saturday = saturday;
     }
 
-    public String getEmptyBottleRate() {
-        return emptyBottleRate;
-    }
 
-    public void setEmptyBottleRate(String emptyBottleRate) {
-        this.emptyBottleRate = emptyBottleRate;
-    }
 }

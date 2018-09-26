@@ -98,25 +98,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/colorPrimary"
-                    android:checked="false"
-                    android:text="Don't have empty bottle" />
+                    android:checked="true"
+                    android:text="I have empty bottle" />
 
-                <TextView
-                    android:id="@+id/empty_bottle_rate"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="5dp"
-                    android:gravity="center"
-                    android:textAlignment="textEnd"
-                    android:hint="Total amount"
-                    android:text="0.0"
-                    android:textColor="@color/colorPrimary" />
+
 
 
             </LinearLayout>
 
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:id="@+id/view"
+                android:background="?android:attr/listDivider" />
 
             <LinearLayout
                 android:layout_width="match_parent"

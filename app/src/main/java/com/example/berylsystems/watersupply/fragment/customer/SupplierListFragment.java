@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.adapter.customer.SupplierListAdapter;
@@ -27,13 +28,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SupplierListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class SupplierListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
@@ -71,7 +74,7 @@ public class SupplierListFragment extends Fragment implements SwipeRefreshLayout
                 swipeRefreshLayout.setRefreshing(false);
                 userBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
-                    int i=0;
+                    int i = 0;
                     Iterable<DataSnapshot> snapshotIterator = dataSnapshot.getChildren();
                     long count = dataSnapshot.getChildrenCount();
                     Iterator<DataSnapshot> iterator = snapshotIterator.iterator();
@@ -79,14 +82,41 @@ public class SupplierListFragment extends Fragment implements SwipeRefreshLayout
                         i++;
                         DataSnapshot snapshot = iterator.next();
                         final UserBean userBean = (UserBean) snapshot.getValue(UserBean.class);
-                        Location lStart = new Location(LocationManager.NETWORK_PROVIDER);
-                     //   lStart.setLatitude(Double.parseDouble(appUser.user.getLatitude()));
-                    //    lStart.setLongitude(Double.parseDouble(appUser.user.getLongitude()));
+                        try {
+                            Location lStart = new Location(LocationManager.NETWORK_PROVIDER);
+                            lStart.setLatitude(Double.parseDouble(appUser.user.getLatitude()));
+                            lStart.setLongitude(Double.parseDouble(appUser.user.getLongitude()));
 
-                        Location lEnd = new Location(LocationManager.NETWORK_PROVIDER);
-                     //   lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
-                    //    lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
-                        if (lStart.distanceTo(lEnd) <= Double.valueOf(userBean.getDeliveryDistance().trim().split(" ")[0])*1000) {
+                            Location lEnd = new Location(LocationManager.NETWORK_PROVIDER);
+                            lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
+                            lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
+                            if (lStart.distanceTo(lEnd) <= Double.valueOf(userBean.getDeliveryDistance().trim().split(" ")[0]) * 1000) {
+//                                if today is monday and isMonday is true
+
+//                                if (today().equalsIgnoreCase("Sun") && !userBean.isSunday()) {
+//                                    break;
+//                                }
+//                                if (today().equalsIgnoreCase("Mon") && !userBean.isMonday()) {
+//                                    break;
+//                                }
+//                                if (today().equalsIgnoreCase("Tue") && !userBean.isTuesday()) {
+//                                    break;
+//                                }
+//                                if (today().equalsIgnoreCase("Wed") && !userBean.isWednesday()) {
+//                                    break;
+//                                }
+//                                if (today().equalsIgnoreCase("Thu") && !userBean.isThursday()) {
+//                                    break;
+//                                }
+//                                if (today().equalsIgnoreCase("Fri") && !userBean.isFriday()) {
+//                                    break;
+//                                }
+//                                if (today().equalsIgnoreCase("Sat") && !userBean.isSaturday()) {
+//                                    break;
+//                                }
+                                userBeanList.add(userBean);
+                            }
+                        } catch (Exception e) {
                             userBeanList.add(userBean);
                         }
                     }
@@ -106,9 +136,12 @@ public class SupplierListFragment extends Fragment implements SwipeRefreshLayout
         mRecyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
-        mAdapter = new SupplierListAdapter(getActivity(),swipeRefreshLayout, userBeanList);
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+        mAdapter = new SupplierListAdapter(getActivity(), swipeRefreshLayout, userBeanList, String.valueOf(today).split(" ")[0]);
         mRecyclerView.setAdapter(mAdapter);
     }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -118,10 +151,16 @@ public class SupplierListFragment extends Fragment implements SwipeRefreshLayout
     public void onRefresh() {
         if (!Helper.isNetworkAvailable(getActivity())) {
             swipeRefreshLayout.setRefreshing(false);
-            Snackbar.make(mainLayout,"Please check your internet connection!",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, "Please check your internet connection!", Snackbar.LENGTH_SHORT).show();
             return;
         }
         getAllRecord("Supplier");
         databaseReference.addValueEventListener(valueEventListener);
+    }
+
+    String today() {
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+        return String.valueOf(today).split(" ")[0];
     }
 }

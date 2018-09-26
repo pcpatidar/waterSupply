@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -49,6 +50,8 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
+    String format="dd MMM yyyy";
+    String today;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +61,9 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
         swipeRefreshLayout.setOnRefreshListener(this);
         appUser = LocalRepositories.getAppUser(getActivity());
         mobileNumber=appUser.user.getMobile();
+        long date = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        today = sdf.format(date);
         orderBeanList = new ArrayList<>();
         if (Helper.isNetworkAvailable(getActivity())) {
             swipeRefreshLayout.setRefreshing(true);
@@ -96,7 +102,9 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
                         if (orderBean.getSupplier().getMobile().equals(mobileNumber)){
                             if (orderBean.isStatus()){
-                                orderBeanList.add(orderBean);
+                                if (orderBean.getDeliveryDate().trim().equals(today)){
+                                    orderBeanList.add(orderBean);
+                                }
                             }
                         }
                         if (i == count) {

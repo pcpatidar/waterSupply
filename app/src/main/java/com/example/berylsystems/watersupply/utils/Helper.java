@@ -21,6 +21,7 @@ import com.example.berylsystems.watersupply.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -90,7 +91,7 @@ public class Helper {
     public static String getTimeDifferent(String start, String end) {
         String diff = "0.0";
         try {
-            SimpleDateFormat format = new SimpleDateFormat("hh:mm aa");
+            SimpleDateFormat format = new SimpleDateFormat("hh.mm aa");
             Date date1 = format.parse(end);
             Date date2 = format.parse(start);
             long mills = date1.getTime() - date2.getTime();
@@ -121,7 +122,7 @@ public class Helper {
 
     public static List<String> deliverTimeList(double d){
         String min = ":30 min";
-        String hour = ":00 hour";
+        String hour = ".00 hour";
         List<String> list = new ArrayList<>();
         list.add("30 min");
         list.add("1"+hour);
@@ -147,6 +148,31 @@ public class Helper {
         if (isKeyPadOpen){
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
         }
+    }
+
+    public static String getDayFromDateString(String stringDate) {
+        String[] daysArray = new String[] {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+        String day = "";
+
+        int dayOfWeek =0;
+        //dateTimeFormat = yyyy-MM-dd HH:mm:ss
+        SimpleDateFormat formatter=new SimpleDateFormat("dd MMM yyyy");
+//        SimpleDateFormat formatter = new SimpleDateFormat(dateTimeFormat);
+        Date date;
+        try {
+            date = formatter.parse(stringDate);
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            dayOfWeek = c.get(Calendar.DAY_OF_WEEK)-1;
+            if (dayOfWeek < 0) {
+                dayOfWeek += 7;
+            }
+            day = daysArray[dayOfWeek];
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return day;
     }
 
 }

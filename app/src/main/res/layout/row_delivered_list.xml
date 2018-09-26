@@ -297,7 +297,7 @@
                     android:layout_height="10dp"
                     android:layout_gravity="center"
                     android:layout_marginRight="5dp"
-                    android:background="@drawable/icon_cancel" />
+                    android:background="@drawable/icon_cancel_white" />
             </LinearLayout>
 
             <TextView

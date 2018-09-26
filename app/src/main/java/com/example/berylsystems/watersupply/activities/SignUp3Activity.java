@@ -95,13 +95,11 @@ public class SignUp3Activity extends AppCompatActivity {
     CheckBox friday;
     @Bind(R.id.saturday)
     CheckBox saturday;
-    @Bind(R.id.emptyBottle)
-    EditText emptyBottle;
 
     @Bind(R.id.time_picker)
     TimePicker mTimePicker;
-//    @Bind(R.id.empty_bottle_checkbox)
-//    CheckBox empty_bottle_checkbox;
+//    @Bind(R.id.mCheckBoxEmptyBottle)
+//    CheckBox mCheckBoxEmptyBottle;
 //    @Bind(R.id.empty_bottle_rate)
 //    TextView empty_bottle_rate;
 
@@ -216,10 +214,7 @@ public class SignUp3Activity extends AppCompatActivity {
                     Snackbar.make(mainLayout, "Select Delivery Time", Snackbar.LENGTH_LONG).show();
                     return;
                 }
-                if (emptyBottle.getText().toString().isEmpty()) {
-                    Snackbar.make(mainLayout, "Enter Emplty Bottle Rate", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
+
                 if (ParameterConstants.location == null) {
                     Snackbar.make(mainLayout, "Location not found", Snackbar.LENGTH_LONG).show();
                     return;
@@ -230,6 +225,7 @@ public class SignUp3Activity extends AppCompatActivity {
                     View v = ((ViewGroup) mAdd_water).getChildAt(i);
                     EditText waterType = v.findViewById(R.id.water_type);
                     EditText waterRate = v.findViewById(R.id.water_rate);
+                    EditText bottleRate = v.findViewById(R.id.bottle_rate);
                     if (waterType.getText().toString().isEmpty()) {
                         Snackbar.make(mainLayout, "Enter Water Type", Snackbar.LENGTH_LONG).show();
                         return;
@@ -238,7 +234,11 @@ public class SignUp3Activity extends AppCompatActivity {
                         Snackbar.make(mainLayout, "Enter Water Rate", Snackbar.LENGTH_LONG).show();
                         return;
                     }
-                    list.add(waterType.getText().toString() + "," + waterRate.getText().toString());
+                    if (bottleRate.getText().toString().isEmpty()) {
+                        Snackbar.make(mainLayout, "Enter Empty Bottle Rate", Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+                    list.add(waterType.getText().toString() + "," + waterRate.getText().toString()+ "," + bottleRate.getText().toString());
                 }
                 userBean.setLatitude("" + ParameterConstants.location.getLatitude());
                 userBean.setLongitude("" + ParameterConstants.location.getLongitude());
@@ -246,7 +246,6 @@ public class SignUp3Activity extends AppCompatActivity {
                 userBean.setCloseBooking(closeBooking.getText().toString());
                 userBean.setDeliveryDistance(deliveryDistance.getText().toString());
                 userBean.setDeliveryTime(deliveryTime.getSelectedItem().toString());
-                userBean.setEmptyBottleRate(emptyBottle.getText().toString());
                 userBean.setTypeRate(list);
                 retrieveKey(userBean.getMobile());
             }
@@ -296,7 +295,7 @@ public class SignUp3Activity extends AppCompatActivity {
                         else if (datetime.get(Calendar.AM_PM) == Calendar.PM)
                             am_pm = "PM";
                         String strHrsToShow = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
-                        textView.setText(strHrsToShow + ":" + datetime.get(Calendar.MINUTE) + " " + am_pm);
+                        textView.setText(strHrsToShow + "." + datetime.get(Calendar.MINUTE) + " " + am_pm);
                         try {
                             List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(), closeBooking.getText().toString())));
                             list.add(0, "Delivery with in");

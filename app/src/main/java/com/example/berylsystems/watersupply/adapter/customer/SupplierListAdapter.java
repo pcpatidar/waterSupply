@@ -25,6 +25,8 @@ import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -35,12 +37,13 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
     private List<UserBean> data;
     private Context context;
     SwipeRefreshLayout swipeRefreshLayout;
+    String today;
 
-    public SupplierListAdapter(Context context, SwipeRefreshLayout swipeRefreshLayout, List<UserBean> data) {
+    public SupplierListAdapter(Context context, SwipeRefreshLayout swipeRefreshLayout, List<UserBean> data, String today) {
         this.data = data;
         this.context = context;
-        this.swipeRefreshLayout=swipeRefreshLayout;
-
+        this.swipeRefreshLayout = swipeRefreshLayout;
+        this.today = today;
     }
 
 
@@ -52,14 +55,27 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 
     @Override
     public void onBindViewHolder(SupplierListAdapter.ViewHolder viewHolder, int position) {
-        if (checkDate(data.get(position).getDeliveryTime(),data.get(position).getCloseBooking())){
-            viewHolder.status.setText("Booking Open");
-        }else {
+        if (today.equalsIgnoreCase("Sun") && data.get(position).isSunday()) {
+            setStatus(viewHolder,position);
+        } else if (today.equalsIgnoreCase("Mon") && data.get(position).isMonday()) {
+            setStatus(viewHolder,position);
+        } else if (today.equalsIgnoreCase("Tue") && data.get(position).isTuesday()) {
+            setStatus(viewHolder,position);
+        } else if (today.equalsIgnoreCase("Wed") && data.get(position).isWednesday()) {
+            setStatus(viewHolder,position);
+        } else if (today.equalsIgnoreCase("Thu") && data.get(position).isThursday()) {
+            setStatus(viewHolder,position);
+        } else if (today.equalsIgnoreCase("Fri") && data.get(position).isFriday()) {
+            setStatus(viewHolder,position);
+        } else if (today.equalsIgnoreCase("Sat") && data.get(position).isSaturday()) {
+            setStatus(viewHolder,position);
+        } else {
             viewHolder.status.setText("Booking Closed");
         }
 
+
         viewHolder.bind(data.get(position).getDeliveryTime());
-        String s=data.get(position).getOpenBooking() + " - " + data.get(position).getCloseBooking()+" (Deliver Up to " + data.get(position).getDeliveryTime()+")";
+        String s = data.get(position).getOpenBooking() + " - " + data.get(position).getCloseBooking() + " (Deliver Up to " + data.get(position).getDeliveryTime() + ")";
         SpannableStringBuilder str = new SpannableStringBuilder(s);
         str.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), s.indexOf("("), s.indexOf(")"), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.time.setText(str);
@@ -71,8 +87,9 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
             @Override
             public void onClick(View view) {
                 swipeRefreshLayout.setRefreshing(false);
-                AppUser appUser= LocalRepositories.getAppUser(context);
+                AppUser appUser = LocalRepositories.getAppUser(context);
                 appUser.supplier = data.get(position);
+                appUser.status = viewHolder.status.getText().toString();
                 LocalRepositories.saveAppUser(context, appUser);
                 context.startActivity(new Intent(context, OrderActivity.class));
             }
@@ -107,6 +124,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
 //        TextView delivery_with_in;
 
         private ObjectAnimator anim;
+
         @SuppressLint("WrongConstant")
         public ViewHolder(View view) {
             super(view);
@@ -116,22 +134,31 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
             anim.setRepeatCount(Animation.INFINITE);
             anim.setDuration(800);
         }
-        public void bind(String dataObject){
+
+        public void bind(String dataObject) {
             anim.start();
         }
     }
 
 
-    boolean checkDate(String start,String end){
+    boolean checkDate(String start, String end) {
         long date = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+        SimpleDateFormat sdf = new SimpleDateFormat("hh.mm aa");
         String startDate = sdf.format(date);
-        String endDate=end;
-        String diff= Helper.getTimeDifferent(startDate,endDate);
-        if (Double.valueOf(diff)>=Double.valueOf(start.split(" ")[0])){
+        String endDate = end;
+        String diff = Helper.getTimeDifferent(startDate, endDate);
+        if (Double.valueOf(diff) >= Double.valueOf(start.split(" ")[0])) {
             return true;
-        }else {
+        } else {
             return false;
+        }
+    }
+
+    void setStatus(ViewHolder viewHolder,int position){
+        if (checkDate(data.get(position).getDeliveryTime(), data.get(position).getCloseBooking())) {
+            viewHolder.status.setText("Booking Open");
+        } else {
+            viewHolder.status.setText("Booking Closed");
         }
     }
 }

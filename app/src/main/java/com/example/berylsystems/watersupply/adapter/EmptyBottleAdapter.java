@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.berylsystems.watersupply.R;
@@ -18,7 +17,7 @@ import java.util.Map;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.ViewHolder> {
+public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.ViewHolder> {
 
     private List<String> data;
     private Context context;
@@ -26,7 +25,7 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
     OrderActivity object;
     public static Map<Integer,String> map;
 
-    public WaterDetailAdapter(Context context, List<String> data) {
+    public EmptyBottleAdapter(Context context, List<String> data) {
         this.data = data;
         this.context = context;
         object = OrderActivity.context;
@@ -35,17 +34,17 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
 
 
     @Override
-    public WaterDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_water_list, viewGroup, false);
+    public EmptyBottleAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_empty_bottle_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(WaterDetailAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(EmptyBottleAdapter.ViewHolder viewHolder, int position) {
         mInteger = 0;
         String[] arr = data.get(position).split(",");
         viewHolder.water_type.setText(arr[0]);
-        viewHolder.water_rate.setText("(\u20B9" + arr[1] + ")");
+        viewHolder.water_rate.setText("(\u20B9" + arr[2] + ")");
         // viewHolder.water_type.setText(data.get(position).split(",")[0]+" ( ₹ "+data.get(position).split(",")[1]+")");
 
         viewHolder.layout_plus.setOnClickListener(new View.OnClickListener() {
@@ -54,8 +53,8 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
                 mInteger = Integer.parseInt(viewHolder.mQuantity.getText().toString());
                 mInteger = mInteger + 1;
                 viewHolder.mQuantity.setText("" + mInteger);
-                object.setTotal(""+(Double.valueOf(object.getTotal()) + Double.valueOf(arr[1])));
-                map.put(position,arr[0]+","+arr[1]+","+ mInteger);
+                object.setTotal(""+(Double.valueOf(object.getTotal()) + Double.valueOf(arr[2])));
+                map.put(position,arr[0]+","+arr[2]+","+ mInteger);
             }
         });
 
@@ -66,8 +65,8 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
                 if (mInteger > 0) {
                     mInteger = mInteger - 1;
                     viewHolder.mQuantity.setText("" + mInteger);
-                    object.setTotal(""+(Double.valueOf(object.getTotal()) - Double.valueOf(arr[1])));
-                    map.put(position,arr[0]+","+arr[1]+"'"+ mInteger);
+                    object.setTotal(""+(Double.valueOf(object.getTotal()) - Double.valueOf(arr[2])));
+                    map.put(position,arr[0]+","+arr[2]+"'"+ mInteger);
                     if (viewHolder.mQuantity.getText().toString().equals("0")){
                         map.remove(position);
                     }
