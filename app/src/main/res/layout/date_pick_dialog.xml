@@ -14,15 +14,15 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_gravity="end"
+                android:gravity="end"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:gravity="right"
                     android:layout_gravity="center"
                     android:orientation="horizontal"
                     android:weightSum="1">
@@ -33,6 +33,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="40dp"
                         android:layout_weight="0.8"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:text="ENTER DATE"
                         android:textStyle="bold"
@@ -43,15 +44,15 @@
                         android:id="@+id/close"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-                        android:layout_gravity="center"
+                        android:layout_gravity="right"
                         android:layout_weight="0.2"
                         android:gravity="right">
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="25dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/icon_cancel" />
+                            android:layout_gravity="right"
+                            android:src="@drawable/cancel_icon" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -94,7 +95,7 @@
                             android:layout_weight="1"
                             android:onClick="timeFrom"
                             android:padding="7dp"
-                            android:src="@drawable/clock" />
+                            android:src="@drawable/icon_calendar" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -139,7 +140,7 @@
                             android:layout_weight="1"
                             android:onClick="timeFrom"
                             android:padding="7dp"
-                            android:src="@drawable/clock" />
+                            android:src="@drawable/icon_calendar" />
                 </LinearLayout>
 
             </LinearLayout>

@@ -73,6 +73,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
+                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                 startActivity(intent);
             }
         });
@@ -133,11 +134,13 @@ public class SignInActivity extends AppCompatActivity {
                     LocalRepositories.saveAppUser(getApplicationContext(), appUser);
                     if (ParameterConstants.KEY.contains(ParameterConstants.SUPPLIER)) {
                         Intent intent = new Intent(SignInActivity.this, SupplierHomeActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(SignInActivity.this, CustomerHomeActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                         startActivity(intent);
                     }
                     finish();

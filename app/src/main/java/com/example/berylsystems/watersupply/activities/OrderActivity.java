@@ -351,7 +351,7 @@ public class OrderActivity extends AppCompatActivity {
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 progressDialog.dismiss();
                 if (databaseError == null) {
-                    CustomerHomeActivity.bool = false;
+                    CustomerHomeActivity.bool = true;
                     Toast.makeText(OrderActivity.this, "Your order is successfully submitted", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {

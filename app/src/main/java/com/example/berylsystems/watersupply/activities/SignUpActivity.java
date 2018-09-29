@@ -425,6 +425,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         progressDialog.dismiss();
+        overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_left);
         super.onBackPressed();
     }
 

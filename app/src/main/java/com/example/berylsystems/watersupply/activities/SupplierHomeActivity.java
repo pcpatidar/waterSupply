@@ -280,6 +280,7 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
             appUser.user = null;
             LocalRepositories.saveAppUser(getApplicationContext(), appUser);
             startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_left);
             finish();
         }
 

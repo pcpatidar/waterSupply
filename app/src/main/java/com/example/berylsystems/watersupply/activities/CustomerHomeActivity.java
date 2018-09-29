@@ -189,9 +189,8 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
             return;
         }
         if (bool) {
+            bool=false;
             mHeaderViewPager.setCurrentItem(1, true);
-        } else {
-            mHeaderViewPager.setCurrentItem(0, true);
         }
         versionCheck();
     }
@@ -271,6 +270,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
             appUser.user = null;
             LocalRepositories.saveAppUser(getApplicationContext(), appUser);
             startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_left);
             finish();
         }
 

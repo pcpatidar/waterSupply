@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
@@ -33,10 +34,14 @@ public class SplashActivity extends Activity {
 
     @Bind(R.id.mainLayout)
     RelativeLayout mainLayout;
+    @Bind(R.id.textView)
+    TextView textView;
     AppUser appUser;
     FirebaseDatabase database;
     DatabaseReference databaseReference;
     final int PERMISSIONS_BUZZ_REQUEST = 0xABC;
+    String s=" JalSewa.com ";
+    int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,23 +50,28 @@ public class SplashActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        CustomerHomeActivity.bool=true;
+        new MyLocationListener(getApplicationContext());
         appUser = LocalRepositories.getAppUser(this);
         if (appUser == null) {
             appUser = new AppUser();
             LocalRepositories.saveAppUser(this, appUser);
         }
-//        if (!Helper.isNetworkAvailable(getApplicationContext())) {
-//            Snackbar.make(mainLayout, "Please check your network connection", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show();
-//            return;
-//        }
         int currentApiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentApiVersion <= 22) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    new MyLocationListener(getApplicationContext());
+            handler(s.charAt(i));
+        }else {
+            checkPermissions();
+        }
+    }
+    void handler(char c) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (i < s.length()-1) {
+                    textView.append(""+c);
+                    i = i + 1;
+                    handler(s.charAt(i));
+                } else {
                     if (appUser.user ==null){
                         startActivity(new Intent(getApplicationContext(), SignInActivity.class));
                     }else {
@@ -71,13 +81,11 @@ public class SplashActivity extends Activity {
                             startActivity(new Intent(getApplicationContext(), CustomerHomeActivity.class));
                         }
                     }
+                    overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);
                     finish();
                 }
-            }, 1000);
-
-        }else {
-            checkPermissions();
-        }
+            }
+        }, 200);
     }
 
 //    @Override
@@ -163,17 +171,7 @@ public class SplashActivity extends Activity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            new MyLocationListener(getApplicationContext());
-                            if (appUser.user ==null){
-                                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-                            }else {
-                                if (appUser.user.getUserType().contains(ParameterConstants.SUPPLIER)){
-                                    startActivity(new Intent(getApplicationContext(), SupplierHomeActivity.class));
-                                }else {
-                                    startActivity(new Intent(getApplicationContext(), CustomerHomeActivity.class));
-                                }
-                            }
-                            finish();
+                            handler(s.charAt(i));
                         }
                     }, 1000);
 
