@@ -323,6 +323,18 @@ public class OrderActivity extends AppCompatActivity {
         for (Integer key : set) {
             list.add(WaterDetailAdapter.map.get(key));
         }
+
+        Set<Integer> set2 = EmptyBottleAdapter.map.keySet();
+        for (Integer key : set2) {
+            try {
+                String kpr=WaterDetailAdapter.map.get(key);
+                kpr=kpr+"="+EmptyBottleAdapter.map.get(key);
+                list.set(key,kpr);
+            }catch (Exception e){
+                list.add(EmptyBottleAdapter.map.get(key));
+            }
+        }
+
         orderBean.setUser(appUser.user);
         orderBean.setSupplier(appUser.supplier);
         orderBean.setAmount("10");

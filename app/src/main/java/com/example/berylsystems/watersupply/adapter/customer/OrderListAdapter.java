@@ -27,10 +27,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     Boolean aBoolean;
 
 
-    public OrderListAdapter(Activity context, List<OrderBean> data,Boolean b) {
+    public OrderListAdapter(Activity context, List<OrderBean> data, Boolean b) {
         this.data = data;
         this.context = context;
-        aBoolean=b;
+        aBoolean = b;
     }
 
 
@@ -71,8 +71,50 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         removeAllViews(viewHolder);
         try {
             for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
-                String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
-                addView(orderDetail[0], orderDetail[2], orderDetail[1], viewHolder);
+                //Normal Water,10,1=Normal Water,150,1
+                //Normal Water,10,1
+                //null=Normal Water,150,1
+
+                String str = data.get(position).getWaterTypeQuantity().get(i);
+                //null=Normal Water,150,1
+                if (str.startsWith("null")) {
+                    String[] str2 = str.split("=")[0].split(",");
+                    String name = str2[0];
+                    String wQty = "";
+                    String bQty = str2[2];
+                    String rate = str2[1];
+                    addView(name, wQty, bQty, rate, viewHolder);
+                }
+                //Normal Water,10,1
+                if (!str.contains("=")) {
+                    String[] str2 = str.split(",");
+                    String name = str2[0];
+                    String wQty = str2[2];
+                    String bQty = "0";
+                    String rate = str2[1];
+                    addView(name, wQty, bQty, rate, viewHolder);
+                } else if (str.contains("=")) {
+                    //Normal Water,10,1=Normal Water,150,1
+                    String[] strAr = str.split("=");
+                    String str1 = strAr[0];
+                    String str2 = strAr[1];
+
+                    String[] s1 = str1.split(",");
+                    String[] s2 = str2.split(",");
+
+                    String name = s1[0];
+                    String wQty = s1[2];
+                    String bQty = s2[2];
+                    String rate= String.valueOf(Double.valueOf(s1[1])+Double.valueOf(s2[1]));
+                    addView(name, wQty, bQty, rate, viewHolder);
+                }
+
+
+//                String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
+//                String name=orderDetail[0];
+//                String qty=orderDetail[2];
+//                String rate=orderDetail[1];
+//                addView(name, qty, rate, viewHolder);
             }
         } catch (Exception e) {
         }
@@ -84,14 +126,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         return data.size();
     }
 
-    void addView(String name, String qty, String rate, ViewHolder viewHolder) {
+    void addView(String name, String wQty, String bQty, String rate, ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         TextView orderName = ((TextView) mConvertView.findViewById(R.id.orderName));
-        TextView orderQty = ((TextView) mConvertView.findViewById(R.id.orderQty));
+        TextView waterQty = ((TextView) mConvertView.findViewById(R.id.waterQty));
+        TextView bottleQty = ((TextView) mConvertView.findViewById(R.id.bottleQty));
         TextView orderRate = ((TextView) mConvertView.findViewById(R.id.orderRate));
         orderName.setText(name/*+" (\u20B9"+rate+")"*/);
-        orderQty.setText(qty);
-        orderRate.setText("" + Double.valueOf(qty) * Double.valueOf(rate));
+        waterQty.setText(wQty);
+        bottleQty.setText(bQty);
+        orderRate.setText("" + rate/*Double.valueOf(qty) * Double.valueOf(rate)*/);
         ((ViewGroup) viewHolder.parentLayout).addView(mConvertView);
     }
 
@@ -147,4 +191,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             anim.start();
         }
     }
+
+
 }

@@ -129,7 +129,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
     void addView(String name,String qty,String rate,ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         TextView orderName = ((TextView) mConvertView.findViewById(R.id.orderName));
-        TextView orderQty = ((TextView) mConvertView.findViewById(R.id.orderQty));
+        TextView orderQty = ((TextView) mConvertView.findViewById(R.id.waterQty));
         TextView orderRate = ((TextView) mConvertView.findViewById(R.id.orderRate));
         orderName.setText(name/*+" (\u20B9"+rate+")"*/);
         orderQty.setText(qty);
