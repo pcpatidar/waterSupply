@@ -69,9 +69,46 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
             viewHolder.comment.setText(data.get(position).getComment());
         }
         removeAllViews(viewHolder);
-        for (int i=0;i<data.get(position).getWaterTypeQuantity().size();i++){
-            String[] orderDetail=data.get(position).getWaterTypeQuantity().get(i).split(",");
-            addView(orderDetail[0],orderDetail[2],orderDetail[1],viewHolder);
+        try {
+            for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
+                String str = data.get(position).getWaterTypeQuantity().get(i);
+                if (!str.contains("=")) {
+                    String[] strAr = str.split(",");
+                    String name ;
+                    String wQty;
+                    String bQty ;
+                    String rate;
+//                    Normal Water,10,1
+                    if (strAr.length==3){
+                        name = strAr[0];
+                        wQty = strAr[2];
+                        bQty = "0";
+                        rate = strAr[1];
+                    }else {
+//                        Cold water,150'1
+                        name = strAr[0];
+                        wQty = "0";
+                        bQty = strAr[1].split("'")[1];
+                        rate = strAr[1].split("'")[0];
+                    }
+                    addView(name, wQty, bQty, rate, viewHolder);
+                } else if (str.contains("=")) {
+                    //Normal Water,10,1=Normal Water,150,1
+                    String[] strAr = str.split("=");
+                    String str1 = strAr[0];
+                    String str2 = strAr[1];
+
+                    String[] s1 = str1.split(",");
+                    String[] s2 = str2.split(",");
+
+                    String name = s1[0];
+                    String wQty = s1[2];
+                    String bQty = s2[1].split("'")[1];
+                    String rate= String.valueOf(Double.valueOf(s1[1])+Double.valueOf(s2[1].split("'")[0]));
+                    addView(name, wQty, bQty, rate, viewHolder);
+                }
+            }
+        } catch (Exception e) {
         }
         viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,14 +163,16 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         return data.size();
     }
 
-    void addView(String name,String qty,String rate,ViewHolder viewHolder) {
+    void addView(String name, String wQty, String bQty, String rate, DeliveredOrderListAdapter.ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         TextView orderName = ((TextView) mConvertView.findViewById(R.id.orderName));
-        TextView orderQty = ((TextView) mConvertView.findViewById(R.id.waterQty));
+        TextView waterQty = ((TextView) mConvertView.findViewById(R.id.waterQty));
+        TextView bottleQty = ((TextView) mConvertView.findViewById(R.id.bottleQty));
         TextView orderRate = ((TextView) mConvertView.findViewById(R.id.orderRate));
         orderName.setText(name/*+" (\u20B9"+rate+")"*/);
-        orderQty.setText(qty);
-        orderRate.setText(""+Double.valueOf(qty)*Double.valueOf(rate));
+        waterQty.setText(wQty);
+        bottleQty.setText(bQty);
+        orderRate.setText("" + rate/*Double.valueOf(qty) * Double.valueOf(rate)*/);
         ((ViewGroup) viewHolder.parentLayout).addView(mConvertView);
     }
     void removeAllViews(ViewHolder viewHolder) {

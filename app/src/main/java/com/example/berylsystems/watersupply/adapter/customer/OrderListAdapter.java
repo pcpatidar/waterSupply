@@ -76,22 +76,27 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                 //null=Normal Water,150,1
 
                 String str = data.get(position).getWaterTypeQuantity().get(i);
-                //null=Normal Water,150,1
-                if (str.startsWith("null")) {
-                    String[] str2 = str.split("=")[0].split(",");
-                    String name = str2[0];
-                    String wQty = "";
-                    String bQty = str2[2];
-                    String rate = str2[1];
-                    addView(name, wQty, bQty, rate, viewHolder);
-                }
-                //Normal Water,10,1
+
+
                 if (!str.contains("=")) {
-                    String[] str2 = str.split(",");
-                    String name = str2[0];
-                    String wQty = str2[2];
-                    String bQty = "0";
-                    String rate = str2[1];
+                    String[] strAr = str.split(",");
+                    String name ;
+                    String wQty;
+                    String bQty ;
+                    String rate;
+//                    Normal Water,10,1
+                    if (strAr.length==3){
+                         name = strAr[0];
+                         wQty = strAr[2];
+                         bQty = "0";
+                         rate = strAr[1];
+                    }else {
+//                        Cold water,150'1
+                        name = strAr[0];
+                        wQty = "0";
+                        bQty = strAr[1].split("'")[1];
+                        rate = strAr[1].split("'")[0];
+                    }
                     addView(name, wQty, bQty, rate, viewHolder);
                 } else if (str.contains("=")) {
                     //Normal Water,10,1=Normal Water,150,1
@@ -104,17 +109,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
 
                     String name = s1[0];
                     String wQty = s1[2];
-                    String bQty = s2[2];
-                    String rate= String.valueOf(Double.valueOf(s1[1])+Double.valueOf(s2[1]));
+                    String bQty = s2[1].split("'")[1];
+                    String rate= String.valueOf(Double.valueOf(s1[1])+Double.valueOf(s2[1].split("'")[0]));
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
-
-
-//                String[] orderDetail = data.get(position).getWaterTypeQuantity().get(i).split(",");
-//                String name=orderDetail[0];
-//                String qty=orderDetail[2];
-//                String rate=orderDetail[1];
-//                addView(name, qty, rate, viewHolder);
             }
         } catch (Exception e) {
         }

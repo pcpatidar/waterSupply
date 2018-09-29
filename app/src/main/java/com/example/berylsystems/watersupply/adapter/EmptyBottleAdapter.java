@@ -54,7 +54,7 @@ public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.
                 mInteger = mInteger + 1;
                 viewHolder.mQuantity.setText("" + mInteger);
                 object.setTotal(""+(Double.valueOf(object.getTotal()) + Double.valueOf(arr[2])));
-                map.put(position,arr[0]+","+arr[2]+","+ mInteger);
+                map.put(position,arr[0]+","+arr[2]+"'"+ mInteger);
             }
         });
 
