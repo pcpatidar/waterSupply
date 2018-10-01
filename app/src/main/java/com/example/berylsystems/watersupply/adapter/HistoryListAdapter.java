@@ -36,9 +36,9 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     @Override
     public HistoryListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view;
-        if (ParameterConstants.KEY.contains("C")){
+        if (ParameterConstants.KEY.contains("C")) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_history_customer, viewGroup, false);
-        }else {
+        } else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_history_supplier, viewGroup, false);
         }
 
@@ -77,19 +77,26 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         try {
             for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
                 String str = data.get(position).getWaterTypeQuantity().get(i);
-                if (!str.contains("=")) {
+                if (str.startsWith("null")) {
+                    String[] strAr = str.split("=")[1].split(",");
+                    String name = strAr[0];
+                    String wQty = "0";
+                    String bQty = strAr[1].split("'")[1];
+                    String rate = strAr[1].split("'")[0];
+                    addView(name, wQty, bQty, rate, viewHolder);
+                } else if (!str.contains("=")) {
                     String[] strAr = str.split(",");
-                    String name ;
+                    String name;
                     String wQty;
-                    String bQty ;
+                    String bQty;
                     String rate;
 //                    Normal Water,10,1
-                    if (strAr.length==3){
+                    if (strAr.length == 3) {
                         name = strAr[0];
                         wQty = strAr[2];
                         bQty = "0";
                         rate = strAr[1];
-                    }else {
+                    } else {
 //                        Cold water,150'1
                         name = strAr[0];
                         wQty = "0";
@@ -109,7 +116,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                     String name = s1[0];
                     String wQty = s1[2];
                     String bQty = s2[1].split("'")[1];
-                    String rate= String.valueOf(Double.valueOf(s1[1])+Double.valueOf(s2[1].split("'")[0]));
+                    String rate = String.valueOf(Double.valueOf(s1[1]) + Double.valueOf(s2[1].split("'")[0]));
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }

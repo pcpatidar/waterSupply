@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JalSewa</string>
+    <string name="app_name">Wtrs</string>
     <string name="msg_perms_needed">Turn on your Location</string>
     <string name="btn_quit">Quit</string>
     <string name="btn_accept">Accept</string>

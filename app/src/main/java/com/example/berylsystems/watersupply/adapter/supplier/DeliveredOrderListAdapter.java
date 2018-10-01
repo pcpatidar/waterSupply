@@ -37,7 +37,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
     public DeliveredOrderListAdapter(Activity context, List<OrderBean> data, SwipeRefreshLayout swipeRefreshLayout) {
         this.data = data;
         this.context = context;
-        this.swipeRefreshLayout=swipeRefreshLayout;
+        this.swipeRefreshLayout = swipeRefreshLayout;
 
     }
 
@@ -72,19 +72,26 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         try {
             for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
                 String str = data.get(position).getWaterTypeQuantity().get(i);
-                if (!str.contains("=")) {
+                if (str.startsWith("null")) {
+                    String[] strAr = str.split("=")[1].split(",");
+                    String name = strAr[0];
+                    String wQty = "0";
+                    String bQty = strAr[1].split("'")[1];
+                    String rate = strAr[1].split("'")[0];
+                    addView(name, wQty, bQty, rate, viewHolder);
+                } else if (!str.contains("=")) {
                     String[] strAr = str.split(",");
-                    String name ;
+                    String name;
                     String wQty;
-                    String bQty ;
+                    String bQty;
                     String rate;
 //                    Normal Water,10,1
-                    if (strAr.length==3){
+                    if (strAr.length == 3) {
                         name = strAr[0];
                         wQty = strAr[2];
                         bQty = "0";
                         rate = strAr[1];
-                    }else {
+                    } else {
 //                        Cold water,150'1
                         name = strAr[0];
                         wQty = "0";
@@ -104,7 +111,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                     String name = s1[0];
                     String wQty = s1[2];
                     String bQty = s2[1].split("'")[1];
-                    String rate= String.valueOf(Double.valueOf(s1[1])+Double.valueOf(s2[1].split("'")[0]));
+                    String rate = String.valueOf(Double.valueOf(s1[1]) + Double.valueOf(s2[1].split("'")[0]));
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }
@@ -123,12 +130,12 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                                 Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            mProgressDialog=new ProgressDialog(context);
+                            mProgressDialog = new ProgressDialog(context);
                             mProgressDialog.setMessage("Please wait...");
                             swipeRefreshLayout.setRefreshing(true);
 //                            mProgressDialog.show();
                             DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
-                            OrderBean orderBean=data.get(position);
+                            OrderBean orderBean = data.get(position);
                             orderBean.setStatus(false);
                             database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
                                 @Override
@@ -149,8 +156,6 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
-
-
 
 
             }
@@ -175,6 +180,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         orderRate.setText("" + rate/*Double.valueOf(qty) * Double.valueOf(rate)*/);
         ((ViewGroup) viewHolder.parentLayout).addView(mConvertView);
     }
+
     void removeAllViews(ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         ((ViewGroup) viewHolder.parentLayout).removeAllViews();

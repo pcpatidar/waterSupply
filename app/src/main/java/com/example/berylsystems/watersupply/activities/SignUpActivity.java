@@ -29,7 +29,10 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
+import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.bean.UserBean;
+import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
@@ -107,9 +110,35 @@ public class SignUpActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Helper.initActionbar(this, getSupportActionBar(), "Sign Up", true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        userBean = new UserBean();
+        appUser = LocalRepositories.getAppUser(this);
+        if (ParameterConstants.isUpdate) {
+            userBean = appUser.user;
+            mSignUp.setText("Update Account");
+        } else {
+            if (userBean == null) {
+                userBean = new UserBean();
+            }
+        }
+
+        if (userBean.getName() != null) {
+            mName.setText(userBean.getName());
+        }
+        if (userBean.getEmail() != null) {
+            mEmail.setText(userBean.getEmail());
+        }
+        if (userBean.getPassword() != null) {
+            mPassword.setText(userBean.getPassword());
+            confirmPassword.setText(userBean.getPassword());
+        }
+        if (userBean.getAddress() != null) {
+            mAddress.setText(userBean.getAddress());
+        }
+        if (userBean.getMobile() != null) {
+            mMobile.setText(userBean.getMobile());
+        }
+
         dialog = new Dialog(SignUpActivity.this);
-        dialog();
+        otpDialog();
         buildAlertMessageNoGps();
         appUser = LocalRepositories.getAppUser(this);
         progressDialog = new ProgressDialog(this);
@@ -176,7 +205,7 @@ public class SignUpActivity extends AppCompatActivity {
                         Snackbar.make(mainLayout, "Invalid Mobile Number", Snackbar.LENGTH_LONG).show();
                         return;
                     }
-                    if (ParameterConstants.location==null){
+                    if (ParameterConstants.location == null) {
                         Snackbar.make(mainLayout, "Location not found", Snackbar.LENGTH_LONG).show();
                     }
                 } else {
@@ -185,7 +214,26 @@ public class SignUpActivity extends AppCompatActivity {
                         return;
                     }
                 }
-                submitForm();
+
+                userBean = new UserBean();
+                userBean.setName(mName.getText().toString());
+                userBean.setEmail(mEmail.getText().toString());
+                userBean.setMobile(mMobile.getText().toString());
+                userBean.setPassword(mPassword.getText().toString());
+                userBean.setAddress(mAddress.getText().toString().trim());
+                if (!ParameterConstants.isUpdate) {
+                    retrieveKey(mMobile.getText().toString());
+                } else {
+                    new AlertDialog.Builder(SignUpActivity.this)
+                            .setTitle("Update Location")
+                            .setMessage("Would you like to update location as well ?")
+                            .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                insertUpdate(ParameterConstants.location.getLatitude(), ParameterConstants.location.getLongitude());
+                            })
+                            .setNegativeButton("No", (dialogInterface, i) -> {
+                                insertUpdate(Double.valueOf(appUser.user.getLatitude()), Double.valueOf(appUser.user.getLongitude()));
+                            }).show();
+                }
             }
         });
 
@@ -242,27 +290,7 @@ public class SignUpActivity extends AppCompatActivity {
 //                          Auto Verified here
                             Toast.makeText(SignUpActivity.this, "Verification done", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = task.getResult().getUser();
-                            userBean.setUserType(ParameterConstants.KEY);
-                            userBean.setLatitude(""+ParameterConstants.location.getLatitude());
-                            userBean.setLongitude(""+ParameterConstants.location.getLongitude());
-                            databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError == null) {
-                                        progressDialog.dismiss();
-                                        registerUser(userBean);
-                                        appUser.user = userBean;
-                                        LocalRepositories.saveAppUser(getApplicationContext(), appUser);
-                                        Intent intent = new Intent(SignUpActivity.this, CustomerHomeActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        progressDialog.dismiss();
-                                    }
-                                }
-                            });
-
+                            insertUpdate(ParameterConstants.location.getLatitude(), ParameterConstants.location.getLongitude());
                             // ...
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -276,16 +304,6 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private void submitForm() {
-        userBean = new UserBean();
-        userBean.setName(mName.getText().toString());
-        userBean.setEmail(mEmail.getText().toString());
-        userBean.setMobile(mMobile.getText().toString());
-        userBean.setPassword(mPassword.getText().toString());
-        userBean.setAddress(mAddress.getText().toString().trim());
-        retrieveKey(mMobile.getText().toString());
-    }
-
     private void retrieveKey(String mobile) {
         progressDialog.setMessage("Registering...");
         progressDialog.show();
@@ -293,7 +311,6 @@ public class SignUpActivity extends AppCompatActivity {
         databaseReference.child(mobile).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 UserBean bean = dataSnapshot.getValue(UserBean.class);
                 if (bean == null) {
                     registerUser(userBean);
@@ -314,29 +331,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void registerUser(UserBean userBean) {
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(SignUpActivity.this, "verification done", Toast.LENGTH_LONG).show();
-                userBean.setUserType(ParameterConstants.KEY);
-                userBean.setLatitude(""+ParameterConstants.location.getLatitude());
-                userBean.setLongitude(""+ParameterConstants.location.getLongitude());
-                databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError == null) {
-                            progressDialog.dismiss();
-                            appUser.user = userBean;
-                            LocalRepositories.saveAppUser(getApplicationContext(), appUser);
-                            Intent intent = new Intent(SignUpActivity.this, CustomerHomeActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
+                insertUpdate(ParameterConstants.location.getLatitude(), ParameterConstants.location.getLongitude());
             }
 
             @Override
@@ -371,7 +369,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    void dialog() {
+    void otpDialog() {
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog);
         dialog.setCancelable(true);
@@ -382,7 +380,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (otp.getText().toString().length() > 5) {
-                    progressDialog.setMessage("Validation OTP...");
+                    progressDialog.setMessage("Validating OTP...");
                     progressDialog.show();
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp.getText().toString());
                     signInWithPhoneAuthCredential(credential);
@@ -422,6 +420,7 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
     }
+
     @Override
     public void onBackPressed() {
         progressDialog.dismiss();
@@ -434,6 +433,32 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
         return super.onOptionsItemSelected(item);
 
+    }
+
+
+    void insertUpdate(Double latitude, Double longitude) {
+        userBean.setUserType(ParameterConstants.KEY);
+        userBean.setLatitude("" + latitude);
+        userBean.setLongitude("" + longitude);
+        databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    progressDialog.dismiss();
+                    if (ParameterConstants.isUpdate) {
+                        Toast.makeText(SignUpActivity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    appUser.user = userBean;
+                    LocalRepositories.saveAppUser(getApplicationContext(), appUser);
+                    Intent intent = new Intent(SignUpActivity.this, CustomerHomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    progressDialog.dismiss();
+                }
+            }
+        });
     }
 
 

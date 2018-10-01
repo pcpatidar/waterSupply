@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -103,7 +104,6 @@ public class SignUp3Activity extends AppCompatActivity {
 //    @Bind(R.id.empty_bottle_rate)
 //    TextView empty_bottle_rate;
 
-    List<String> typeRateList;
     View mConvertView;
 
     private ProgressDialog progressDialog;
@@ -125,11 +125,67 @@ public class SignUp3Activity extends AppCompatActivity {
         spinnerList = new ArrayList<>();
         spinnerList.add("Delivery with in");
         Helper.initActionbar(this, getSupportActionBar(), "Sign Up", true);
+        appUser = LocalRepositories.getAppUser(this);
 
-        ArrayAdapter aa = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, spinnerList);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //Setting the ArrayAdapter data on the Spinner
-        deliveryTime.setAdapter(aa);
+        if (ParameterConstants.isUpdate) {
+            userBean = appUser.user;
+            submit.setText("Update Account");
+        } else {
+            addView("Normal Water");
+            if (userBean == null) {
+                userBean = new UserBean();
+            } else {
+                userBean = SignUpActivity.userBean;
+            }
+            checkbox(sunday);
+            checkbox(monday);
+            checkbox(tuesday);
+            checkbox(wednesday);
+            checkbox(thursday);
+            checkbox(friday);
+            checkbox(saturday);
+        }
+
+        if (userBean.getOpenBooking() != null) {
+            openBooking.setText(userBean.getOpenBooking());
+        }
+        if (userBean.getCloseBooking() != null) {
+            closeBooking.setText(userBean.getCloseBooking());
+            updateSpinner();
+        }
+        if (userBean.getDeliveryDistance() != null) {
+            deliveryDistance.setText(userBean.getDeliveryDistance());
+        }
+
+        removeView();
+        if (userBean.getTypeRate() != null) {
+            for (int i = 0; i < userBean.getTypeRate().size(); i++) {
+                String[] str = userBean.getTypeRate().get(i).split(",");
+                addView(str[0], str[1], str[2]);
+            }
+        }
+        if (userBean.isSunday()) {
+            sunday.setChecked(true);
+        }
+        if (userBean.isMonday()) {
+            monday.setChecked(true);
+        }
+        if (userBean.isTuesday()) {
+            tuesday.setChecked(true);
+        }
+        if (userBean.isWednesday()) {
+            wednesday.setChecked(true);
+        }
+        if (userBean.isThursday()) {
+            thursday.setChecked(true);
+        }
+        if (userBean.isFriday()) {
+            friday.setChecked(true);
+        }
+        if (userBean.isSunday()) {
+            saturday.setChecked(true);
+        }
+
 
         mTimePicker.setIs24HourView(true);
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
@@ -139,18 +195,13 @@ public class SignUp3Activity extends AppCompatActivity {
 
         });
 
-
-
         mAuth = FirebaseAuth.getInstance();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         databaseReference = FirebaseDatabase.getInstance().getReference(ParameterConstants.KEY);
-        appUser = LocalRepositories.getAppUser(this);
         dialog = new Dialog(this);
         dialog();
-        typeRateList = new ArrayList<>();
-        userBean = SignUpActivity.userBean;
+
         progressDialog = new ProgressDialog(this);
-        addView("Normal Water");
         openBooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -188,13 +239,6 @@ public class SignUp3Activity extends AppCompatActivity {
                 removeView();
             }
         });
-        checkbox(sunday);
-        checkbox(monday);
-        checkbox(tuesday);
-        checkbox(wednesday);
-        checkbox(thursday);
-        checkbox(friday);
-        checkbox(saturday);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -238,8 +282,9 @@ public class SignUp3Activity extends AppCompatActivity {
                         Snackbar.make(mainLayout, "Enter Empty Bottle Rate", Snackbar.LENGTH_LONG).show();
                         return;
                     }
-                    list.add(waterType.getText().toString() + "," + waterRate.getText().toString()+ "," + bottleRate.getText().toString());
+                    list.add(waterType.getText().toString() + "," + waterRate.getText().toString() + "," + bottleRate.getText().toString());
                 }
+
                 userBean.setLatitude("" + ParameterConstants.location.getLatitude());
                 userBean.setLongitude("" + ParameterConstants.location.getLongitude());
                 userBean.setOpenBooking(openBooking.getText().toString());
@@ -247,7 +292,20 @@ public class SignUp3Activity extends AppCompatActivity {
                 userBean.setDeliveryDistance(deliveryDistance.getText().toString());
                 userBean.setDeliveryTime(deliveryTime.getSelectedItem().toString());
                 userBean.setTypeRate(list);
-                retrieveKey(userBean.getMobile());
+                if (!ParameterConstants.isUpdate){
+                    retrieveKey(userBean.getMobile());
+                }else {
+                    new AlertDialog.Builder(SignUp3Activity.this)
+                            .setTitle("Update Location")
+                            .setMessage("Would you like to update location as well ?")
+                            .setPositiveButton("Yes", (dialogInterface, i) -> {
+                                insertUpdate(ParameterConstants.location.getLatitude(), ParameterConstants.location.getLongitude());
+                            })
+                            .setNegativeButton("No", (dialogInterface, i) -> {
+                                insertUpdate(Double.valueOf(appUser.user.getLatitude()), Double.valueOf(appUser.user.getLongitude()));
+                            }).show();
+                }
+
             }
         });
     }
@@ -296,21 +354,25 @@ public class SignUp3Activity extends AppCompatActivity {
                             am_pm = "PM";
                         String strHrsToShow = (datetime.get(Calendar.HOUR) == 0) ? "12" : datetime.get(Calendar.HOUR) + "";
                         textView.setText(strHrsToShow + "." + datetime.get(Calendar.MINUTE) + " " + am_pm);
-                        try {
-                            List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(), closeBooking.getText().toString())));
-                            list.add(0, "Delivery with in");
-                            ArrayAdapter aa = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, list);
-                            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            //Setting the ArrayAdapter data on the Spinner
-                            deliveryTime.setAdapter(aa);
-                        } catch (Exception e) {
-                        }
+                        updateSpinner();
 
                     }
                 }, mHour, mMinute, false);
         timePickerDialog.show();
     }
 
+    void updateSpinner() {
+        try {
+            List<String> list = Helper.deliverTimeList(Double.parseDouble(Helper.getTimeDifferent(openBooking.getText().toString(), closeBooking.getText().toString())));
+            list.add(0, "Delivery with in");
+            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, list);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //Setting the ArrayAdapter data on the Spinner
+            deliveryTime.setAdapter(adapter);
+            deliveryTime.setSelection(list.indexOf(userBean.getDeliveryTime()));
+        } catch (Exception e) {
+        }
+    }
 
     void addView(String text) {
         mConvertView = getLayoutInflater().inflate(R.layout.dynamic_add_water, null);
@@ -320,16 +382,31 @@ public class SignUp3Activity extends AppCompatActivity {
         ((ViewGroup) mAdd_water).addView(mConvertView);
     }
 
-    void removeView() {
-        if (((ViewGroup) mAdd_water).getChildCount() == 1) {
-            Toast.makeText(this, "can't remove", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    void addView(String type, String wRate, String bRate) {
         mConvertView = getLayoutInflater().inflate(R.layout.dynamic_add_water, null);
-        EditText editText = ((EditText) mConvertView.findViewById(R.id.water_type));
-        editText.setText("");
-        editText.setHint("Enter Water Type");
-        ((ViewGroup) mAdd_water).removeViewAt(((ViewGroup) mAdd_water).getChildCount() - 1);
+        EditText typ = ((EditText) mConvertView.findViewById(R.id.water_type));
+        EditText wrt = ((EditText) mConvertView.findViewById(R.id.water_rate));
+        EditText brt = ((EditText) mConvertView.findViewById(R.id.bottle_rate));
+        typ.setText(type);
+        wrt.setText(wRate);
+        brt.setText(bRate);
+        ((ViewGroup) mAdd_water).addView(mConvertView);
+    }
+
+    void removeView() {
+        try {
+            if (((ViewGroup) mAdd_water).getChildCount() == 1) {
+                Toast.makeText(this, "can't remove", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mConvertView = getLayoutInflater().inflate(R.layout.dynamic_add_water, null);
+            EditText editText = ((EditText) mConvertView.findViewById(R.id.water_type));
+            editText.setText("");
+            editText.setHint("Enter Water Type");
+            ((ViewGroup) mAdd_water).removeViewAt(((ViewGroup) mAdd_water).getChildCount() - 1);
+        } catch (Exception e) {
+
+        }
     }
 
     void dialog() {
@@ -378,24 +455,7 @@ public class SignUp3Activity extends AppCompatActivity {
 //                          Auto Verified here
                             Toast.makeText(getApplicationContext(), "Verification done", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = task.getResult().getUser();
-                            userBean.setUserType(ParameterConstants.KEY);
-                            databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError == null) {
-                                        progressDialog.dismiss();
-                                        registerUser(userBean);
-                                        appUser.user = userBean;
-                                        LocalRepositories.saveAppUser(getApplicationContext(), appUser);
-                                        Intent intent = new Intent(getApplicationContext(), CustomerHomeActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        progressDialog.dismiss();
-                                    }
-                                }
-                            });
+                           insertUpdate(ParameterConstants.location.getLatitude(),ParameterConstants.location.getLongitude());
 
                             // ...
                         } else {
@@ -416,23 +476,7 @@ public class SignUp3Activity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(getApplicationContext(), "verification done", Toast.LENGTH_LONG).show();
-                userBean.setUserType(ParameterConstants.KEY);
-                databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError == null) {
-                            progressDialog.dismiss();
-                            appUser.user = userBean;
-                            LocalRepositories.saveAppUser(getApplicationContext(), appUser);
-                            Intent intent = new Intent(getApplicationContext(), CustomerHomeActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
+                insertUpdate(ParameterConstants.location.getLatitude(),ParameterConstants.location.getLongitude());
             }
 
             @Override
@@ -503,4 +547,31 @@ public class SignUp3Activity extends AppCompatActivity {
             }
         });
     }
+
+
+    void insertUpdate(Double latitude, Double longitude) {
+        userBean.setUserType(ParameterConstants.KEY);
+        userBean.setLatitude("" + latitude);
+        userBean.setLongitude("" + longitude);
+        databaseReference.child(userBean.getMobile()).setValue(userBean, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    progressDialog.dismiss();
+                    if (ParameterConstants.isUpdate) {
+                        Toast.makeText(SignUp3Activity.this, "Updated Successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    appUser.user = userBean;
+                    LocalRepositories.saveAppUser(getApplicationContext(), appUser);
+                    Intent intent = new Intent(SignUp3Activity.this, SupplierHomeActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    progressDialog.dismiss();
+                }
+            }
+        });
+    }
+
 }

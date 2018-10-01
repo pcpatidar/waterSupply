@@ -165,7 +165,8 @@ public class OrderActivity extends AppCompatActivity {
                     Set<Integer> set = EmptyBottleAdapter.map.keySet();
                     double r = 0.0;
                     for (Integer key : set) {
-                        double d = Double.valueOf(EmptyBottleAdapter.map.get(key).split(",")[1]);
+                        String[] strAr=EmptyBottleAdapter.map.get(key).split(",")[1].split("'");
+                        double d =Double.valueOf(strAr[1])* Double.valueOf(strAr[0]);
                         double t = Double.valueOf(total.getText().toString());
                         r = t - d;
                         total.setText("" + r);

@@ -121,7 +121,7 @@ public class Helper {
     }
 
     public static List<String> deliverTimeList(double d){
-        String min = ":30 min";
+        String min = ".30 min";
         String hour = ".00 hour";
         List<String> list = new ArrayList<>();
         list.add("30 min");

@@ -45,6 +45,7 @@ import com.example.berylsystems.watersupply.notification.service.Config;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -108,11 +109,12 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public void myAccount(View view) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ParameterConstants.isUpdate=true;
+        ParameterConstants.KEY = "Supplier";
         drawer.closeDrawer(GravityCompat.START);
+        startActivity(new Intent(getApplicationContext(),SignUp2Activity.class));
     }
     public void history(View view){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -125,7 +127,6 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public void share(View v){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawers();
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -137,7 +138,6 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

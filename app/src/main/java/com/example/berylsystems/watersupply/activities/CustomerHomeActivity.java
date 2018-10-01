@@ -36,11 +36,13 @@ import android.widget.Toast;
 
 
 import com.example.berylsystems.watersupply.R;
+import com.example.berylsystems.watersupply.bean.UserBean;
 import com.example.berylsystems.watersupply.fragment.customer.OrderListFragment;
 import com.example.berylsystems.watersupply.fragment.customer.SupplierListFragment;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -102,12 +104,13 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public void myAccount(View view){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ParameterConstants.isUpdate=true;
+        ParameterConstants.KEY = "Customer";
         drawer.closeDrawer(GravityCompat.START);
+        startActivity(new Intent(getApplicationContext(),SignUpActivity.class));
     }
 
     public void history(View view){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
        new Handler().postDelayed(new Runnable() {
            @Override
@@ -119,7 +122,6 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public void share(View v){
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawers();
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -131,7 +133,6 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public boolean onNavigationItemSelected(MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -270,7 +271,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
             appUser.user = null;
             LocalRepositories.saveAppUser(getApplicationContext(), appUser);
             startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-            overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_left);
+//            overridePendingTransition(R.anim.slide_to_right, R.anim.slide_from_left);
             finish();
         }
 

@@ -19,7 +19,9 @@ import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.bean.UserBean;
+import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
+import com.example.berylsystems.watersupply.utils.LocalRepositories;
 import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.example.berylsystems.watersupply.utils.Validation;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +53,7 @@ public class SignUp2Activity extends AppCompatActivity {
     @Bind(R.id.address)
     EditText mAddress;
     UserBean userBean;
+    AppUser appUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +62,41 @@ public class SignUp2Activity extends AppCompatActivity {
         ButterKnife.bind(this);
         Helper.initActionbar(this, getSupportActionBar(), "Sign Up", true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        userBean = SignUpActivity.userBean;
+        appUser = LocalRepositories.getAppUser(this);
+        if (ParameterConstants.isUpdate) {
+            userBean = appUser.user;
+        } else {
+            if (userBean == null) {
+                userBean = new UserBean();
+            } else {
+                userBean = SignUpActivity.userBean;
+            }
+        }
         try {
             mAddress.setText(ParameterConstants.ADDRESS);
         } catch (Exception e) {
         }
+
+        if (userBean.getName() != null) {
+            mName.setText(userBean.getName());
+        }
+        if (userBean.getShopName() != null) {
+            mShop_name.setText(userBean.getShopName());
+        }
+        if (userBean.getEmail() != null) {
+            mEmail.setText(userBean.getEmail());
+        }
+        if (userBean.getPassword() != null) {
+            mPassword.setText(userBean.getPassword());
+            confirmPassword.setText(userBean.getPassword());
+        }
+        if (userBean.getAddress() != null) {
+            mAddress.setText(userBean.getAddress());
+        }
+        if (userBean.getMobile() != null) {
+            mMobile.setText(userBean.getMobile());
+        }
+
 
         mNext.setOnClickListener(new View.OnClickListener() {
             @Override
