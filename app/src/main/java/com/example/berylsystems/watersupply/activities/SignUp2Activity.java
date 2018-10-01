@@ -64,8 +64,10 @@ public class SignUp2Activity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         appUser = LocalRepositories.getAppUser(this);
         if (ParameterConstants.isUpdate) {
+            mMobile.setEnabled(false);
             userBean = appUser.user;
         } else {
+            mMobile.setEnabled(true);
             if (userBean == null) {
                 userBean = new UserBean();
             } else {

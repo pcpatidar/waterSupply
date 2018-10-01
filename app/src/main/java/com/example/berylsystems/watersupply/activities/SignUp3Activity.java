@@ -98,7 +98,8 @@ public class SignUp3Activity extends AppCompatActivity {
     CheckBox saturday;
 
     @Bind(R.id.time_picker)
-    TimePicker mTimePicker;
+    TimePicker mTimePicker;@Bind(R.id.terms)
+    LinearLayout terms;
 //    @Bind(R.id.mCheckBoxEmptyBottle)
 //    CheckBox mCheckBoxEmptyBottle;
 //    @Bind(R.id.empty_bottle_rate)
@@ -130,7 +131,9 @@ public class SignUp3Activity extends AppCompatActivity {
         if (ParameterConstants.isUpdate) {
             userBean = appUser.user;
             submit.setText("Update Account");
+            terms.setVisibility(View.GONE);
         } else {
+            terms.setVisibility(View.VISIBLE);
             addView("Normal Water");
             if (userBean == null) {
                 userBean = new UserBean();

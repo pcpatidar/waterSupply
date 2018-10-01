@@ -90,6 +90,8 @@ public class SignUpActivity extends AppCompatActivity {
     LinearLayout supplierLayout;
     @Bind(R.id.customerLayout)
     LinearLayout customerLayout;
+    @Bind(R.id.terms)
+    LinearLayout terms;
 
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
@@ -112,9 +114,15 @@ public class SignUpActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         appUser = LocalRepositories.getAppUser(this);
         if (ParameterConstants.isUpdate) {
+            radioGroup.setVisibility(View.GONE);
+            terms.setVisibility(View.GONE);
+            mMobile.setEnabled(false);
             userBean = appUser.user;
             mSignUp.setText("Update Account");
         } else {
+            radioGroup.setVisibility(View.VISIBLE);
+            terms.setVisibility(View.VISIBLE);
+            mMobile.setEnabled(true);
             if (userBean == null) {
                 userBean = new UserBean();
             }
