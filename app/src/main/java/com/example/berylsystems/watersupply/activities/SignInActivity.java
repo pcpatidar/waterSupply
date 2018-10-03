@@ -72,6 +72,7 @@ public class SignInActivity extends AppCompatActivity {
         mClickHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SignUpActivity.userBean=null;
                 ParameterConstants.isUpdate=false;
                 Intent intent = new Intent(SignInActivity.this, SignUpActivity.class);
 //                overridePendingTransition(R.anim.slide_from_left, R.anim.slide_to_right);

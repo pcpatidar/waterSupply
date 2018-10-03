@@ -7,6 +7,9 @@ import java.util.List;
  */
 
 public class UserBean {
+
+    String refreshToken;
+
     String name;
     String email;
     String password;
@@ -210,4 +213,11 @@ public class UserBean {
     }
 
 
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

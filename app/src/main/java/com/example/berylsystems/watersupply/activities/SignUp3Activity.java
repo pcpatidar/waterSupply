@@ -98,7 +98,8 @@ public class SignUp3Activity extends AppCompatActivity {
     CheckBox saturday;
 
     @Bind(R.id.time_picker)
-    TimePicker mTimePicker;@Bind(R.id.terms)
+    TimePicker mTimePicker;
+    @Bind(R.id.terms)
     LinearLayout terms;
 //    @Bind(R.id.mCheckBoxEmptyBottle)
 //    CheckBox mCheckBoxEmptyBottle;
@@ -135,11 +136,7 @@ public class SignUp3Activity extends AppCompatActivity {
         } else {
             terms.setVisibility(View.VISIBLE);
             addView("Normal Water");
-            if (userBean == null) {
-                userBean = new UserBean();
-            } else {
-                userBean = SignUpActivity.userBean;
-            }
+            userBean = SignUpActivity.userBean;
             checkbox(sunday);
             checkbox(monday);
             checkbox(tuesday);
@@ -194,6 +191,7 @@ public class SignUp3Activity extends AppCompatActivity {
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker timePicker, int hourOfDay, int minute) {
+
             }
 
         });
@@ -295,9 +293,9 @@ public class SignUp3Activity extends AppCompatActivity {
                 userBean.setDeliveryDistance(deliveryDistance.getText().toString());
                 userBean.setDeliveryTime(deliveryTime.getSelectedItem().toString());
                 userBean.setTypeRate(list);
-                if (!ParameterConstants.isUpdate){
+                if (!ParameterConstants.isUpdate) {
                     retrieveKey(userBean.getMobile());
-                }else {
+                } else {
                     new AlertDialog.Builder(SignUp3Activity.this)
                             .setTitle("Update Location")
                             .setMessage("Would you like to update location as well ?")
@@ -458,7 +456,7 @@ public class SignUp3Activity extends AppCompatActivity {
 //                          Auto Verified here
                             Toast.makeText(getApplicationContext(), "Verification done", Toast.LENGTH_SHORT).show();
                             FirebaseUser user = task.getResult().getUser();
-                           insertUpdate(ParameterConstants.location.getLatitude(),ParameterConstants.location.getLongitude());
+                            insertUpdate(ParameterConstants.location.getLatitude(), ParameterConstants.location.getLongitude());
 
                             // ...
                         } else {
@@ -479,7 +477,7 @@ public class SignUp3Activity extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                 Toast.makeText(getApplicationContext(), "verification done", Toast.LENGTH_LONG).show();
-                insertUpdate(ParameterConstants.location.getLatitude(),ParameterConstants.location.getLongitude());
+                insertUpdate(ParameterConstants.location.getLatitude(), ParameterConstants.location.getLongitude());
             }
 
             @Override

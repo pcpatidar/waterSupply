@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.notification.service;
+package com.example.berylsystems.watersupply.push;
 
 /**
  * Created by Beryl on 14-Sep-18.

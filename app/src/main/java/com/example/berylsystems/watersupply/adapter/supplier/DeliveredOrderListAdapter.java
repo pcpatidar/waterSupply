@@ -141,6 +141,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError == null) {
+//                                        new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"canceled","Share Location").execute();
                                         swipeRefreshLayout.setRefreshing(false);
                                         mProgressDialog.dismiss();
                                         DeliveredOrderFragment.orderBeanList.remove(orderBean);

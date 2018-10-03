@@ -1,5 +1,6 @@
-package com.example.berylsystems.watersupply.notification.service;
+package com.example.berylsystems.watersupply.push;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -7,7 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
-import com.example.berylsystems.watersupply.activities.SupplierHomeActivity;
+import com.example.berylsystems.watersupply.activities.SplashActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -32,7 +33,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.e(TAG, "Notification Body: " + remoteMessage.getNotification().getBody());
-            handleNotification(remoteMessage.getNotification().getBody());
+
+            String title = remoteMessage.getNotification().getTitle();
+            String click_action = remoteMessage.getNotification().getClickAction();
+            handleNotification(remoteMessage.getNotification().getBody(),title,click_action);
         }
 
         // Check if message contains a data payload.
@@ -48,7 +52,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void handleNotification(String message) {
+    private void handleNotification(String click_action, String title, String message) {
         if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
             // app is in foreground, broadcast the push message
             Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
@@ -75,6 +79,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String imageUrl = data.getString("image");
             String timestamp = data.getString("timestamp");
             JSONObject payload = data.getJSONObject("payload");
+            String click_action = data.getString("action");
 
             Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
@@ -82,6 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "payload: " + payload.toString());
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
+            Log.e(TAG, "Click_Action: " + click_action);
 
 
             if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
@@ -95,12 +101,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationUtils.playNotificationSound();
             } else {
                 // app is in background, show the notification in notification tray
-                Intent resultIntent = new Intent(getApplicationContext(), SupplierHomeActivity.class);
+                Intent resultIntent = new Intent(getApplicationContext(), SplashActivity.class);
                 resultIntent.putExtra("message", message);
 
                 // check for image attachment
                 if (TextUtils.isEmpty(imageUrl)) {
-                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent,click_action);
                 } else {
                     // image is present, show notification with image
                     showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl);
@@ -116,10 +122,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     /**
      * Showing notification with text only
      */
-    private void showNotificationMessage(Context context, String title, String message, String timeStamp, Intent intent) {
+    private void showNotificationMessage(Context context, String title, String message, String timeStamp, Intent intent, String click_action) {
         notificationUtils = new NotificationUtils(context);
+
+        Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
+        pushNotification.putExtra("message", message);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
+
+        // play notification sound
+        NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
+        notificationUtils.playNotificationSound();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, timeStamp, intent);
+
     }
 
     /**

@@ -74,14 +74,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                 //Normal Water,10,1=Normal Water,150,1
                 //Normal Water,10,1
                 //null=Normal Water,150,1
-
                 String str = data.get(position).getWaterTypeQuantity().get(i);
                 if (str.startsWith("null")) {
                     String[] strAr = str.split("=")[1].split(",");
                     String name = strAr[0];
                     String wQty = "0";
                     String bQty = strAr[1].split("'")[1];
-                    String rate = strAr[1].split("'")[0];
+                    String rate = "" + (Double.valueOf(strAr[1].split("'")[0]) * Double.valueOf(strAr[1].split("'")[1]));
                     addView(name, wQty, bQty, rate, viewHolder);
                 } else if (!str.contains("=")) {
                     String[] strAr = str.split(",");
@@ -94,17 +93,17 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                         name = strAr[0];
                         wQty = strAr[2];
                         bQty = "0";
-                        rate = strAr[1];
+                        rate = ""+(Double.valueOf(strAr[1])*Double.valueOf(strAr[2]));
                     } else {
-//                        Cold water,150'1
+//                      Cold water,150'1
                         name = strAr[0];
                         wQty = "0";
                         bQty = strAr[1].split("'")[1];
-                        rate = strAr[1].split("'")[0];
+                        rate = "" + (Double.valueOf(strAr[1].split("'")[0]) * Double.valueOf(strAr[1].split("'")[1]));
                     }
                     addView(name, wQty, bQty, rate, viewHolder);
                 } else if (str.contains("=")) {
-                    //Normal Water,10,1=Normal Water,150,1
+                    //Normal Water,10,1=Normal Water,150'1
                     String[] strAr = str.split("=");
                     String str1 = strAr[0];
                     String str2 = strAr[1];
@@ -115,7 +114,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                     String name = s1[0];
                     String wQty = s1[2];
                     String bQty = s2[1].split("'")[1];
-                    String rate = String.valueOf(Double.valueOf(s1[1]) + Double.valueOf(s2[1].split("'")[0]));
+                    String rate = String.valueOf(Double.valueOf(s1[1])*Double.valueOf(s1[2]) + Double.valueOf(s2[1].split("'")[0])*Double.valueOf(s2[1].split("'")[1]));
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }

@@ -90,30 +90,7 @@ public class SupplierListFragment extends Fragment implements SwipeRefreshLayout
                             Location lEnd = new Location(LocationManager.NETWORK_PROVIDER);
                             lEnd.setLatitude(Double.parseDouble(userBean.getLatitude()));
                             lEnd.setLongitude(Double.parseDouble(userBean.getLongitude()));
-                            if (lStart.distanceTo(lEnd) <= Double.valueOf(userBean.getDeliveryDistance().trim().split(" ")[0]) * 1000) {
-//                                if today is monday and isMonday is true
-
-//                                if (today().equalsIgnoreCase("Sun") && !userBean.isSunday()) {
-//                                    break;
-//                                }
-//                                if (today().equalsIgnoreCase("Mon") && !userBean.isMonday()) {
-//                                    break;
-//                                }
-//                                if (today().equalsIgnoreCase("Tue") && !userBean.isTuesday()) {
-//                                    break;
-//                                }
-//                                if (today().equalsIgnoreCase("Wed") && !userBean.isWednesday()) {
-//                                    break;
-//                                }
-//                                if (today().equalsIgnoreCase("Thu") && !userBean.isThursday()) {
-//                                    break;
-//                                }
-//                                if (today().equalsIgnoreCase("Fri") && !userBean.isFriday()) {
-//                                    break;
-//                                }
-//                                if (today().equalsIgnoreCase("Sat") && !userBean.isSaturday()) {
-//                                    break;
-//                                }
+                            if (lStart.distanceTo(lEnd) / 1000 <= Double.valueOf(userBean.getDeliveryDistance().trim().split(" ")[0])) {
                                 userBeanList.add(userBean);
                             }
                         } catch (Exception e) {

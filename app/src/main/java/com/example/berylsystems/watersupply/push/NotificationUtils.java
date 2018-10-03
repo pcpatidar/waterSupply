@@ -1,4 +1,4 @@
-package com.example.berylsystems.watersupply.notification.service;
+package com.example.berylsystems.watersupply.push;
 
 import android.app.ActivityManager;
 import android.app.Notification;

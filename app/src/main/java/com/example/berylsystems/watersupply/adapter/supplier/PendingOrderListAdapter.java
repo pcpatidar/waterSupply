@@ -143,6 +143,7 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError == null) {
+//                                        new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"delivered","Share Location").execute();
                                         swipeRefreshLayout.setRefreshing(false);
                                         mProgressDialog.dismiss();
                                         PendingOrderFragment.orderBeanList.remove(orderBean);

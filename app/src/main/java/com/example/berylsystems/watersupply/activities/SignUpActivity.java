@@ -53,6 +53,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.concurrent.TimeUnit;
 
@@ -229,6 +230,7 @@ public class SignUpActivity extends AppCompatActivity {
                 userBean.setMobile(mMobile.getText().toString());
                 userBean.setPassword(mPassword.getText().toString());
                 userBean.setAddress(mAddress.getText().toString().trim());
+                userBean.setRefreshToken(FirebaseInstanceId.getInstance().getToken());
                 if (!ParameterConstants.isUpdate) {
                     retrieveKey(mMobile.getText().toString());
                 } else {
