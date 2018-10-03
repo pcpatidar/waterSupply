@@ -5,7 +5,7 @@ import java.util.List;
 public class OrderBean {
     String bookingDate;
     String deliveryDate;
-    List<String> waterTypeQuantity;
+    List<Combine> waterTypeQuantity;
     String amount;
     String comment;
     boolean cashOnDelivery;
@@ -57,11 +57,11 @@ public class OrderBean {
         this.bookingDate = date;
     }
 
-    public List<String> getWaterTypeQuantity() {
+    public List<Combine> getWaterTypeQuantity() {
         return waterTypeQuantity;
     }
 
-    public void setWaterTypeQuantity(List<String> waterTypeQuantity) {
+    public void setWaterTypeQuantity(List<Combine> waterTypeQuantity) {
         this.waterTypeQuantity = waterTypeQuantity;
     }
 

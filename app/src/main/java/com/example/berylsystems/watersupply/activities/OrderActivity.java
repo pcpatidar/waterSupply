@@ -27,7 +27,10 @@ import android.widget.Toast;
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.adapter.EmptyBottleAdapter;
 import com.example.berylsystems.watersupply.adapter.WaterDetailAdapter;
+import com.example.berylsystems.watersupply.bean.Bottle;
+import com.example.berylsystems.watersupply.bean.Combine;
 import com.example.berylsystems.watersupply.bean.OrderBean;
+import com.example.berylsystems.watersupply.bean.Water;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
@@ -165,8 +168,8 @@ public class OrderActivity extends AppCompatActivity {
                     Set<Integer> set = EmptyBottleAdapter.map.keySet();
                     double r = 0.0;
                     for (Integer key : set) {
-                        String[] strAr=EmptyBottleAdapter.map.get(key).split(",")[1].split("'");
-                        double d =Double.valueOf(strAr[1])* Double.valueOf(strAr[0]);
+                        Bottle bottle=EmptyBottleAdapter.map.get(key);
+                        double d =Double.valueOf(bottle.getRate())* Double.valueOf(bottle.getQty());
                         double t = Double.valueOf(total.getText().toString());
                         r = t - d;
                         total.setText("" + r);
@@ -315,24 +318,30 @@ public class OrderActivity extends AppCompatActivity {
     public void submit(View view) {
 
         OrderBean orderBean = new OrderBean();
-        List list = new ArrayList();
+        List<Combine> list = new ArrayList();
         if (WaterDetailAdapter.map.size() == 0) {
             Snackbar.make(coordinatorLayout, "Please Select an Bottle quantity", Snackbar.LENGTH_SHORT).show();
             return;
         }
         Set<Integer> set = WaterDetailAdapter.map.keySet();
         for (Integer key : set) {
-            list.add(WaterDetailAdapter.map.get(key));
+            Combine combine=new Combine();
+            combine.setWater(WaterDetailAdapter.map.get(key));
+            list.add(combine);
         }
 
         Set<Integer> set2 = EmptyBottleAdapter.map.keySet();
+        Combine combine=null;
         for (Integer key : set2) {
             try {
-                String kpr=WaterDetailAdapter.map.get(key);
-                kpr=kpr+"="+EmptyBottleAdapter.map.get(key);
-                list.set(key,kpr);
+                combine=new Combine();
+                Water water=WaterDetailAdapter.map.get(key);
+                Bottle bottle=EmptyBottleAdapter.map.get(key);
+                combine.setWater(water);
+                combine.setBottle(bottle);
+                list.set(key,combine);
             }catch (Exception e){
-                list.add(EmptyBottleAdapter.map.get(key));
+                list.add(combine);
             }
         }
 

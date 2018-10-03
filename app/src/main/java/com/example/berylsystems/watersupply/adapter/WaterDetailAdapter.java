@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.activities.OrderActivity;
+import com.example.berylsystems.watersupply.bean.Water;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
     private Context context;
     int mInteger = 0, totalAmount;
     OrderActivity object;
-    public static Map<Integer,String> map;
+    public static Map<Integer,Water> map;
 
     public WaterDetailAdapter(Context context, List<String> data) {
         this.data = data;
@@ -55,7 +56,11 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
                 mInteger = mInteger + 1;
                 viewHolder.mQuantity.setText("" + mInteger);
                 object.setTotal(""+(Double.valueOf(object.getTotal()) + Double.valueOf(arr[1])));
-                map.put(position,arr[0]+","+arr[1]+","+ mInteger);
+                Water water=new Water();
+                water.setName(arr[0]);
+                water.setRate(Double.valueOf(arr[1]));
+                water.setQty(Integer.valueOf(arr[2]));
+                map.put(position,water);
             }
         });
 
@@ -67,7 +72,11 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
                     mInteger = mInteger - 1;
                     viewHolder.mQuantity.setText("" + mInteger);
                     object.setTotal(""+(Double.valueOf(object.getTotal()) - Double.valueOf(arr[1])));
-                    map.put(position,arr[0]+","+arr[1]+"'"+ mInteger);
+                    Water water=new Water();
+                    water.setName(arr[0]);
+                    water.setRate(Double.valueOf(arr[1]));
+                    water.setQty(Integer.valueOf(arr[2]));
+                    map.put(position,water);
                     if (viewHolder.mQuantity.getText().toString().equals("0")){
                         map.remove(position);
                     }

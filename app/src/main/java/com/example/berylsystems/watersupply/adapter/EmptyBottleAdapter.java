@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.activities.OrderActivity;
+import com.example.berylsystems.watersupply.bean.Bottle;
+import com.example.berylsystems.watersupply.bean.Water;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,7 @@ public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.
     private Context context;
     int mInteger = 0, totalAmount;
     OrderActivity object;
-    public static Map<Integer,String> map;
+    public static Map<Integer,Bottle> map;
 
     public EmptyBottleAdapter(Context context, List<String> data) {
         this.data = data;
@@ -54,7 +56,11 @@ public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.
                 mInteger = mInteger + 1;
                 viewHolder.mQuantity.setText("" + mInteger);
                 object.setTotal(""+(Double.valueOf(object.getTotal()) + Double.valueOf(arr[2])));
-                map.put(position,arr[0]+","+arr[2]+"'"+ mInteger);
+                Bottle bottle=new Bottle();
+                bottle.setName(arr[0]);
+                bottle.setRate(Double.valueOf(arr[1]));
+                bottle.setQty(Integer.valueOf(arr[2]));
+                map.put(position,bottle);
             }
         });
 
@@ -66,7 +72,13 @@ public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.
                     mInteger = mInteger - 1;
                     viewHolder.mQuantity.setText("" + mInteger);
                     object.setTotal(""+(Double.valueOf(object.getTotal()) - Double.valueOf(arr[2])));
-                    map.put(position,arr[0]+","+arr[2]+"'"+ mInteger);
+                    Bottle bottle=new Bottle();
+                    bottle.setName(arr[0]);
+                    bottle.setRate(Double.valueOf(arr[1]));
+                    bottle.setQty(Integer.valueOf(arr[2]));
+                    map.put(position,bottle);
+                    map.put(position,bottle);
+                    map.put(position,bottle);
                     if (viewHolder.mQuantity.getText().toString().equals("0")){
                         map.remove(position);
                     }

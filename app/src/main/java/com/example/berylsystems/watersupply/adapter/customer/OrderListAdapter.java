@@ -95,7 +95,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
                         bQty = "0";
                         rate = ""+(Double.valueOf(strAr[1])*Double.valueOf(strAr[2]));
                     } else {
-//                      Cold water,150'1
+//                      Cold Water,150'1
                         name = strAr[0];
                         wQty = "0";
                         bQty = strAr[1].split("'")[1];

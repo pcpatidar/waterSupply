@@ -97,7 +97,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                         bQty = "0";
                         rate = strAr[1];
                     } else {
-//                        Cold water,150'1
+//                        Cold Water,150'1
                         name = strAr[0];
                         wQty = "0";
                         bQty = strAr[1].split("'")[1];
