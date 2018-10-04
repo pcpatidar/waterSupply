@@ -12,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.berylsystems.watersupply.R;
+import com.example.berylsystems.watersupply.activities.OrderActivity;
+import com.example.berylsystems.watersupply.adapter.HistoryListAdapter;
+import com.example.berylsystems.watersupply.bean.Combine;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 
 import java.util.List;
@@ -25,7 +28,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     private Activity context;
     View mConvertView;
     Boolean aBoolean;
-
 
     public OrderListAdapter(Activity context, List<OrderBean> data, Boolean b) {
         this.data = data;
@@ -70,51 +72,26 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         }
         removeAllViews(viewHolder);
         try {
-            for (int i = 0; i < data.get(position).getWaterTypeQuantity().size(); i++) {
-                //Normal Water,10,1=Normal Water,150,1
-                //Normal Water,10,1
-                //null=Normal Water,150,1
-                String str = data.get(position).getWaterTypeQuantity().get(i);
-                if (str.startsWith("null")) {
-                    String[] strAr = str.split("=")[1].split(",");
-                    String name = strAr[0];
-                    String wQty = "0";
-                    String bQty = strAr[1].split("'")[1];
-                    String rate = "" + (Double.valueOf(strAr[1].split("'")[0]) * Double.valueOf(strAr[1].split("'")[1]));
+            for (int i = 0; i < data.get(position).combine().size(); i++) {
+                Combine combine = data.get(position).combine().get(i);
+                if (combine.getWater()==null&&combine.getBottle()!=null) {
+                    String name=combine.getBottle().getName();
+                    Integer wQty = 0;
+                    Integer bQty = combine.getBottle().getQty();
+                    Double rate = combine.getBottle().getRate()*bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                } else if (!str.contains("=")) {
-                    String[] strAr = str.split(",");
-                    String name;
-                    String wQty;
-                    String bQty;
-                    String rate;
-//                    Normal Water,10,1
-                    if (strAr.length == 3) {
-                        name = strAr[0];
-                        wQty = strAr[2];
-                        bQty = "0";
-                        rate = ""+(Double.valueOf(strAr[1])*Double.valueOf(strAr[2]));
-                    } else {
-//                      Cold Water,150'1
-                        name = strAr[0];
-                        wQty = "0";
-                        bQty = strAr[1].split("'")[1];
-                        rate = "" + (Double.valueOf(strAr[1].split("'")[0]) * Double.valueOf(strAr[1].split("'")[1]));
-                    }
+                } else if (combine.getBottle()==null&&combine.getWater()!=null) {
+                    String name=combine.getWater().getName();
+                    Integer bQty = 0;
+                    Integer wQty = combine.getWater().getQty();
+                    Double rate = combine.getWater().getRate()*wQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                } else if (str.contains("=")) {
-                    //Normal Water,10,1=Normal Water,150'1
-                    String[] strAr = str.split("=");
-                    String str1 = strAr[0];
-                    String str2 = strAr[1];
-
-                    String[] s1 = str1.split(",");
-                    String[] s2 = str2.split(",");
-
-                    String name = s1[0];
-                    String wQty = s1[2];
-                    String bQty = s2[1].split("'")[1];
-                    String rate = String.valueOf(Double.valueOf(s1[1])*Double.valueOf(s1[2]) + Double.valueOf(s2[1].split("'")[0])*Double.valueOf(s2[1].split("'")[1]));
+                }
+                else if (combine.getBottle()!=null&&combine.getWater()!=null) {
+                    String name=combine.getWater().getName();
+                    Integer bQty = combine.getBottle().getQty();
+                    Integer wQty = combine.getWater().getQty();
+                    Double rate = combine.getWater().getRate()*wQty+combine.getBottle().getRate()*bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }
@@ -128,16 +105,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         return data.size();
     }
 
-    void addView(String name, String wQty, String bQty, String rate, ViewHolder viewHolder) {
+    void addView(String name, Integer wQty, Integer bQty, Double rate, ViewHolder viewHolder) {
         mConvertView = context.getLayoutInflater().inflate(R.layout.dynamic_show_order, null);
         TextView orderName = ((TextView) mConvertView.findViewById(R.id.orderName));
         TextView waterQty = ((TextView) mConvertView.findViewById(R.id.waterQty));
         TextView bottleQty = ((TextView) mConvertView.findViewById(R.id.bottleQty));
         TextView orderRate = ((TextView) mConvertView.findViewById(R.id.orderRate));
         orderName.setText(name/*+" (\u20B9"+rate+")"*/);
-        waterQty.setText(wQty);
-        bottleQty.setText(bQty);
-        orderRate.setText("" + rate/*Double.valueOf(qty) * Double.valueOf(rate)*/);
+        waterQty.setText(""+wQty);
+        bottleQty.setText(""+bQty);
+        orderRate.setText(""+rate);
         ((ViewGroup) viewHolder.parentLayout).addView(mConvertView);
     }
 

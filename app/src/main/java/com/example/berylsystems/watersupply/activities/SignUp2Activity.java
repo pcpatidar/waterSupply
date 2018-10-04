@@ -10,12 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.bean.UserBean;
@@ -24,11 +19,7 @@ import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
 import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.example.berylsystems.watersupply.utils.Validation;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -97,6 +88,9 @@ public class SignUp2Activity extends AppCompatActivity {
         }
         if (userBean.getMobile() != null) {
             mMobile.setText(userBean.getMobile());
+        }
+        if (userBean.getAddress() != null) {
+            mAddress.setText(userBean.getAddress());
         }
 
 

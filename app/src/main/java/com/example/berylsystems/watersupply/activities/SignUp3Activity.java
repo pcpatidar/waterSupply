@@ -34,6 +34,7 @@ import com.example.berylsystems.watersupply.bean.UserBean;
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.utils.MyLocationListener;
 import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -262,6 +263,9 @@ public class SignUp3Activity extends AppCompatActivity {
 
                 if (ParameterConstants.location == null) {
                     Snackbar.make(mainLayout, "Location not found", Snackbar.LENGTH_LONG).show();
+                    progressDialog.setMessage("Getting Location...");
+                    progressDialog.show();
+                    new MyLocationListener(getApplicationContext(),progressDialog);
                     return;
                 }
 

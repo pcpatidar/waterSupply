@@ -57,7 +57,7 @@ public class OrderBean {
         this.bookingDate = date;
     }
 
-    public List<Combine> getWaterTypeQuantity() {
+    public List<Combine> combine() {
         return waterTypeQuantity;
     }
 

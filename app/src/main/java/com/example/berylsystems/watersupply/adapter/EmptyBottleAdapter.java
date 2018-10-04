@@ -58,8 +58,8 @@ public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.
                 object.setTotal(""+(Double.valueOf(object.getTotal()) + Double.valueOf(arr[2])));
                 Bottle bottle=new Bottle();
                 bottle.setName(arr[0]);
-                bottle.setRate(Double.valueOf(arr[1]));
-                bottle.setQty(Integer.valueOf(arr[2]));
+                bottle.setRate(Double.valueOf(arr[2]));
+                bottle.setQty(Integer.valueOf(mInteger));
                 map.put(position,bottle);
             }
         });
@@ -74,10 +74,8 @@ public class EmptyBottleAdapter extends RecyclerView.Adapter<EmptyBottleAdapter.
                     object.setTotal(""+(Double.valueOf(object.getTotal()) - Double.valueOf(arr[2])));
                     Bottle bottle=new Bottle();
                     bottle.setName(arr[0]);
-                    bottle.setRate(Double.valueOf(arr[1]));
-                    bottle.setQty(Integer.valueOf(arr[2]));
-                    map.put(position,bottle);
-                    map.put(position,bottle);
+                    bottle.setRate(Double.valueOf(arr[2]));
+                    bottle.setQty(Integer.valueOf(arr[1]));
                     map.put(position,bottle);
                     if (viewHolder.mQuantity.getText().toString().equals("0")){
                         map.remove(position);

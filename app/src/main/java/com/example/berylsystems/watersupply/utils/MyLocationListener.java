@@ -1,6 +1,7 @@
 package com.example.berylsystems.watersupply.utils;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.berylsystems.watersupply.bean.UserBean;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -34,9 +36,28 @@ public class MyLocationListener implements
     public Location location;
     Context context;
     boolean on;
+    ProgressDialog progressDialog;
 
     public MyLocationListener(Context context){
         on=true;
+        this.context=context;
+        int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
+        mLocationRequest.setPriority(priority);
+        mLocationRequest.setInterval(0);
+        mLocationRequest.setFastestInterval(0);
+
+        mLocationClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mLocationClient.connect();
+    }
+
+
+    public MyLocationListener(Context context, ProgressDialog progressDialog){
+        on=true;
+        this.progressDialog=progressDialog;
         this.context=context;
         int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
         mLocationRequest.setPriority(priority);
@@ -76,12 +97,14 @@ public class MyLocationListener implements
     @Override
     public void onLocationChanged(Location location) {
         if (location!=null){
+            if (progressDialog!=null){
+                progressDialog.dismiss();
+            }
             this.location=location;
             ParameterConstants.location=location;
             new MyAsyncTask().execute();
             if (on){
                 on=false;
-                Toast.makeText(context, "location Found", Toast.LENGTH_SHORT).show();
             }
             LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient, this);
         }

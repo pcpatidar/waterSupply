@@ -59,7 +59,7 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
                 Water water=new Water();
                 water.setName(arr[0]);
                 water.setRate(Double.valueOf(arr[1]));
-                water.setQty(Integer.valueOf(arr[2]));
+                water.setQty(Integer.valueOf(mInteger));
                 map.put(position,water);
             }
         });
@@ -74,8 +74,8 @@ public class WaterDetailAdapter extends RecyclerView.Adapter<WaterDetailAdapter.
                     object.setTotal(""+(Double.valueOf(object.getTotal()) - Double.valueOf(arr[1])));
                     Water water=new Water();
                     water.setName(arr[0]);
-                    water.setRate(Double.valueOf(arr[1]));
-                    water.setQty(Integer.valueOf(arr[2]));
+                    water.setRate(Double.valueOf(arr[2]));
+                    water.setQty(Integer.valueOf(arr[1]));
                     map.put(position,water);
                     if (viewHolder.mQuantity.getText().toString().equals("0")){
                         map.remove(position);

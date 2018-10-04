@@ -36,6 +36,7 @@ import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragme
 import com.example.berylsystems.watersupply.utils.AppUser;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.LocalRepositories;
+import com.example.berylsystems.watersupply.utils.MyLocationListener;
 import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.example.berylsystems.watersupply.utils.Validation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -128,7 +129,10 @@ public class SignUpActivity extends AppCompatActivity {
                 userBean = new UserBean();
             }
         }
-
+        try {
+            mAddress.setText(ParameterConstants.ADDRESS);
+        } catch (Exception e) {
+        }
         if (userBean.getName() != null) {
             mName.setText(userBean.getName());
         }
@@ -155,10 +159,6 @@ public class SignUpActivity extends AppCompatActivity {
         progressDialog.setMessage("Registering.. Please wait");
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        try {
-            mAddress.setText(ParameterConstants.ADDRESS);
-        } catch (Exception e) {
-        }
         ParameterConstants.KEY = "Customer";
         databaseReference = database.getReference("Customer");
         customerLayout.setVisibility(View.VISIBLE);
@@ -216,6 +216,10 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     if (ParameterConstants.location == null) {
                         Snackbar.make(mainLayout, "Location not found", Snackbar.LENGTH_LONG).show();
+                        progressDialog.setMessage("Getting Location...");
+                        progressDialog.show();
+                        new MyLocationListener(getApplicationContext(),progressDialog);
+                        return;
                     }
                 } else {
                     if (mCode.getText().toString().isEmpty()) {
