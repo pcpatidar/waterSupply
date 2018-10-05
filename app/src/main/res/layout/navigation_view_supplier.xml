@@ -305,15 +305,13 @@
                             android:textSize="10sp" />
 
                         <TextView
-                            android:id="@+id/lkin"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_marginBottom="10dp"
                             android:gravity="center"
-                            android:text="jalsewa.com"
+                            android:text="wtrs.com"
                             android:textSize="12sp" />
-
 
                     </LinearLayout>
 

@@ -112,8 +112,7 @@ public class OrderActivity extends AppCompatActivity {
 
         Calendar calendar = Calendar.getInstance();
         Date t = calendar.getTime();
-        Toast.makeText(this, ""+t, Toast.LENGTH_SHORT).show();
-
+//        Toast.makeText(this, ""+t, Toast.LENGTH_SHORT).show();
         long dateToday = System.currentTimeMillis();
         long dateTomorrow = System.currentTimeMillis()+(1000 * 60 * 60 * 24);
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -323,23 +322,33 @@ public class OrderActivity extends AppCompatActivity {
             Snackbar.make(coordinatorLayout, "Please Select an Bottle quantity", Snackbar.LENGTH_SHORT).show();
             return;
         }
-        Set<Integer> set = WaterDetailAdapter.map.keySet();
-        for (Integer key : set) {
+        Set<Integer> waterKey = WaterDetailAdapter.map.keySet();
+        for (Integer key : waterKey) {
             Combine combine=new Combine();
             combine.setWater(WaterDetailAdapter.map.get(key));
             list.add(combine);
         }
 
-        Set<Integer> set2 = EmptyBottleAdapter.map.keySet();
+        Set<Integer> bottleKey = EmptyBottleAdapter.map.keySet();
         Combine combine=null;
-        for (Integer key : set2) {
+        for (Integer key : bottleKey) {
             try {
                 combine=new Combine();
                 Water water=WaterDetailAdapter.map.get(key);
                 Bottle bottle=EmptyBottleAdapter.map.get(key);
                 combine.setWater(water);
                 combine.setBottle(bottle);
-                list.set(key,combine);
+                boolean b=false;
+                for (int i=0;i<list.size();i++){
+                    if (list.get(i).getWater()==WaterDetailAdapter.map.get(key)){
+                        b=true;
+                        list.set(i,combine);
+                    }
+                }
+                if (!b){
+                    list.add(combine);
+                }
+
             }catch (Exception e){
                 list.add(combine);
             }

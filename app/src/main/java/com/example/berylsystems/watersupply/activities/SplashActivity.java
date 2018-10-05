@@ -40,7 +40,7 @@ public class SplashActivity extends Activity {
     FirebaseDatabase database;
     DatabaseReference databaseReference;
     final int PERMISSIONS_BUZZ_REQUEST = 0xABC;
-    String s=" wtrs.com ";
+    String s=" Water supply for you ";
     int i;
 
     @Override
