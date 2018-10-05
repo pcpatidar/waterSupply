@@ -59,11 +59,12 @@ public class SignUp2Activity extends AppCompatActivity {
             userBean = appUser.user;
         } else {
             mMobile.setEnabled(true);
-            if (userBean == null) {
+            userBean = SignUpActivity.userBean;
+           /* if (userBean == null) {
                 userBean = new UserBean();
             } else {
                 userBean = SignUpActivity.userBean;
-            }
+            }*/
         }
         try {
             mAddress.setText(ParameterConstants.ADDRESS);
