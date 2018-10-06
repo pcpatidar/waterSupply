@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,7 +100,7 @@ public class OrderActivity extends AppCompatActivity {
 
     DatePickerDialog datePickerDialog;
     String dateString;
-    String format="dd MMM yyyy";
+    String format = "dd MMM yyyy";
     String today;
     String tomorrow;
 
@@ -114,7 +116,7 @@ public class OrderActivity extends AppCompatActivity {
         Date t = calendar.getTime();
 //        Toast.makeText(this, ""+t, Toast.LENGTH_SHORT).show();
         long dateToday = System.currentTimeMillis();
-        long dateTomorrow = System.currentTimeMillis()+(1000 * 60 * 60 * 24);
+        long dateTomorrow = System.currentTimeMillis() + (1000 * 60 * 60 * 24);
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         today = sdf.format(dateToday);
         tomorrow = sdf.format(dateTomorrow);
@@ -146,8 +148,8 @@ public class OrderActivity extends AppCompatActivity {
         mCheckboxDelivery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mCheckboxDelivery.setChecked(true);
-                Snackbar.make(coordinatorLayout, "Online payment is under development", Snackbar.LENGTH_SHORT).show();
+//                mCheckboxDelivery.setChecked(true);
+//                Snackbar.make(coordinatorLayout, "Online payment is under development", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -167,8 +169,8 @@ public class OrderActivity extends AppCompatActivity {
                     Set<Integer> set = EmptyBottleAdapter.map.keySet();
                     double r = 0.0;
                     for (Integer key : set) {
-                        Bottle bottle=EmptyBottleAdapter.map.get(key);
-                        double d =Double.valueOf(bottle.getRate())* Double.valueOf(bottle.getQty());
+                        Bottle bottle = EmptyBottleAdapter.map.get(key);
+                        double d = Double.valueOf(bottle.getRate()) * Double.valueOf(bottle.getQty());
                         double t = Double.valueOf(total.getText().toString());
                         r = t - d;
                         total.setText("" + r);
@@ -178,7 +180,7 @@ public class OrderActivity extends AppCompatActivity {
             }
         });
 
-        if (checkDate()||appUser.status.contains("C")) {
+        if (checkDate() || appUser.status.contains("C")) {
             tomorrowView();
             mDate_time.setText("" + tomorrow + " Between " + appUser.supplier.getOpenBooking() + " to " + appUser.supplier.getCloseBooking());
 
@@ -191,7 +193,7 @@ public class OrderActivity extends AppCompatActivity {
         mToday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkDate()||appUser.status.contains("C")) {
+                if (checkDate() || appUser.status.contains("C")) {
                     Snackbar.make(coordinatorLayout, "Booking Closed", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -244,7 +246,6 @@ public class OrderActivity extends AppCompatActivity {
     }
 
 
-
     void dateDialog(View view, TextView date) {
 
         view.setOnClickListener(new View.OnClickListener() {
@@ -276,7 +277,7 @@ public class OrderActivity extends AppCompatActivity {
                 }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.show();
                 Calendar cal = Calendar.getInstance();
-                if (checkDate()||appUser.status.contains("C")) {
+                if (checkDate() || appUser.status.contains("C")) {
                     cal.add(Calendar.DAY_OF_YEAR, 1);
                     datePickerDialog.getDatePicker().setMinDate(cal.getTimeInMillis());
                     cal.add(Calendar.DAY_OF_YEAR, 6);
@@ -315,7 +316,20 @@ public class OrderActivity extends AppCompatActivity {
     }
 
     public void submit(View view) {
+        if (!mCheckboxDelivery.isChecked()) {
+            Intent intent = new Intent(getApplicationContext(), PayMentGateWay.class);
+            if (WaterDetailAdapter.map.size() == 0) {
+                Snackbar.make(coordinatorLayout, "Please Select an Bottle quantity", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            intent.putExtra("amount", total.getText().toString());
+            startActivity(intent);
+        } else {
+            postOrder(progressDialog);
+        }
+    }
 
+    public void postOrder(ProgressDialog progressDialog) {
         OrderBean orderBean = new OrderBean();
         List<Combine> list = new ArrayList();
         if (WaterDetailAdapter.map.size() == 0) {
@@ -324,32 +338,32 @@ public class OrderActivity extends AppCompatActivity {
         }
         Set<Integer> waterKey = WaterDetailAdapter.map.keySet();
         for (Integer key : waterKey) {
-            Combine combine=new Combine();
+            Combine combine = new Combine();
             combine.setWater(WaterDetailAdapter.map.get(key));
             list.add(combine);
         }
 
         Set<Integer> bottleKey = EmptyBottleAdapter.map.keySet();
-        Combine combine=null;
+        Combine combine = null;
         for (Integer key : bottleKey) {
             try {
-                combine=new Combine();
-                Water water=WaterDetailAdapter.map.get(key);
-                Bottle bottle=EmptyBottleAdapter.map.get(key);
+                combine = new Combine();
+                Water water = WaterDetailAdapter.map.get(key);
+                Bottle bottle = EmptyBottleAdapter.map.get(key);
                 combine.setWater(water);
                 combine.setBottle(bottle);
-                boolean b=false;
-                for (int i=0;i<list.size();i++){
-                    if (list.get(i).getWater()==WaterDetailAdapter.map.get(key)){
-                        b=true;
-                        list.set(i,combine);
+                boolean b = false;
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getWater() == WaterDetailAdapter.map.get(key)) {
+                        b = true;
+                        list.set(i, combine);
                     }
                 }
-                if (!b){
+                if (!b) {
                     list.add(combine);
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 list.add(combine);
             }
         }
@@ -360,13 +374,13 @@ public class OrderActivity extends AppCompatActivity {
         String text = mDate_time.getText().toString();
         String date = text.substring(0, text.indexOf("B"));
         orderBean.setCashOnDelivery(true);
-        orderBean.setBookingDate(new SimpleDateFormat(format+" hh:mm aa").format(System.currentTimeMillis()));
+        orderBean.setBookingDate(new SimpleDateFormat(format + " hh:mm aa").format(System.currentTimeMillis()));
         orderBean.setDeliveryDate(date);
         orderBean.setComment(mComment.getText().toString().trim());
         orderBean.setWaterTypeQuantity(list);
         orderBean.setAmount(total.getText().toString());
         orderBean.setAddress(mAddress.getText().toString());
-        if (checkDate()){
+        if (checkDate()) {
             tomorrowView();
             mDate_time.setText("" + tomorrow + " Between " + appUser.supplier.getOpenBooking() + " to " + appUser.supplier.getCloseBooking());
             Snackbar.make(coordinatorLayout, "Booking Closed", Toast.LENGTH_SHORT).show();
@@ -425,7 +439,6 @@ public class OrderActivity extends AppCompatActivity {
             return false;
         }
     }
-
 
 
     void showPopup(TextView emptyBottle, TextView total) {

@@ -138,13 +138,13 @@ public class SignUp3Activity extends AppCompatActivity {
             terms.setVisibility(View.VISIBLE);
             addView("Normal Water");
             userBean = SignUpActivity.userBean;
-            checkbox(sunday);
-            checkbox(monday);
-            checkbox(tuesday);
-            checkbox(wednesday);
-            checkbox(thursday);
-            checkbox(friday);
-            checkbox(saturday);
+//            checkbox(sunday);
+//            checkbox(monday);
+//            checkbox(tuesday);
+//            checkbox(wednesday);
+//            checkbox(thursday);
+//            checkbox(friday);
+//            checkbox(saturday);
         }
 
         if (userBean.getOpenBooking() != null) {
@@ -297,6 +297,13 @@ public class SignUp3Activity extends AppCompatActivity {
                 userBean.setDeliveryDistance(deliveryDistance.getText().toString());
                 userBean.setDeliveryTime(deliveryTime.getSelectedItem().toString());
                 userBean.setTypeRate(list);
+                userBean.setSunday(sunday.isChecked());
+                userBean.setMonday(monday.isChecked());
+                userBean.setTuesday(tuesday.isChecked());
+                userBean.setWednesday(wednesday.isChecked());
+                userBean.setThursday(thursday.isChecked());
+                userBean.setFriday(friday.isChecked());
+                userBean.setSaturday(saturday.isChecked());
                 if (!ParameterConstants.isUpdate) {
                     retrieveKey(userBean.getMobile());
                 } else {
@@ -527,7 +534,7 @@ public class SignUp3Activity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Toast.makeText(SignUp3Activity.this, "" + checkBox.getText().toString(), Toast.LENGTH_SHORT).show();
                 if (checkBox.getText().toString().equals("Sunday")) {
-                    userBean.setSaturday(b);
+                    userBean.setSunday(b);
                 }
                 if (checkBox.getText().toString().equals("Monday")) {
                     userBean.setMonday(b);

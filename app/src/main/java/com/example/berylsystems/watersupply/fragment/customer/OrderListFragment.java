@@ -41,8 +41,6 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
     RecyclerView mRecyclerView;
     @Bind(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-    boolean isExit;
-    FirebaseDatabase database;
     DatabaseReference databaseReference;
     LinearLayoutManager linearLayoutManager;
     OrderListAdapter mAdapter;

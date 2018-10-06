@@ -67,8 +67,8 @@ public class SignInActivity extends AppCompatActivity {
 //        progressDialog.setCancelable(false);
         appUser = LocalRepositories.getAppUser(getApplicationContext());
         database = FirebaseDatabase.getInstance();
-        mMobile.setText("9794763878");
-        mPassword.setText("aaaaaa");
+//        mMobile.setText("9794763878");
+//        mPassword.setText("aaaaaa");
         mClickHere.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,11 +103,10 @@ public class SignInActivity extends AppCompatActivity {
                     return;
                 }
                 if (!Validation.validateMobile(mMobile)) {
-                    Snackbar.make(mainLayout, "Invalid Mobile Number", Snackbar.LENGTH_LONG).show();
                     return;
                 }
                 if (!Validation.validatePassword(mPassword)) {
-                    Snackbar.make(mainLayout, "Password should not be less than 6 digit", Snackbar.LENGTH_LONG).show();
+
                     return;
                 }
 
@@ -129,7 +128,8 @@ public class SignInActivity extends AppCompatActivity {
                     Snackbar.make(mainLayout, "Sorry you don't have " + ParameterConstants.KEY + " Account", Snackbar.LENGTH_LONG).show();
                 } else {
                     if (!userBean.getPassword().equals(mPassword.getText().toString())) {
-                        Snackbar.make(mainLayout, "wrong password", Snackbar.LENGTH_LONG).show();
+                        mPassword.setError("Wrong password");
+                        mPassword.requestFocus();
                         return;
                     }
                     appUser.user = userBean;

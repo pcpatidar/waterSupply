@@ -129,10 +129,10 @@ public class SignUpActivity extends AppCompatActivity {
                 userBean = new UserBean();
             }
         }
-        try {
-            mAddress.setText(ParameterConstants.ADDRESS);
-        } catch (Exception e) {
-        }
+//        try {
+//            mAddress.setText(ParameterConstants.ADDRESS);
+//        } catch (Exception e) {
+//        }
         if (userBean.getName() != null) {
             mName.setText(userBean.getName());
         }
@@ -190,28 +190,24 @@ public class SignUpActivity extends AppCompatActivity {
                 }
                 if (ParameterConstants.KEY.equals("Customer")) {
                     if (!Validation.validateName(mName)) {
-                        Snackbar.make(mainLayout, "Invalid Name", Snackbar.LENGTH_LONG).show();
                         return;
                     }
 
                     if (!Validation.validateEmail(mEmail)) {
-                        Snackbar.make(mainLayout, "Invalid Email", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     if (!Validation.validatePassword(mPassword)) {
-                        Snackbar.make(mainLayout, "Password should not be less than 6 digit", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     if (!Validation.validateConfirmPassword(confirmPassword, mPassword)) {
-                        Snackbar.make(mainLayout, "Password doesn't match", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     if (mAddress.getText().toString().isEmpty()) {
-                        Snackbar.make(mainLayout, "Please Enter Your Address", Snackbar.LENGTH_LONG).show();
+                        mAddress.setError("Please Enter Your Complete Address");
+                        mAddress.requestFocus();
                         return;
                     }
                     if (!Validation.validateMobile(mMobile)) {
-                        Snackbar.make(mainLayout, "Invalid Mobile Number", Snackbar.LENGTH_LONG).show();
                         return;
                     }
                     if (ParameterConstants.location == null) {
@@ -223,7 +219,8 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                 } else {
                     if (mCode.getText().toString().isEmpty()) {
-                        Snackbar.make(mainLayout, "Enter Provide Code", Snackbar.LENGTH_LONG).show();
+                        mCode.setError("Enter Supplier Code");
+                        mCode.requestFocus();
                         return;
                     }
                 }
@@ -261,7 +258,8 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
                 if (mCode.getText().toString().isEmpty()) {
-                    Snackbar.make(mainLayout, "Enter Supplier Code", Snackbar.LENGTH_LONG).show();
+                    mCode.setError("Enter Code");
+                    mCode.requestFocus();
                     return;
                 }
                 progressDialog.setMessage("Matching Supplier code");
@@ -273,7 +271,8 @@ public class SignUpActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         String code = dataSnapshot.getValue(String.class);
                         if (!code.equals(mCode.getText().toString())) {
-                            Snackbar.make(mainLayout, "Invalid code", Snackbar.LENGTH_LONG).show();
+                            mCode.setError("Invalid Code");
+                            mCode.requestFocus();
                         } else {
                             startActivity(new Intent(getApplicationContext(), SignUp2Activity.class));
                         }
@@ -330,7 +329,8 @@ public class SignUpActivity extends AppCompatActivity {
                     registerUser(userBean);
                 } else {
                     progressDialog.dismiss();
-                    Snackbar.make(mainLayout, "User with this Mobile number already registered, Please login", Snackbar.LENGTH_LONG).show();
+                    mMobile.setError("User with this Mobile number already registered, Please login");
+                    mMobile.requestFocus();
                 }
             }
 

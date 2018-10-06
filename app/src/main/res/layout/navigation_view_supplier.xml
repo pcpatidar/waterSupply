@@ -301,16 +301,18 @@
                             android:layout_above="@+id/lkin"
                             android:layout_gravity="bottom"
                             android:gravity="center"
-                            android:text="powered by"
+                            android:text="Powered by"
                             android:textSize="10sp" />
 
-                        <TextView
+                        <com.example.berylsystems.watersupply.utils.BuzzTextView
                             android:layout_width="fill_parent"
+                            style="@style/Gotham_Book"
+                            android:textColor="@color/black"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"
                             android:layout_marginBottom="10dp"
                             android:gravity="center"
-                            android:text="wtrs.com"
+                            android:text="@string/powered_by"
                             android:textSize="12sp" />
 
                     </LinearLayout>

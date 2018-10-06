@@ -25,7 +25,8 @@
             android:layout_marginBottom="20dp"
             android:background="@drawable/water"/>
 
-        <TextView
+        <com.example.berylsystems.watersupply.utils.BuzzTextView
+            style="@style/Gotham_Book"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_centerVertical="true"
@@ -54,13 +55,13 @@
 
         <com.example.berylsystems.watersupply.utils.BuzzTextView
             android:id="@+id/powered"
-            style="@style/Gotham_Book"
+            style="@style/Gotham_Black"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:gravity="center"
-            android:text="wtrs.com"
+            android:text="@string/powered_by"
             android:textColor="@color/white"
             android:textSize="10sp" />
 

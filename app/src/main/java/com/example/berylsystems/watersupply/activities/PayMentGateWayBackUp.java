@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
@@ -34,7 +33,7 @@ import java.util.Random;
 /**
  * Created by Shadab Azam Farooqui on 23/1/16.
  */
-public class PayMentGateWay extends Activity {
+public class PayMentGateWayBackUp extends Activity {
     //    AppUser appUser;
     private ArrayList<String> post_val = new ArrayList<String>();
     private String post_Data = "";
@@ -189,7 +188,7 @@ public class PayMentGateWay extends Activity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 //make sure dialog is showing
                 try {
-//                    mProgressDialog.show();
+                    mProgressDialog.show();
                 }catch (Exception e){
                 }
             }
@@ -273,37 +272,37 @@ public class PayMentGateWay extends Activity {
 
         Map<String, String> mapParams = new HashMap<String, String>();
         mapParams.put("key", merchant_key);
-        mapParams.put("hash", PayMentGateWay.this.hash);
-        mapParams.put("txnid", (empty(PayMentGateWay.this.params.get("txnid"))) ? "" : PayMentGateWay.this.params.get("txnid"));
-        transaction_id = PayMentGateWay.this.params.get("txnid");
+        mapParams.put("hash", PayMentGateWayBackUp.this.hash);
+        mapParams.put("txnid", (empty(PayMentGateWayBackUp.this.params.get("txnid"))) ? "" : PayMentGateWayBackUp.this.params.get("txnid"));
+        transaction_id = PayMentGateWayBackUp.this.params.get("txnid");
 
-        Log.d(tag, "txnid: " + PayMentGateWay.this.params.get("txnid"));
+        Log.d(tag, "txnid: " + PayMentGateWayBackUp.this.params.get("txnid"));
         // mapParams.put("service_provider","payu_paisa");
 
-        mapParams.put("amount", (empty(PayMentGateWay.this.params.get("amount"))) ? "" : PayMentGateWay.this.params.get("amount"));
-        mapParams.put("firstname", (empty(PayMentGateWay.this.params.get("firstname"))) ? "" : PayMentGateWay.this.params.get("firstname"));
-        mapParams.put("email", (empty(PayMentGateWay.this.params.get("email"))) ? "" : PayMentGateWay.this.params.get("email"));
-        mapParams.put("phone", (empty(PayMentGateWay.this.params.get("phone"))) ? "" : PayMentGateWay.this.params.get("phone"));
+        mapParams.put("amount", (empty(PayMentGateWayBackUp.this.params.get("amount"))) ? "" : PayMentGateWayBackUp.this.params.get("amount"));
+        mapParams.put("firstname", (empty(PayMentGateWayBackUp.this.params.get("firstname"))) ? "" : PayMentGateWayBackUp.this.params.get("firstname"));
+        mapParams.put("email", (empty(PayMentGateWayBackUp.this.params.get("email"))) ? "" : PayMentGateWayBackUp.this.params.get("email"));
+        mapParams.put("phone", (empty(PayMentGateWayBackUp.this.params.get("phone"))) ? "" : PayMentGateWayBackUp.this.params.get("phone"));
 
-        mapParams.put("productinfo", (empty(PayMentGateWay.this.params.get("productinfo"))) ? "" : PayMentGateWay.this.params.get("productinfo"));
-        mapParams.put("surl", (empty(PayMentGateWay.this.params.get("surl"))) ? "" : PayMentGateWay.this.params.get("surl"));
-        mapParams.put("furl", (empty(PayMentGateWay.this.params.get("furl"))) ? "" : PayMentGateWay.this.params.get("furl"));
-        mapParams.put("lastname", (empty(PayMentGateWay.this.params.get("lastname"))) ? "" : PayMentGateWay.this.params.get("lastname"));
+        mapParams.put("productinfo", (empty(PayMentGateWayBackUp.this.params.get("productinfo"))) ? "" : PayMentGateWayBackUp.this.params.get("productinfo"));
+        mapParams.put("surl", (empty(PayMentGateWayBackUp.this.params.get("surl"))) ? "" : PayMentGateWayBackUp.this.params.get("surl"));
+        mapParams.put("furl", (empty(PayMentGateWayBackUp.this.params.get("furl"))) ? "" : PayMentGateWayBackUp.this.params.get("furl"));
+        mapParams.put("lastname", (empty(PayMentGateWayBackUp.this.params.get("lastname"))) ? "" : PayMentGateWayBackUp.this.params.get("lastname"));
 
-        mapParams.put("address1", (empty(PayMentGateWay.this.params.get("address1"))) ? "" : PayMentGateWay.this.params.get("address1"));
-        mapParams.put("address2", (empty(PayMentGateWay.this.params.get("address2"))) ? "" : PayMentGateWay.this.params.get("address2"));
-        mapParams.put("city", (empty(PayMentGateWay.this.params.get("city"))) ? "" : PayMentGateWay.this.params.get("city"));
-        mapParams.put("state", (empty(PayMentGateWay.this.params.get("state"))) ? "" : PayMentGateWay.this.params.get("state"));
+        mapParams.put("address1", (empty(PayMentGateWayBackUp.this.params.get("address1"))) ? "" : PayMentGateWayBackUp.this.params.get("address1"));
+        mapParams.put("address2", (empty(PayMentGateWayBackUp.this.params.get("address2"))) ? "" : PayMentGateWayBackUp.this.params.get("address2"));
+        mapParams.put("city", (empty(PayMentGateWayBackUp.this.params.get("city"))) ? "" : PayMentGateWayBackUp.this.params.get("city"));
+        mapParams.put("state", (empty(PayMentGateWayBackUp.this.params.get("state"))) ? "" : PayMentGateWayBackUp.this.params.get("state"));
 
-        mapParams.put("country", (empty(PayMentGateWay.this.params.get("country"))) ? "" : PayMentGateWay.this.params.get("country"));
-        mapParams.put("zipcode", (empty(PayMentGateWay.this.params.get("zipcode"))) ? "" : PayMentGateWay.this.params.get("zipcode"));
-        mapParams.put("udf1", (empty(PayMentGateWay.this.params.get("udf1"))) ? "" : PayMentGateWay.this.params.get("udf1"));
-        mapParams.put("udf2", (empty(PayMentGateWay.this.params.get("udf2"))) ? "" : PayMentGateWay.this.params.get("udf2"));
+        mapParams.put("country", (empty(PayMentGateWayBackUp.this.params.get("country"))) ? "" : PayMentGateWayBackUp.this.params.get("country"));
+        mapParams.put("zipcode", (empty(PayMentGateWayBackUp.this.params.get("zipcode"))) ? "" : PayMentGateWayBackUp.this.params.get("zipcode"));
+        mapParams.put("udf1", (empty(PayMentGateWayBackUp.this.params.get("udf1"))) ? "" : PayMentGateWayBackUp.this.params.get("udf1"));
+        mapParams.put("udf2", (empty(PayMentGateWayBackUp.this.params.get("udf2"))) ? "" : PayMentGateWayBackUp.this.params.get("udf2"));
 
-        mapParams.put("udf3", (empty(PayMentGateWay.this.params.get("udf3"))) ? "" : PayMentGateWay.this.params.get("udf3"));
-        mapParams.put("udf4", (empty(PayMentGateWay.this.params.get("udf4"))) ? "" : PayMentGateWay.this.params.get("udf4"));
-        mapParams.put("udf5", (empty(PayMentGateWay.this.params.get("udf5"))) ? "" : PayMentGateWay.this.params.get("udf5"));
-        mapParams.put("pg", (empty(PayMentGateWay.this.params.get("pg"))) ? "" : PayMentGateWay.this.params.get("pg"));
+        mapParams.put("udf3", (empty(PayMentGateWayBackUp.this.params.get("udf3"))) ? "" : PayMentGateWayBackUp.this.params.get("udf3"));
+        mapParams.put("udf4", (empty(PayMentGateWayBackUp.this.params.get("udf4"))) ? "" : PayMentGateWayBackUp.this.params.get("udf4"));
+        mapParams.put("udf5", (empty(PayMentGateWayBackUp.this.params.get("udf5"))) ? "" : PayMentGateWayBackUp.this.params.get("udf5"));
+        mapParams.put("pg", (empty(PayMentGateWayBackUp.this.params.get("pg"))) ? "" : PayMentGateWayBackUp.this.params.get("pg"));
         webview_ClientPost(webView, action, mapParams.entrySet());
 
     }
@@ -341,11 +340,11 @@ public class PayMentGateWay extends Activity {
                 public void run() {
                     mHandler = null;
 
-	                   /* *//*Intent intent = new Intent();
+	                    /*Intent intent = new Intent();
                         intent.putExtra(Constants.RESULT, "success");
 	                    intent.putExtra(Constants.PAYMENT_ID, paymentId);
 	                    setResult(RESULT_OK, intent);
-	                    finish();*//*
+	                    finish();*/
 //                    if (ConnectivityReceiver.isConnected()) {
 //                        mProgressDialog = new ProgressDialog(PayMentGateWay.this);
 //                        mProgressDialog.setMessage("Info...");
@@ -355,11 +354,11 @@ public class PayMentGateWay extends Activity {
 //                        ApiCallsService.action(getApplicationContext(), Cv.ACTION_RENEW);
 //                    } else {
 //                        Toast.makeText(getApplicationContext(), "Not Connected to intenet", Toast.LENGTH_LONG).show();
-//                    }*/
-                     new PostRechargeData().execute();
+//                    }
+                    // new PostRechargeData().execute();
 //                    Intent intent=new Intent(PayMentGateWay.this,MainActivity.class);
 //                    startActivity(intent);
-//                    finish();
+                    finish();
                     Toast.makeText(getApplicationContext(), "Payment successful", Toast.LENGTH_LONG).show();
 
                 }
@@ -425,7 +424,7 @@ public class PayMentGateWay extends Activity {
         mHandler.post(new Runnable() {
             public void run() {
                 mHandler = null;
-                  new PostRechargeData().execute();
+                //  new PostRechargeData().execute();
                 Toast.makeText(getApplicationContext(), "Successfully payment\n redirect from Success Function", Toast.LENGTH_LONG).show();
 
             }
@@ -495,23 +494,48 @@ public class PayMentGateWay extends Activity {
     }
 
     /******************************************* send record to back end ******************************************/
-    class PostRechargeData extends AsyncTask<String, String, String>
+    /*class PostRechargeData extends AsyncTask<String, String, String>
     {
         @Override
         protected void onPreExecute()
         {
             super.onPreExecute();
-            mProgressDialog = new ProgressDialog(PayMentGateWay.this);
-            mProgressDialog.setMessage("Please wait...");
-            mProgressDialog.setIndeterminate(false);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
+            pDialog = new ProgressDialog(PayMentGateWay.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
 
         }
         protected String doInBackground(String... args)
         {
-            OrderActivity.context.postOrder(mProgressDialog);
-            return "";
+            String strStatus = null;
+            ProfileSessionManager ProSessionManager = new ProfileSessionManager(PayMentGateWay.this);
+
+            String getUserid   = ProSessionManager.getSpeculatorId();
+            String getSpeculationId  = "0";
+            String rechargeAmt = getRechargeAmt;
+            String postAction = "1";
+            //http://speculometer.com/webService/stockApp/speculationMoneyreports.php?
+            //access_token=ISOFTINCstockAppCheckDevelop&speculator=1&speculation=&amount=1000&action=1
+            ServiceHandler sh = new ServiceHandler();
+            String upLoadServerUri = ServiceList.payment_money_url+"speculator="+getUserid+"&speculation="+getSpeculationId+"&amount="+rechargeAmt+"&action="+postAction;
+
+            try{
+                String jsonStr = sh.makeServiceCall(upLoadServerUri, ServiceHandler.POST);
+                JSONObject jsonObj  = new JSONObject(jsonStr);
+
+                JSONObject jobjDoc = jsonObj.optJSONObject("document");
+                JSONObject jobjRes = jobjDoc.optJSONObject("response");
+
+                strStatus   = jobjRes.getString("status");
+                //strMessage  = jobjRes.getString("message");
+                String strUserId = jobjRes.getString("user_id");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return strStatus;
         }
 
         protected void onPostExecute(final String strStatus)
@@ -521,21 +545,20 @@ public class PayMentGateWay extends Activity {
             {
                 public void run()
                 {
-                    mProgressDialog.dismiss();
+                    pDialog.dismiss();
                     if(strStatus != null && strStatus.equalsIgnoreCase("0")){
                         Toast.makeText(getApplicationContext(),"Your recharge amount not added in wallet." ,Toast.LENGTH_LONG).show();
                     }else if(strStatus != null && strStatus.equalsIgnoreCase("1")){
+
                         Toast.makeText(getApplicationContext(),"Your recharge amount added in wallet." ,Toast.LENGTH_LONG).show();
                     }
-                    Intent intent = new Intent(activity, CustomerHomeActivity.class);
+                    Intent intent = new Intent(activity, MainActivity.class);
                     startActivity(intent);
-                    OrderActivity.context.finish();
-                    finish();
                 }
             });
 
         }
-    }
+    }*/
 
 
     /******************************************* closed send record to back end ************************************/
