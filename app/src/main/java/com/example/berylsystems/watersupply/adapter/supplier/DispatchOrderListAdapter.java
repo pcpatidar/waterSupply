@@ -13,10 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
-import com.example.berylsystems.watersupply.adapter.HistoryListAdapter;
 import com.example.berylsystems.watersupply.bean.Combine;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.DispatchOrderFragment;
 import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
 import com.example.berylsystems.watersupply.utils.Helper;
 import com.example.berylsystems.watersupply.utils.ParameterConstants;
@@ -29,7 +29,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrderListAdapter.ViewHolder> {
+public class DispatchOrderListAdapter extends RecyclerView.Adapter<DispatchOrderListAdapter.ViewHolder> {
 
     private List<OrderBean> data;
     private Activity context;
@@ -37,22 +37,21 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
     ProgressDialog mProgressDialog;
     SwipeRefreshLayout swipeRefreshLayout;
 
-    public DeliveredOrderListAdapter(Activity context, List<OrderBean> data, SwipeRefreshLayout swipeRefreshLayout) {
+    public DispatchOrderListAdapter(Activity context, List<OrderBean> data, SwipeRefreshLayout swipeRefreshLayout) {
         this.data = data;
         this.context = context;
         this.swipeRefreshLayout = swipeRefreshLayout;
-
     }
 
 
     @Override
-    public DeliveredOrderListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_delivered_list, viewGroup, false);
+    public DispatchOrderListAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_dispatch_list, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DeliveredOrderListAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(DispatchOrderListAdapter.ViewHolder viewHolder, int position) {
 
         viewHolder.shopName.setText(data.get(position).getSupplier().getShopName());
         viewHolder.bookingTime.setText(data.get(position).getBookingDate());
@@ -101,7 +100,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog(position,"Cancel Confirmation","Do you want to cancel ?",ParameterConstants.PENDING);
+                dialog(position, "Delivery Confirmation", "Are you sure you have delivered this order ?", ParameterConstants.DELIVER,ParameterConstants.DELIVER);
             }
         });
     }
@@ -166,8 +165,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         }
     }
 
-
-    void dialog(int position,String tittle,String message,String status){
+    void dialog(int position, String tittle, String message, String status,String from) {
         new AlertDialog.Builder(context)
                 .setTitle(tittle)
                 .setMessage(message)
@@ -176,10 +174,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                         Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    mProgressDialog = new ProgressDialog(context);
-                    mProgressDialog.setMessage("Please wait...");
                     swipeRefreshLayout.setRefreshing(true);
-//                            mProgressDialog.show();
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                     OrderBean orderBean = data.get(position);
                     orderBean.setStatus(status);
@@ -187,18 +182,25 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError == null) {
-//                                        new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"canceled","Share Location").execute();
+//                              new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"delivered","Share Location").execute();
                                 swipeRefreshLayout.setRefreshing(false);
-                                mProgressDialog.dismiss();
-                                DeliveredOrderFragment.orderBeanList.remove(orderBean);
-                                PendingOrderFragment.orderBeanList.add(orderBean);
-                                PendingOrderFragment.mAdapter.notifyDataSetChanged();
-                                DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
+                                if (from.equals(ParameterConstants.DELIVER)){
+                                    PendingOrderFragment.orderBeanList.remove(orderBean);
+                                    DeliveredOrderFragment.orderBeanList.add(orderBean);
+                                    PendingOrderFragment.mAdapter.notifyDataSetChanged();
+                                    DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
+                                }else {
+                                    PendingOrderFragment.orderBeanList.remove(orderBean);
+                                    DispatchOrderFragment.orderBeanList.add(orderBean);
+                                    PendingOrderFragment.mAdapter.notifyDataSetChanged();
+                                    DispatchOrderFragment.mAdapter.notifyDataSetChanged();
+                                }
                             } else {
-                                mProgressDialog.dismiss();
+                                swipeRefreshLayout.setRefreshing(false);
                             }
                         }
                     });
+
 
                 })
                 .setNegativeButton("Cancel", null)

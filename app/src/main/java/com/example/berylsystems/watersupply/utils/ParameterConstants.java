@@ -14,5 +14,8 @@ public class ParameterConstants {
     public static Location location;
     public static String ADDRESS="";
     public static String SUPPLIER ="Supplier";
+    public static String PENDING ="Pending";
+    public static String DELIVER ="Delivered";
+    public static String DISPATCH ="Dispatched";
     public static boolean isUpdate=false;
 }

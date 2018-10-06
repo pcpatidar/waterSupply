@@ -380,6 +380,7 @@ public class OrderActivity extends AppCompatActivity {
         orderBean.setWaterTypeQuantity(list);
         orderBean.setAmount(total.getText().toString());
         orderBean.setAddress(mAddress.getText().toString());
+        orderBean.setStatus(ParameterConstants.PENDING);
         if (checkDate()) {
             tomorrowView();
             mDate_time.setText("" + tomorrow + " Between " + appUser.supplier.getOpenBooking() + " to " + appUser.supplier.getCloseBooking());

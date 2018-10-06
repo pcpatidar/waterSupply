@@ -129,7 +129,7 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
-            anim = ObjectAnimator.ofFloat(status, "alpha", 0.2f, 1f);
+            anim = ObjectAnimator.ofFloat(status, "alpha", 0.0f, 1f);
             anim.setRepeatMode(Animation.REVERSE);
             anim.setRepeatCount(Animation.INFINITE);
             anim.setDuration(800);

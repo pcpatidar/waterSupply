@@ -128,7 +128,7 @@ public class OrderDbHandler extends SQLiteOpenHelper {
                 orderBean.setCashOnDelivery(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(cashOnDelivery))));
                 orderBean.setAddress(cursor.getString(cursor.getColumnIndex(address)));
                 orderBean.setOrderId(cursor.getString(cursor.getColumnIndex(orderId)));
-                orderBean.setStatus(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(status))));
+//                orderBean.setStatus(Boolean.parseBoolean(cursor.getString(cursor.getColumnIndex(status))));
 
                 dataList.add(orderBean);
             } while (cursor.moveToNext());

@@ -16,8 +16,10 @@ import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.bean.Combine;
 import com.example.berylsystems.watersupply.bean.OrderBean;
 import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.DispatchOrderFragment;
 import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
 import com.example.berylsystems.watersupply.utils.Helper;
+import com.example.berylsystems.watersupply.utils.ParameterConstants;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -73,24 +75,23 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
         try {
             for (int i = 0; i < data.get(position).combine().size(); i++) {
                 Combine combine = data.get(position).combine().get(i);
-                if (combine.getWater()==null&&combine.getBottle()!=null) {
-                    String name=combine.getBottle().getName();
+                if (combine.getWater() == null && combine.getBottle() != null) {
+                    String name = combine.getBottle().getName();
                     Integer wQty = 0;
                     Integer bQty = combine.getBottle().getQty();
-                    Double rate = combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                } else if (combine.getBottle()==null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() == null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = 0;
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*bQty;
+                    Double rate = combine.getWater().getRate() * wQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                }
-                else if (combine.getBottle()!=null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() != null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = combine.getBottle().getQty();
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty+combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getWater().getRate() * wQty + combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }
@@ -99,47 +100,14 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
         viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dialog(position, "Delivery Confirmation", "Are you sure you have delivered this order ?", ParameterConstants.DELIVER,ParameterConstants.DELIVER);
+            }
+        });
 
-
-                new AlertDialog.Builder(context)
-                        .setTitle("Delivery Confirmation")
-                        .setMessage("Are you sure you have delivered this order ?")
-                        .setPositiveButton("Yes", (dialogInterface, i) -> {
-
-                            if (!Helper.isNetworkAvailable(context)) {
-                                Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            mProgressDialog = new ProgressDialog(context);
-                            mProgressDialog.setMessage("Please wait...");
-//                            mProgressDialog.show();
-                            swipeRefreshLayout.setRefreshing(true);
-                            DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
-                            OrderBean orderBean = data.get(position);
-                            orderBean.setStatus(true);
-                            database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError == null) {
-//                                        new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"delivered","Share Location").execute();
-                                        swipeRefreshLayout.setRefreshing(false);
-                                        mProgressDialog.dismiss();
-                                        PendingOrderFragment.orderBeanList.remove(orderBean);
-                                        DeliveredOrderFragment.orderBeanList.add(orderBean);
-                                        PendingOrderFragment.mAdapter.notifyDataSetChanged();
-                                        DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
-                                    } else {
-                                        mProgressDialog.dismiss();
-                                    }
-                                }
-                            });
-
-
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
-
-
+        viewHolder.dispatch_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog(position, "Dispatch Confirmation", "Are you sure this order has been dispatch ?", ParameterConstants.DISPATCH,ParameterConstants.DISPATCH);
             }
         });
     }
@@ -195,11 +163,55 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
         LinearLayout parentLayout;
         @Bind(R.id.deliver_layout)
         LinearLayout deliver_layout;
+        @Bind(R.id.dispatch_layout)
+        LinearLayout dispatch_layout;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, itemView);
 
         }
+    }
+
+    void dialog(int position, String tittle, String message, String status,String from) {
+        new AlertDialog.Builder(context)
+                .setTitle(tittle)
+                .setMessage(message)
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    if (!Helper.isNetworkAvailable(context)) {
+                        Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    swipeRefreshLayout.setRefreshing(true);
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
+                    OrderBean orderBean = data.get(position);
+                    orderBean.setStatus(status);
+                    database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError == null) {
+//                              new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"delivered","Share Location").execute();
+                                swipeRefreshLayout.setRefreshing(false);
+                                if (from.equals(ParameterConstants.DELIVER)){
+                                    PendingOrderFragment.orderBeanList.remove(orderBean);
+                                    DeliveredOrderFragment.orderBeanList.add(orderBean);
+                                    PendingOrderFragment.mAdapter.notifyDataSetChanged();
+                                    DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
+                                }else {
+                                    PendingOrderFragment.orderBeanList.remove(orderBean);
+                                    DispatchOrderFragment.orderBeanList.add(orderBean);
+                                    PendingOrderFragment.mAdapter.notifyDataSetChanged();
+                                    DispatchOrderFragment.mAdapter.notifyDataSetChanged();
+                                }
+                            } else {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        }
+                    });
+
+
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 }

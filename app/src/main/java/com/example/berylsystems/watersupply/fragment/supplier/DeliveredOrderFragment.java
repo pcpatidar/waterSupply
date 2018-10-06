@@ -1,6 +1,5 @@
 package com.example.berylsystems.watersupply.fragment.supplier;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -55,7 +54,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.supplier_approve_fragment, container, false);
+        View view = inflater.inflate(R.layout.supplier_delivered_fragment, container, false);
         ButterKnife.bind(this, view);
         ButterKnife.bind(getActivity());
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -101,7 +100,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
                         DataSnapshot snapshot = iterator.next();
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
                         if (orderBean.getSupplier().getMobile().equals(mobileNumber)){
-                            if (orderBean.isStatus()){
+                            if (orderBean.getStatus().equals(ParameterConstants.DELIVER)){
                                 if (orderBean.getDeliveryDate().trim().equals(today)){
                                     orderBeanList.add(orderBean);
                                 }

@@ -104,10 +104,16 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public void myAccount(View view){
-        ParameterConstants.isUpdate=true;
-        ParameterConstants.KEY = "Customer";
         drawer.closeDrawer(GravityCompat.START);
-        startActivity(new Intent(getApplicationContext(),SignUpActivity.class));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ParameterConstants.isUpdate=true;
+                ParameterConstants.KEY = "Customer";
+                startActivity(new Intent(getApplicationContext(),SignUpActivity.class));
+            }
+        },400);
+
     }
 
     public void history(View view){

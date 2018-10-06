@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.DispatchOrderFragment;
 import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
 import com.example.berylsystems.watersupply.push.Config;
 import com.example.berylsystems.watersupply.utils.AppUser;
@@ -76,8 +77,6 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     public static boolean bool;
     DrawerLayout drawer;
 
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +85,8 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
         appUser = LocalRepositories.getAppUser(this);
         setupViewPager(mHeaderViewPager);
         mTabLayout.setupWithViewPager(mHeaderViewPager);
-        mHeaderViewPager.setCurrentItem(1, true);
+        mHeaderViewPager.setCurrentItem(0, true);
+        mHeaderViewPager.setOffscreenPageLimit(3);
         navigation();
     }
 
@@ -108,10 +108,19 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     }
 
     public void myAccount(View view) {
-        ParameterConstants.isUpdate=true;
-        ParameterConstants.KEY = "Supplier";
+
         drawer.closeDrawer(GravityCompat.START);
-        startActivity(new Intent(getApplicationContext(),SignUp2Activity.class));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ParameterConstants.isUpdate=true;
+                ParameterConstants.KEY = "Supplier";
+                drawer.closeDrawer(GravityCompat.START);
+                startActivity(new Intent(getApplicationContext(),SignUp2Activity.class));
+            }
+        },400);
+
+
     }
     public void history(View view){
         drawer.closeDrawer(GravityCompat.START);
@@ -141,20 +150,11 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
         return true;
     }
 
-
-    private void displayFirebaseRegId() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
-        String regId = pref.getString("regId", null);
-        if (!TextUtils.isEmpty(regId))
-            Toast.makeText(this, "Firebase Reg Id: " + regId, Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Firebase Reg Id: " + regId, Toast.LENGTH_SHORT).show();
-    }
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new PendingOrderFragment(), "Pending Order");
-        adapter.addFragment(new DeliveredOrderFragment(), "Delivered Order");
+        adapter.addFragment(new PendingOrderFragment(), "Pending");
+        adapter.addFragment(new DispatchOrderFragment(), "Dispatch");
+        adapter.addFragment(new DeliveredOrderFragment(), "Delivered");
         viewPager.setAdapter(adapter);
     }
 
@@ -192,18 +192,17 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onResume() {
         super.onResume();
-//        buildAlertMessageNoGps();
         Helper.initActionbar(this, getSupportActionBar(), "Home Page", false);
         if (!Helper.isNetworkAvailable(getApplicationContext())) {
             Snackbar.make(coordinatorLayout, "Please check your network connection", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             return;
         }
-        if (bool) {
-            mHeaderViewPager.setCurrentItem(1, true);
-        } else {
-            mHeaderViewPager.setCurrentItem(0, true);
-        }
+//        if (bool) {
+//            mHeaderViewPager.setCurrentItem(1, true);
+//        } else {
+//            mHeaderViewPager.setCurrentItem(0, true);
+//        }
         versionCheck();
     }
 
@@ -304,24 +303,6 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
             return;
         }
 
-    }
-
-
-    void notification(){
-//        should be call in onCreate
-                mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-                    displayFirebaseRegId();
-                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    String message = intent.getStringExtra("message");
-                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
-                }
-            }
-        };
-//        displayFirebaseRegId();
     }
 
 }

@@ -58,12 +58,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
         viewHolder.supplierMobile.setText(data.get(position).getSupplier().getMobile());
         viewHolder.userMobile.setText(data.get(position).getUser().getMobile());
         viewHolder.address.setText(data.get(position).getAddress());
-        if (data.get(position).isStatus()) {
-            viewHolder.status.setText("Delivered");
-        } else {
-            viewHolder.status.setText("Pending");
-        }
-        viewHolder.bind(data.get(position).isStatus());
+        viewHolder.status.setText(data.get(position).getStatus());
 
         viewHolder.amount.setText("\u20B9" + data.get(position).getAmount());
         viewHolder.orderId.setText(data.get(position).getOrderId().toUpperCase());
@@ -73,28 +68,28 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             viewHolder.comment.setVisibility(View.VISIBLE);
             viewHolder.comment.setText(data.get(position).getComment());
         }
+        viewHolder.bind(data.get(position).getStatus());
         removeAllViews(viewHolder);
         try {
             for (int i = 0; i < data.get(position).combine().size(); i++) {
                 Combine combine = data.get(position).combine().get(i);
-                if (combine.getWater()==null&&combine.getBottle()!=null) {
-                    String name=combine.getBottle().getName();
+                if (combine.getWater() == null && combine.getBottle() != null) {
+                    String name = combine.getBottle().getName();
                     Integer wQty = 0;
                     Integer bQty = combine.getBottle().getQty();
-                    Double rate = combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                } else if (combine.getBottle()==null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() == null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = 0;
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty;
+                    Double rate = combine.getWater().getRate() * wQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                }
-                else if (combine.getBottle()!=null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() != null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = combine.getBottle().getQty();
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty+combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getWater().getRate() * wQty + combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }
@@ -169,7 +164,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             anim.setDuration(800);
         }
 
-        public void bind(Boolean dataObject) {
+        public void bind(String dataObject) {
             anim.start();
         }
     }
