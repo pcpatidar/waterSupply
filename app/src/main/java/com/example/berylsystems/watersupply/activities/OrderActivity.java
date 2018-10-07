@@ -311,7 +311,6 @@ public class OrderActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
-        CustomerHomeActivity.bool = true;
         return super.onOptionsItemSelected(item);
     }
 
@@ -319,12 +318,14 @@ public class OrderActivity extends AppCompatActivity {
         if (!mCheckboxDelivery.isChecked()) {
             Intent intent = new Intent(getApplicationContext(), PayMentGateWay.class);
             if (WaterDetailAdapter.map.size() == 0) {
-                Snackbar.make(coordinatorLayout, "Please Select an Bottle quantity", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(coordinatorLayout, "Please Select the Bottle", Snackbar.LENGTH_SHORT).show();
                 return;
             }
+            CustomerHomeActivity.bool=true;
             intent.putExtra("amount", total.getText().toString());
             startActivity(intent);
         } else {
+            CustomerHomeActivity.bool=true;
             postOrder(progressDialog);
         }
     }
@@ -397,7 +398,6 @@ public class OrderActivity extends AppCompatActivity {
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 progressDialog.dismiss();
                 if (databaseError == null) {
-                    CustomerHomeActivity.bool = true;
                     Toast.makeText(OrderActivity.this, "Your order is successfully submitted", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
@@ -419,7 +419,6 @@ public class OrderActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        CustomerHomeActivity.bool = true;
     }
 
     @Override

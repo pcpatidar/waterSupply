@@ -34,14 +34,12 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
     private List<OrderBean> data;
     private Activity context;
     View mConvertView;
-    ProgressDialog mProgressDialog;
     SwipeRefreshLayout swipeRefreshLayout;
-
+    ProgressDialog mProgressDialog;
     public PendingOrderListAdapter(Activity context, List<OrderBean> data, SwipeRefreshLayout swipeRefreshLayout) {
         this.data = data;
         this.context = context;
         this.swipeRefreshLayout = swipeRefreshLayout;
-
     }
 
 
@@ -53,7 +51,6 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
 
     @Override
     public void onBindViewHolder(PendingOrderListAdapter.ViewHolder viewHolder, int position) {
-
         viewHolder.shopName.setText(data.get(position).getSupplier().getShopName());
         viewHolder.bookingTime.setText(data.get(position).getBookingDate());
         String[] dateAr = data.get(position).getDeliveryDate().split(" ");
@@ -100,14 +97,14 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
         viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog(position, "Delivery Confirmation", "Are you sure you have delivered this order ?", ParameterConstants.DELIVER,ParameterConstants.DELIVER);
+                dialog(position, "Delivery Confirmation", "Are you sure you have delivered this order ?", ParameterConstants.DELIVER, ParameterConstants.DELIVER);
             }
         });
 
         viewHolder.dispatch_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog(position, "Dispatch Confirmation", "Are you sure this order has been dispatch ?", ParameterConstants.DISPATCH,ParameterConstants.DISPATCH);
+                dialog(position, "Dispatch Confirmation", "Are you sure this order has been dispatch ?", ParameterConstants.DISPATCH, ParameterConstants.DISPATCH);
             }
         });
     }
@@ -173,7 +170,7 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
         }
     }
 
-    void dialog(int position, String tittle, String message, String status,String from) {
+    void dialog(int position, String tittle, String message, String status, String from) {
         new AlertDialog.Builder(context)
                 .setTitle(tittle)
                 .setMessage(message)
@@ -182,34 +179,35 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
                         Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    swipeRefreshLayout.setRefreshing(true);
+                    mProgressDialog = new ProgressDialog(context);
+                    mProgressDialog.setMessage("Please wait...");
+                    mProgressDialog.setCancelable(false);
+//                    swipeRefreshLayout.setRefreshing(true);
+                    mProgressDialog.show();
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                     OrderBean orderBean = data.get(position);
                     orderBean.setStatus(status);
                     database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            mProgressDialog.dismiss();
                             if (databaseError == null) {
 //                              new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"delivered","Share Location").execute();
                                 swipeRefreshLayout.setRefreshing(false);
-                                if (from.equals(ParameterConstants.DELIVER)){
+                                if (from.equals(ParameterConstants.DELIVER)) {
                                     PendingOrderFragment.orderBeanList.remove(orderBean);
                                     DeliveredOrderFragment.orderBeanList.add(orderBean);
                                     PendingOrderFragment.mAdapter.notifyDataSetChanged();
                                     DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
-                                }else {
+                                } else {
                                     PendingOrderFragment.orderBeanList.remove(orderBean);
                                     DispatchOrderFragment.orderBeanList.add(orderBean);
                                     PendingOrderFragment.mAdapter.notifyDataSetChanged();
                                     DispatchOrderFragment.mAdapter.notifyDataSetChanged();
                                 }
-                            } else {
-                                swipeRefreshLayout.setRefreshing(false);
                             }
                         }
                     });
-
-
                 })
                 .setNegativeButton("Cancel", null)
                 .show();

@@ -33,7 +33,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.mainLayout)
     LinearLayout mainLayout;
     @Bind(R.id.recycler_view)
@@ -49,7 +49,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
     ValueEventListener firstValueListener;
     AppUser appUser;
     String mobileNumber;
-    String format="dd MMM yyyy";
+    String format = "dd MMM yyyy";
     String today;
 
     @Override
@@ -59,7 +59,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
         ButterKnife.bind(getActivity());
         swipeRefreshLayout.setOnRefreshListener(this);
         appUser = LocalRepositories.getAppUser(getActivity());
-        mobileNumber=appUser.user.getMobile();
+        mobileNumber = appUser.user.getMobile();
         long date = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         today = sdf.format(date);
@@ -77,7 +77,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
         linearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         Collections.reverse(orderBeanList);
-        mAdapter = new DeliveredOrderListAdapter(getActivity(), orderBeanList,swipeRefreshLayout);
+        mAdapter = new DeliveredOrderListAdapter(getActivity(), orderBeanList, swipeRefreshLayout);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -88,7 +88,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 swipeRefreshLayout.setRefreshing(false);
-                int i=0;
+                int i = 0;
                 orderBeanList.clear();
                 if (dataSnapshot.getValue() != null) {
 
@@ -99,9 +99,9 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
                         i++;
                         DataSnapshot snapshot = iterator.next();
                         final OrderBean orderBean = (OrderBean) snapshot.getValue(OrderBean.class);
-                        if (orderBean.getSupplier().getMobile().equals(mobileNumber)){
-                            if (orderBean.getStatus().equals(ParameterConstants.DELIVER)){
-                                if (orderBean.getDeliveryDate().trim().equals(today)){
+                        if (orderBean.getSupplier().getMobile().equals(mobileNumber)) {
+                            if (orderBean.getStatus().equals(ParameterConstants.DELIVER)) {
+                                if (orderBean.getDeliveryDate().trim().equals(today)) {
                                     orderBeanList.add(orderBean);
                                 }
                             }
@@ -125,7 +125,7 @@ public class DeliveredOrderFragment extends Fragment implements SwipeRefreshLayo
     public void onRefresh() {
         if (!Helper.isNetworkAvailable(getActivity())) {
             swipeRefreshLayout.setRefreshing(false);
-            Snackbar.make(mainLayout,"Please check your internet connection!",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, "Please check your internet connection!", Snackbar.LENGTH_SHORT).show();
             return;
         }
         getAllRecord(ParameterConstants.ORDER);

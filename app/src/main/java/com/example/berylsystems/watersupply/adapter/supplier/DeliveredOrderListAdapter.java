@@ -75,24 +75,23 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         try {
             for (int i = 0; i < data.get(position).combine().size(); i++) {
                 Combine combine = data.get(position).combine().get(i);
-                if (combine.getWater()==null&&combine.getBottle()!=null) {
-                    String name=combine.getBottle().getName();
+                if (combine.getWater() == null && combine.getBottle() != null) {
+                    String name = combine.getBottle().getName();
                     Integer wQty = 0;
                     Integer bQty = combine.getBottle().getQty();
-                    Double rate = combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                } else if (combine.getBottle()==null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() == null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = 0;
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty;
+                    Double rate = combine.getWater().getRate() * wQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                }
-                else if (combine.getBottle()!=null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() != null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = combine.getBottle().getQty();
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty+combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getWater().getRate() * wQty + combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }
@@ -101,7 +100,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
         viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog(position,"Cancel Confirmation","Do you want to cancel ?",ParameterConstants.PENDING);
+                dialog(position, "Cancel Confirmation", "Do you want to cancel ?", ParameterConstants.PENDING);
             }
         });
     }
@@ -167,7 +166,7 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
     }
 
 
-    void dialog(int position,String tittle,String message,String status){
+    void dialog(int position, String tittle, String message, String status) {
         new AlertDialog.Builder(context)
                 .setTitle(tittle)
                 .setMessage(message)
@@ -178,24 +177,23 @@ public class DeliveredOrderListAdapter extends RecyclerView.Adapter<DeliveredOrd
                     }
                     mProgressDialog = new ProgressDialog(context);
                     mProgressDialog.setMessage("Please wait...");
-                    swipeRefreshLayout.setRefreshing(true);
-//                            mProgressDialog.show();
+                    mProgressDialog.setCancelable(false);
+//                    swipeRefreshLayout.setRefreshing(true);
+                    mProgressDialog.show();
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                     OrderBean orderBean = data.get(position);
                     orderBean.setStatus(status);
                     database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            mProgressDialog.dismiss();
                             if (databaseError == null) {
 //                                        new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"canceled","Share Location").execute();
-                                swipeRefreshLayout.setRefreshing(false);
-                                mProgressDialog.dismiss();
+//                                swipeRefreshLayout.setRefreshing(false);
                                 DeliveredOrderFragment.orderBeanList.remove(orderBean);
                                 PendingOrderFragment.orderBeanList.add(orderBean);
                                 PendingOrderFragment.mAdapter.notifyDataSetChanged();
                                 DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
-                            } else {
-                                mProgressDialog.dismiss();
                             }
                         }
                     });

@@ -70,8 +70,8 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
     DatabaseReference databaseReference;
     boolean isExit;
     AppUser appUser;
-    public static boolean bool;
     DrawerLayout drawer;
+    public static boolean bool = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,11 +79,11 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.navigation_view_customer);
         ButterKnife.bind(this);
         appUser = LocalRepositories.getAppUser(this);
+        setupViewPager(mHeaderViewPager);
         mTabLayout.setupWithViewPager(mHeaderViewPager);
-        mHeaderViewPager.setCurrentItem(1, true);
+        mHeaderViewPager.setOffscreenPageLimit(3);
         navigation();
     }
-
 
 
     void navigation() {
@@ -103,31 +103,31 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    public void myAccount(View view){
+    public void myAccount(View view) {
         drawer.closeDrawer(GravityCompat.START);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                ParameterConstants.isUpdate=true;
+                ParameterConstants.isUpdate = true;
                 ParameterConstants.KEY = "Customer";
-                startActivity(new Intent(getApplicationContext(),SignUpActivity.class));
+                startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
             }
-        },400);
+        }, 400);
 
     }
 
-    public void history(View view){
+    public void history(View view) {
         drawer.closeDrawer(GravityCompat.START);
-       new Handler().postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               HistoryActivity.userType="Customer";
-               startActivity(new Intent(getApplicationContext(),HistoryActivity.class));
-           }
-       },400);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                HistoryActivity.userType = "Customer";
+                startActivity(new Intent(getApplicationContext(), HistoryActivity.class));
+            }
+        }, 400);
     }
 
-    public void share(View v){
+    public void share(View v) {
         drawer.closeDrawers();
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -185,8 +185,8 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         super.onResume();
 //        buildAlertMessageNoGps();
         Helper.initActionbar(this, getSupportActionBar(), "Home Page", false);
-        appUser = LocalRepositories.getAppUser(this);
-        setupViewPager(mHeaderViewPager);
+//        appUser = LocalRepositories.getAppUser(this);
+//        setupViewPager(mHeaderViewPager);
 //        mTabLayout.setupWithViewPager(mHeaderViewPager);
 //        mHeaderViewPager.setCurrentItem(1, true);
 
@@ -197,7 +197,7 @@ public class CustomerHomeActivity extends AppCompatActivity implements Navigatio
         }
         if (bool) {
             bool=false;
-            mHeaderViewPager.setCurrentItem(1, true);
+            mHeaderViewPager.setCurrentItem(0, true);
         }
         versionCheck();
     }

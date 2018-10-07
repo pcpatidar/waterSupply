@@ -74,24 +74,23 @@ public class DispatchOrderListAdapter extends RecyclerView.Adapter<DispatchOrder
         try {
             for (int i = 0; i < data.get(position).combine().size(); i++) {
                 Combine combine = data.get(position).combine().get(i);
-                if (combine.getWater()==null&&combine.getBottle()!=null) {
-                    String name=combine.getBottle().getName();
+                if (combine.getWater() == null && combine.getBottle() != null) {
+                    String name = combine.getBottle().getName();
                     Integer wQty = 0;
                     Integer bQty = combine.getBottle().getQty();
-                    Double rate = combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                } else if (combine.getBottle()==null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() == null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = 0;
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty;
+                    Double rate = combine.getWater().getRate() * wQty;
                     addView(name, wQty, bQty, rate, viewHolder);
-                }
-                else if (combine.getBottle()!=null&&combine.getWater()!=null) {
-                    String name=combine.getWater().getName();
+                } else if (combine.getBottle() != null && combine.getWater() != null) {
+                    String name = combine.getWater().getName();
                     Integer bQty = combine.getBottle().getQty();
                     Integer wQty = combine.getWater().getQty();
-                    Double rate = combine.getWater().getRate()*wQty+combine.getBottle().getRate()*bQty;
+                    Double rate = combine.getWater().getRate() * wQty + combine.getBottle().getRate() * bQty;
                     addView(name, wQty, bQty, rate, viewHolder);
                 }
             }
@@ -100,7 +99,7 @@ public class DispatchOrderListAdapter extends RecyclerView.Adapter<DispatchOrder
         viewHolder.deliver_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog(position, "Delivery Confirmation", "Are you sure you have delivered this order ?", ParameterConstants.DELIVER,ParameterConstants.DELIVER);
+                dialog(position, "Delivery Confirmation", "Are you sure you have delivered this order ?", ParameterConstants.DELIVER);
             }
         });
     }
@@ -165,7 +164,7 @@ public class DispatchOrderListAdapter extends RecyclerView.Adapter<DispatchOrder
         }
     }
 
-    void dialog(int position, String tittle, String message, String status,String from) {
+    void dialog(int position, String tittle, String message, String status) {
         new AlertDialog.Builder(context)
                 .setTitle(tittle)
                 .setMessage(message)
@@ -174,29 +173,25 @@ public class DispatchOrderListAdapter extends RecyclerView.Adapter<DispatchOrder
                         Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    swipeRefreshLayout.setRefreshing(true);
+                    mProgressDialog = new ProgressDialog(context);
+                    mProgressDialog.setMessage("Please wait...");
+                    mProgressDialog.setCancelable(false);
+//                    swipeRefreshLayout.setRefreshing(true);
+                    mProgressDialog.show();
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                     OrderBean orderBean = data.get(position);
                     orderBean.setStatus(status);
                     database.child(data.get(position).getOrderId()).setValue(orderBean, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            mProgressDialog.dismiss();
                             if (databaseError == null) {
 //                              new NetworkAsyncTask(orderBean.getUser().getRefreshToken(),"delivered","Share Location").execute();
-                                swipeRefreshLayout.setRefreshing(false);
-                                if (from.equals(ParameterConstants.DELIVER)){
-                                    PendingOrderFragment.orderBeanList.remove(orderBean);
-                                    DeliveredOrderFragment.orderBeanList.add(orderBean);
-                                    PendingOrderFragment.mAdapter.notifyDataSetChanged();
-                                    DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
-                                }else {
-                                    PendingOrderFragment.orderBeanList.remove(orderBean);
-                                    DispatchOrderFragment.orderBeanList.add(orderBean);
-                                    PendingOrderFragment.mAdapter.notifyDataSetChanged();
-                                    DispatchOrderFragment.mAdapter.notifyDataSetChanged();
-                                }
-                            } else {
-                                swipeRefreshLayout.setRefreshing(false);
+//                                swipeRefreshLayout.setRefreshing(false);
+                                DispatchOrderFragment.orderBeanList.remove(orderBean);
+                                DeliveredOrderFragment.orderBeanList.add(orderBean);
+                                DispatchOrderFragment.mAdapter.notifyDataSetChanged();
+                                DeliveredOrderFragment.mAdapter.notifyDataSetChanged();
                             }
                         }
                     });

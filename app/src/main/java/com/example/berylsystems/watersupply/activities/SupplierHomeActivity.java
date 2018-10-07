@@ -74,7 +74,6 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
     DatabaseReference databaseReference;
     boolean isExit;
     AppUser appUser;
-    public static boolean bool;
     DrawerLayout drawer;
 
     @Override
@@ -85,7 +84,6 @@ public class SupplierHomeActivity extends AppCompatActivity implements Navigatio
         appUser = LocalRepositories.getAppUser(this);
         setupViewPager(mHeaderViewPager);
         mTabLayout.setupWithViewPager(mHeaderViewPager);
-        mHeaderViewPager.setCurrentItem(0, true);
         mHeaderViewPager.setOffscreenPageLimit(3);
         navigation();
     }
