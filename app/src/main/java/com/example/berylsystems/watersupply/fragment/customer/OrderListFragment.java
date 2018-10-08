@@ -110,6 +110,8 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
                         }
                     }
 
+                }else {
+                    setAdapter();
                 }
             }
 

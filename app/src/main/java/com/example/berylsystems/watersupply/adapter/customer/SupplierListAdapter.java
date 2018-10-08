@@ -147,7 +147,11 @@ public class SupplierListAdapter extends RecyclerView.Adapter<SupplierListAdapte
         String startDate = sdf.format(date);
         String endDate = end;
         String diff = Helper.getTimeDifferent(startDate, endDate);
-        if (Double.valueOf(diff) >= Double.valueOf(start.split(" ")[0])) {
+        String deliveryTime=start.split(" ")[0];
+        if (deliveryTime.equals("30")){
+            deliveryTime=".30";
+        }
+        if (Double.valueOf(diff) >= Double.valueOf(deliveryTime)) {
             return true;
         } else {
             return false;

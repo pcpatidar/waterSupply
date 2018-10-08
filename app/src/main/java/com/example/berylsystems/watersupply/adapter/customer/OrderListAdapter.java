@@ -3,19 +3,29 @@ package com.example.berylsystems.watersupply.adapter.customer;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.berylsystems.watersupply.R;
 import com.example.berylsystems.watersupply.activities.OrderActivity;
 import com.example.berylsystems.watersupply.adapter.HistoryListAdapter;
 import com.example.berylsystems.watersupply.bean.Combine;
 import com.example.berylsystems.watersupply.bean.OrderBean;
+import com.example.berylsystems.watersupply.fragment.supplier.DeliveredOrderFragment;
+import com.example.berylsystems.watersupply.fragment.supplier.PendingOrderFragment;
+import com.example.berylsystems.watersupply.utils.Helper;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -28,6 +38,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
     private Activity context;
     View mConvertView;
     Boolean aBoolean;
+    ProgressDialog mProgressDialog;
 
     public OrderListAdapter(Activity context, List<OrderBean> data, Boolean b) {
         this.data = data;
@@ -91,6 +102,16 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             }
         } catch (Exception e) {
         }
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!data.get(position).getStatus().equals("Pending")){
+                    Toast.makeText(context, "Order Can't delete", Toast.LENGTH_SHORT).show();
+                }else {
+                    dialog(position,"Delete Confirmation","Do you want to delete this order ?");
+                }
+            }
+        });
     }
 
 
@@ -146,6 +167,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         LinearLayout parentLayout;
         @Bind(R.id.amount)
         TextView amount;
+        @Bind(R.id.delete)
+        ImageView delete;
 
 
         private ObjectAnimator anim;
@@ -165,5 +188,34 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         }
     }
 
+
+    void dialog(int position, String tittle, String message) {
+        new AlertDialog.Builder(context)
+                .setTitle(tittle)
+                .setMessage(message)
+                .setPositiveButton("Yes", (dialogInterface, i) -> {
+                    if (!Helper.isNetworkAvailable(context)) {
+                        Toast.makeText(context, "Please Check your internet connection", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    mProgressDialog = new ProgressDialog(context);
+                    mProgressDialog.setMessage("Deleting...");
+                    mProgressDialog.setCancelable(false);
+                    mProgressDialog.show();
+                    DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
+                    database.child(data.get(position).getOrderId()).setValue(null, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            mProgressDialog.dismiss();
+                            if (databaseError == null) {
+                                Toast.makeText(context, "This order has been deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 
 }

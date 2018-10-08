@@ -182,7 +182,6 @@ public class PendingOrderListAdapter extends RecyclerView.Adapter<PendingOrderLi
                     mProgressDialog = new ProgressDialog(context);
                     mProgressDialog.setMessage("Please wait...");
                     mProgressDialog.setCancelable(false);
-//                    swipeRefreshLayout.setRefreshing(true);
                     mProgressDialog.show();
                     DatabaseReference database = FirebaseDatabase.getInstance().getReference("Order");
                     OrderBean orderBean = data.get(position);
